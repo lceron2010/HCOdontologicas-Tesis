@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Laura\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC-Odntologicas\\HC_Odontologicas.csproj": {}
+    "C:\\Users\\Laura\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC_Odntologicas\\HC_Odontologicas.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Laura\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC-Odntologicas\\HC_Odontologicas.csproj": {
+    "C:\\Users\\Laura\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC_Odntologicas\\HC_Odontologicas.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Laura\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC-Odntologicas\\HC_Odontologicas.csproj",
+        "projectUniqueName": "C:\\Users\\Laura\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC_Odntologicas\\HC_Odontologicas.csproj",
         "projectName": "HC_Odontologicas",
-        "projectPath": "C:\\Users\\Laura\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC-Odntologicas\\HC_Odontologicas.csproj",
+        "projectPath": "C:\\Users\\Laura\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC_Odntologicas\\HC_Odontologicas.csproj",
         "packagesPath": "C:\\Users\\Laura\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Laura\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC-Odntologicas\\obj\\",
+        "outputPath": "C:\\Users\\Laura\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC_Odntologicas\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Laura\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -37,6 +37,32 @@
       },
       "frameworks": {
         "netcoreapp3.0": {
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[3.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer.Design": {
+              "target": "Package",
+              "version": "[1.1.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.0.0, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[3.0.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
