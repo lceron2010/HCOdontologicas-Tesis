@@ -7,7 +7,7 @@ namespace HC_Odontologicas.Models
     {
         public Menu()
         {
-            InverseCodigoMenuNavigation = new HashSet<Menu>();
+            SubMenu = new List<Menu>();
             PerfilDetalle = new HashSet<PerfilDetalle>();
         }
 
@@ -25,8 +25,8 @@ namespace HC_Odontologicas.Models
         public bool Exportar { get; set; }
         public bool Importar { get; set; }
 
-        public virtual Menu CodigoMenuNavigation { get; set; }
-        public virtual ICollection<Menu> InverseCodigoMenuNavigation { get; set; }
+        public virtual Menu MenuCodigo { get; set; }
+        public virtual List<Menu> SubMenu { get; set; }
         public virtual ICollection<PerfilDetalle> PerfilDetalle { get; set; }
     }
 }

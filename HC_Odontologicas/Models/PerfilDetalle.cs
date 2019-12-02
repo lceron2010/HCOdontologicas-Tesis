@@ -14,7 +14,7 @@ namespace HC_Odontologicas.Models
         public bool Exportar { get; set; }
         public bool Importar { get; set; }
 
-        public virtual Menu CodigoMenuNavigation { get; set; }
+        public virtual Menu Menu { get; set; }
         public virtual Perfil CodigoPerfilNavigation { get; set; }
     }
 }

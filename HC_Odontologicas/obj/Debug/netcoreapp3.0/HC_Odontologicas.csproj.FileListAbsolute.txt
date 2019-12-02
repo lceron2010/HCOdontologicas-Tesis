@@ -147,3 +147,4 @@ C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Areas\Identity\Pages\_ValidationScriptsPartial.cshtml.g.cs
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Areas\Identity\Pages\_ViewImports.cshtml.g.cs
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\Shared\_CookieConsentPartial.cshtml.g.cs
+C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\Shared\_Menu.cshtml.g.cs

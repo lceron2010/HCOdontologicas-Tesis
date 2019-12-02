@@ -3,8 +3,8 @@
 
 @using Microsoft.AspNetCore.Identity
 
-@inject SignInManager<HC_Odontologicas.Models.Usuario> SignInManager
-@inject UserManager<HC_Odontologicas.Models.Usuario> UserManager
+@inject SignInManager<HC_Odontologicas.Models.UsuarioLogin> SignInManager
+@inject UserManager<HC_Odontologicas.Models.UsuarioLogin> UserManager
 
 @if (SignInManager.IsSignedIn(User))
 {
@@ -37,14 +37,14 @@
 						<h4>Ingrese su usuario y contraseña</h4>
 					</div>
 					<div class="form-group">
-						<label asp-for="Input.NombreUsuario"></label>
-						<input asp-for="Input.NombreUsuario" class="form-control" />
-						<span asp-validation-for="Input.NombreUsuario" class="text-danger"></span>
+						<label asp-for="Input.UsuarioLogin"></label>
+						<input asp-for="Input.UsuarioLogin" class="form-control" />
+						<span asp-validation-for="Input.UsuarioLogin" class="text-danger"></span>
 					</div>
 					<div class="form-group">
 						<label>Contraseña</label>
-						<input asp-for="Input.Contrasenia" class="form-control" />
-						<span asp-validation-for="Input.Contrasenia" class="text-danger"></span>
+						<input asp-for="Input.Password" class="form-control" />
+						<span asp-validation-for="Input.Password" class="text-danger"></span>
 					</div>
 					<div class="form-group text-right">
 						<button type="submit" class="btn btn-primary">Iniciar</button>  @**@

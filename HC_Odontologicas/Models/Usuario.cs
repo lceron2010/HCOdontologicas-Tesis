@@ -1,10 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-
-namespace HC_Odontologicas.Models
+﻿namespace HC_Odontologicas.Models
 {
-    public partial class Usuario: IdentityUser
+    public partial class Usuario
     {
         public string Codigo { get; set; }
         public string CodigoPerfil { get; set; }

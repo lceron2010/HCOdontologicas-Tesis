@@ -1,0 +1,15 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<UsuarioLogin> SignInManager
+@inject UserManager<UsuarioLogin> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+	<script src="~/js/funcionesJS.js"></script>
+	<script src="~/lib/jquery/dist/jquery.js"></script>
+
+	<script>
+        window.onload = obtenerMenu();
+	</script>
+	<ul id="menu" class="nav navbar-nav sidebar-nav"></ul>
+}

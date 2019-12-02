@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using HC_Odontologicas.Models;
+using HC_Odontologicas.Controllers;
+using Microsoft.AspNetCore.Authentication;
 
 namespace HC_Odontologicas
 {
@@ -32,13 +34,14 @@ namespace HC_Odontologicas
 				options.UseSqlServer(
 					Configuration.GetConnectionString("DefaultConnection")));
 			
-			services.AddDefaultIdentity<Usuario>()
+			services.AddDefaultIdentity<UsuarioLogin>()
 				.AddEntityFrameworkStores<HCOdontologicasContext>();
 			
 			services.AddControllersWithViews();
 			
 			services.AddRazorPages();
-			
+
+			services.AddTransient<IClaimsTransformation, AddClaimsTransformation>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
