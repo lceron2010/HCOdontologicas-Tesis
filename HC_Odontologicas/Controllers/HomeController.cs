@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using HC_Odontologicas.Models;
+using System.Security.Claims;
 
 namespace HC_Odontologicas.Controllers
 {
@@ -20,7 +21,19 @@ namespace HC_Odontologicas.Controllers
 
 		public IActionResult Index()
 		{
-			return View();
+			var i = (ClaimsIdentity)User.Identity;
+			var cookie = Request.Cookies;
+			if (i.IsAuthenticated)
+			{
+				return View();
+			}
+			//else if (cookie.Count == 1)
+			//    return Redirect("../Identity/Account/AccessDenied");
+			else
+			{
+				return Redirect("../Identity/Account/Login");
+			}
+			//return View();
 		}
 
 		public IActionResult Privacy()

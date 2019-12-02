@@ -1,0 +1,95 @@
+﻿@page
+@model LoginModel
+
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<HC_Odontologicas.Models.Usuario> SignInManager
+@inject UserManager<HC_Odontologicas.Models.Usuario> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+	<script type="text/javascript">
+        $("#menu").hide();
+        $("#bandera").hide();
+        $("#login").hide();
+        $("#travel").hide();
+	</script>
+}
+
+@{
+	ViewData["Title"] = "Inicio de Sesión";
+}
+
+
+
+<img src="~/images/117866.jpg" id="bg" alt="" class="bgheight">
+
+<div class="page-wrap">
+	<div class="login responsive">
+		<div class="panel" style="box-shadow: 3px 5px 20px 0 rgba(0,0,0,0.5);">
+			<div class="panel-body">
+				<form method="post">
+					<div class="form-group text-center">
+						<img src="~/images/travelswell.png" alt="logo" class="responsive" width="120" height="120" />
+					</div>
+					<div class="form-group text-center">
+						<h3>Inicio de Sesión</h3>
+						<h4>Ingrese su usuario y contraseña</h4>
+					</div>
+					<div class="form-group">
+						<label asp-for="Input.NombreUsuario"></label>
+						<input asp-for="Input.NombreUsuario" class="form-control" />
+						<span asp-validation-for="Input.NombreUsuario" class="text-danger"></span>
+					</div>
+					<div class="form-group">
+						<label>Contraseña</label>
+						<input asp-for="Input.Contrasenia" class="form-control" />
+						<span asp-validation-for="Input.Contrasenia" class="text-danger"></span>
+					</div>
+					<div class="form-group text-right">
+						<button type="submit" class="btn btn-primary">Iniciar</button>  @**@
+					</div>
+					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				</form>
+			</div>
+			<div class="panel-footer text-center">
+				<a asp-page="./ForgotPassword">Olvido su contraseña?</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="pageloader">
+	<img src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.16.1/images/loader-large.gif" alt="processing..." />
+</div>
+
+<style>
+	#pageloader {
+		background: rgba( 255, 255, 255, 0.8 );
+		display: none;
+		height: 100%;
+		position: fixed;
+		width: 100%;
+		z-index: 9999;
+	}
+
+		#pageloader img {
+			left: 50%;
+			margin-left: -32px;
+			margin-top: -32px;
+			position: absolute;
+			top: 50%;
+		}
+</style>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}
+
+@*<script type="text/javascript">
+		$(document).ready(function () {
+			$(document.forms[0]).on("submit", function () {
+				$("#loading").modal();
+			});//submit
+		});//document ready
+	</script>*@
