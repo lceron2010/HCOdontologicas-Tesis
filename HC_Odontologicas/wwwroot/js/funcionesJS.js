@@ -27,3 +27,53 @@
 	});
 
 }
+
+function regresar(url, tipo) {
+	//if (modified)
+	//	WarningAlert2btn("¿Está seguro de salir de la página?", url, tipo);
+	//else {
+		if (tipo === "salir") {
+			var form = document.getElementById("logoutForm");
+			if (typeof (form) !== "undefined")
+				form.submit();
+		} else
+			window.location.href = url;
+	//}
+}
+
+function eliminar(Codigo, url, urlRet) {
+	swal({
+		title: 'HC-Odontologicas',
+		text: "¿Seguro de borrar el registro?",
+		icon: 'warning',
+		buttons: {
+			cancel: {
+				text: "Cancelar",
+				visible: true,
+				closeModal: true
+			},
+			confirm: {
+				text: "Aceptar",
+				closeModal: true,
+				className: "btn-primary"
+			}
+		}
+	}).then(function (result) {
+		if (result) {
+			//$("#loading").modal();
+			$.ajax({
+				type: "POST",
+				data: {Codigo},
+				url: url,
+				success: function (r) {
+					if (r === "Delete") {
+						SuccessAlert("Eliminados", urlRet);
+					}
+					else {
+						ErrorAlert(r);
+					}
+				}
+			});
+		}
+	});
+}

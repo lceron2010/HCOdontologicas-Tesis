@@ -582,6 +582,12 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(1)
 					.IsUnicode(false)
 					.IsFixedLength();
+
+				entity.Property(e => e.NombreCompleto)
+				  .IsRequired()
+				  .HasMaxLength(129)
+				  .IsUnicode(false)
+				  .HasComputedColumnSql("(([Empleado].[Apellidos]+' ')+[Empleado].[Nombres])");
 			});
 
 			modelBuilder.Entity<Perfil>(entity =>

@@ -3,11 +3,12 @@
 @inject SignInManager<HC_Odontologicas.Models.UsuarioLogin> SignInManager
 @inject UserManager<HC_Odontologicas.Models.UsuarioLogin> UserManager
 
-<ul class="navbar-nav">
-	@if (SignInManager.IsSignedIn(User))
-	{
-		var i = (ClaimsIdentity)User.Identity;
-		var name = i.Claims.Where(c => c.Type == "NombreCompleto").Select(c => c.Value).SingleOrDefault();
+@if (SignInManager.IsSignedIn(User))
+{
+	var i = (ClaimsIdentity)User.Identity;
+	var name = i.Claims.Where(c => c.Type == "NombreCompleto").Select(c => c.Value).SingleOrDefault();
+
+	<ul class="navbar-nav">
 
 		<li class="nav-item">
 			<a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Bienvenido: @name</a>
@@ -17,14 +18,6 @@
 				<button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
 			</form>
 		</li>
-	}
-	else
-	{
-		<li class="nav-item">
-			<a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-		</li>
-	}
-</ul>
+
+	</ul>
+}

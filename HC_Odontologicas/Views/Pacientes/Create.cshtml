@@ -1,0 +1,233 @@
+﻿@model HC_Odontologicas.Models.Paciente
+
+@{
+	ViewData["Title"] = "Create";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Paciente</h4>
+<hr />
+<link href="~/css/site.css" rel="stylesheet" />
+<style>
+	.ui-menu {
+		background-color: white;
+		border-bottom: 2px solid lightgray;
+		border-right: 2px solid lightgray;
+		border-left: 2px solid lightgray;
+		width: 300px !important;
+		list-style: none !important;
+		text-align: left !important;
+	}
+
+	.ui-helper-hidden-accessible {
+		display: none;
+	}
+</style>
+<div class="row">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<form asp-action="Create">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input asp-for="Codigo" hidden="hidden" />
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="NumeroUnico" class="control-label">Numero único*</label>
+						<input asp-for="NumeroUnico" class="form-control" />
+						<span asp-validation-for="NumeroUnico" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+
+					<div class="form-group">
+						<label asp-for="Nombres" class="control-label">Nombres*</label>
+						<input asp-for="Nombres" class="form-control" />
+						<span asp-validation-for="Nombres" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="Apellidos" class="control-label">Apellidos*</label>
+						<input asp-for="Apellidos" class="form-control" />
+						<span asp-validation-for="Apellidos" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="Cedula" class="control-label">Cédula*</label>
+						<input asp-for="Cedula" class="form-control" />
+						<span asp-validation-for="Cedula" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+
+					<div class="form-group">
+						<label asp-for="FechaNacimiento" class="control-label">Fecha nacimiento*</label>
+						<input asp-for="FechaNacimiento" class="form-control" type="date" />
+						<span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+
+					<div class="form-group">
+						<label asp-for="Genero" class="control-label">Genero*</label>
+						<select asp-for="Genero" class="form-control">
+							<option value="F">Femenino</option>
+							<option value="M">Masculino</option>
+						</select>
+						<span asp-validation-for="Genero" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="Direccion" class="control-label">Dirección*</label>
+						<input asp-for="Direccion" class="form-control" />
+						<span asp-validation-for="Direccion" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="Telefono" class="control-label">Teléfono</label>
+						<input asp-for="Telefono" class="form-control" />
+						<span asp-validation-for="Telefono" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="Celular" class="control-label">Celular</label>
+						<input asp-for="Celular" class="form-control" />
+						<span asp-validation-for="Celular" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="MailPersonal" class="control-label">Email Personal</label>
+						<input asp-for="MailPersonal" class="form-control" />
+						<span asp-validation-for="MailPersonal" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="MailEpn" class="control-label">Email EPN*</label>
+						<input asp-for="MailEpn" class="form-control" />
+						<span asp-validation-for="MailEpn" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="EstadoCivl" class="control-label">Estado Civil*</label>
+						<select asp-for="EstadoCivl" class="form-control">
+							<option value="Soltero">Soltero</option>
+							<option value="Casado">Casado</option>
+							<option value="Divorciado">Divorciado</option>
+							<option value="Viudo">Viudo</option>
+							<option value="UnionLibre">Union Libre</option>
+						</select>
+						<span asp-validation-for="EstadoCivl" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="DependenciaDondeTrabaja" class="control-label">Dependencia Donde Trabaja</label>
+						<input asp-for="DependenciaDondeTrabaja" class="form-control" />
+						<span asp-validation-for="DependenciaDondeTrabaja" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="Cargo" class="control-label">Cargo</label>
+						<input asp-for="Cargo" class="form-control" />
+						<span asp-validation-for="Cargo" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="Procedencia" class="control-label">Procedencia</label>
+						<input asp-for="Procedencia" class="form-control" />
+						<span asp-validation-for="Procedencia" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="TipoPaciente" class="control-label">Tipo paciente*</label>
+						<select asp-for="TipoPaciente" class="form-control">
+							<option value="E">Estudiante</option>
+							<option value="P">Profesor</option>
+							<option value="A">Personal Administrativo</option>
+						</select>
+						<span asp-validation-for="TipoPaciente" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="form-group">
+						<b> Activo </b>
+						<label>
+							<input type="checkbox" asp-for="Estado" data-toggle="toggle" data-on="Si" data-off="No" data-size="mini" data-onstyle="success" checked />
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="form-group">
+						<a class="btn btn-default" onclick="regresar('../Pacientes/Index','');">Regresar</a>
+						<button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+@if (ViewBag.Message != null)
+{
+	<script type="text/javascript">
+        window.onload = function () {
+            if ("@ViewBag.Message" === "Save") {
+                SuccessAlert("Guardados","/../Pacientes");
+            }
+            else {
+                ErrorAlert("@ViewBag.Message");
+            }
+        };
+	</script>
+}
+
+
+@section Scripts {
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
