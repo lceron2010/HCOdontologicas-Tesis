@@ -15,7 +15,7 @@ namespace HC_Odontologicas.Models
         public string CodigoPerfil { get; set; }
         public string Nombres { get; set; }
         public string Apellidos { get; set; }
-        public string Cedula { get; set; }
+        public string Identificacion { get; set; }
         public string CorreoElectronico { get; set; }
         public bool Estado { get; set; }
         public string Telefono { get; set; }
@@ -23,8 +23,14 @@ namespace HC_Odontologicas.Models
         public string Direccion { get; set; }
         public string NombreUsuario { get; set; }
         public string Contrasenia { get; set; }
+		public string CodigoTipoIdentificacion { get; set; }
+		public string CodigoCargo { get; set; }
+		public string NombreCompleto { get; set; }
+		
+		public virtual Cargo Cargo { get; set; }		
+		public virtual TipoIdentificacion TipoIdentificacion { get; set; }
 
-        public virtual Perfil CodigoPerfilNavigation { get; set; }
+		public virtual Perfil Perfil { get; set; }
         public virtual ICollection<Agenda> Agenda { get; set; }
         public virtual ICollection<HistoriaClinica> HistoriaClinica { get; set; }
     }

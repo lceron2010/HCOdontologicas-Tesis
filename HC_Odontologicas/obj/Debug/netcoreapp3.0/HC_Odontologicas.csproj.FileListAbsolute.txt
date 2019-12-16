@@ -151,3 +151,9 @@ C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\Pacientes\Create.cshtml.g.cs
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\Pacientes\Edit.cshtml.g.cs
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\Pacientes\Index.cshtml.g.cs
+C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\Anamnesis\Create.cshtml.g.cs
+C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\Anamnesis\Edit.cshtml.g.cs
+C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\Anamnesis\Index.cshtml.g.cs
+C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\Personal\Create.cshtml.g.cs
+C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\Personal\Edit.cshtml.g.cs
+C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\Personal\Index.cshtml.g.cs

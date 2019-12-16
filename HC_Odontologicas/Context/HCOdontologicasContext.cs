@@ -20,6 +20,7 @@ namespace HC_Odontologicas.Models
 		public virtual DbSet<Agenda> Agenda { get; set; }
 		public virtual DbSet<Anamnesis> Anamnesis { get; set; }
 		public virtual DbSet<AnamnesisEnfermedad> AnamnesisEnfermedad { get; set; }
+		public virtual DbSet<Cargo> Cargo { get; set; }
 		public virtual DbSet<Cie10> Cie10 { get; set; }
 		public virtual DbSet<ConsentimientoInformado> ConsentimientoInformado { get; set; }
 		public virtual DbSet<Diagnostico> Diagnostico { get; set; }
@@ -38,6 +39,7 @@ namespace HC_Odontologicas.Models
 		public virtual DbSet<PlantillaCorreoElectronico> PlantillaCorreoElectronico { get; set; }
 		public virtual DbSet<RecetaMedica> RecetaMedica { get; set; }
 		public virtual DbSet<Usuario> Usuario { get; set; }
+		public virtual DbSet<TipoIdentificacion> TipoIdentificacion { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
@@ -197,6 +199,24 @@ namespace HC_Odontologicas.Models
 					.HasForeignKey(d => d.CodigoEnfermedad)
 					.OnDelete(DeleteBehavior.ClientSetNull)
 					.HasConstraintName("FK_AnamnesisEnfermedad_Enfermedad");
+			});
+
+			modelBuilder.Entity<Cargo>(entity =>
+			{
+				entity.HasKey(e => e.Codigo);
+
+				entity.Property(e => e.Codigo)
+					.HasMaxLength(4)
+					.IsUnicode(false);
+
+				entity.Property(e => e.Descripcion)
+					.HasMaxLength(128)
+					.IsUnicode(false);
+
+				entity.Property(e => e.Nombre)
+					.IsRequired()
+					.HasMaxLength(64)
+					.IsUnicode(false);
 			});
 
 			modelBuilder.Entity<Cie10>(entity =>
@@ -519,7 +539,7 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(64)
 					.IsUnicode(false);
 
-				entity.Property(e => e.Cedula)
+				entity.Property(e => e.Identificacion)
 					.IsRequired()
 					.HasMaxLength(13)
 					.IsUnicode(false);
@@ -527,6 +547,10 @@ namespace HC_Odontologicas.Models
 				entity.Property(e => e.Celular)
 					.HasMaxLength(32)
 					.IsUnicode(false);
+
+				entity.Property(e => e.CodigoTipoIdentificacion)
+				   .HasMaxLength(4)
+				   .IsUnicode(false);
 
 				entity.Property(e => e.DependenciaDondeTrabaja)
 					.HasMaxLength(64)
@@ -588,6 +612,12 @@ namespace HC_Odontologicas.Models
 				  .HasMaxLength(129)
 				  .IsUnicode(false)
 				  .HasComputedColumnSql("(([Empleado].[Apellidos]+' ')+[Empleado].[Nombres])");
+
+				entity.HasOne(d => d.CodigoTipoIdentificacionNavigation)
+				   .WithMany(p => p.Paciente)
+				   .HasForeignKey(d => d.CodigoTipoIdentificacion)
+				   .HasConstraintName("FK_TipoIdentificacionPaciente");
+
 			});
 
 			modelBuilder.Entity<Perfil>(entity =>
@@ -663,16 +693,21 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(128)
 					.IsUnicode(false);
 
-				entity.Property(e => e.Cedula)
-					.IsRequired()
-					.HasMaxLength(15)
-					.IsUnicode(false);
-
 				entity.Property(e => e.Celular)
 					.HasMaxLength(20)
 					.IsUnicode(false);
 
+				entity.Property(e => e.CodigoCargo)
+					.IsRequired()
+					.HasMaxLength(4)
+					.IsUnicode(false);
+
 				entity.Property(e => e.CodigoPerfil)
+					.IsRequired()
+					.HasMaxLength(4)
+					.IsUnicode(false);
+
+				entity.Property(e => e.CodigoTipoIdentificacion)
 					.IsRequired()
 					.HasMaxLength(4)
 					.IsUnicode(false);
@@ -692,6 +727,11 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(128)
 					.IsUnicode(false);
 
+				entity.Property(e => e.Identificacion)
+					.IsRequired()
+					.HasMaxLength(15)
+					.IsUnicode(false);
+
 				entity.Property(e => e.NombreUsuario)
 					.IsRequired()
 					.HasMaxLength(64)
@@ -706,11 +746,29 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(20)
 					.IsUnicode(false);
 
-				entity.HasOne(d => d.CodigoPerfilNavigation)
+				entity.Property(e => e.NombreCompleto)
+				  .IsRequired()
+				  .HasMaxLength(129)
+				  .IsUnicode(false)
+				  .HasComputedColumnSql("(([Empleado].[Apellidos]+' ')+[Empleado].[Nombres])");
+
+				entity.HasOne(d => d.Cargo)
 					.WithMany(p => p.Personal)
-					.HasForeignKey(d => d.CodigoPerfil)
+					.HasForeignKey(d => d.CodigoCargo)
 					.OnDelete(DeleteBehavior.ClientSetNull)
-					.HasConstraintName("FK_Personal_REFERENCE_PERFIL");
+					.HasConstraintName("FK_PersonalCargo");
+
+				entity.HasOne(d => d.Perfil)
+				   .WithMany(p => p.Personal)
+				   .HasForeignKey(d => d.CodigoPerfil)
+				   .OnDelete(DeleteBehavior.ClientSetNull)
+				   .HasConstraintName("FK_Personal_Perfil");
+
+				entity.HasOne(d => d.TipoIdentificacion)
+					.WithMany(p => p.Personal)
+					.HasForeignKey(d => d.CodigoTipoIdentificacion)
+					.OnDelete(DeleteBehavior.ClientSetNull)
+					.HasConstraintName("FK_TipoIdentificacionPersonal");
 			});
 
 			modelBuilder.Entity<PlantillaCertificadoMedico>(entity =>
@@ -825,6 +883,25 @@ namespace HC_Odontologicas.Models
 				entity.Property(e => e.NombreCompleto)
 				.HasMaxLength(129);
 			});
+
+			modelBuilder.Entity<TipoIdentificacion>(entity =>
+			{
+				entity.HasKey(e => e.Codigo);
+
+				entity.Property(e => e.Codigo)
+					.HasMaxLength(4)
+					.IsUnicode(false);
+
+				entity.Property(e => e.Descripcion)
+					.HasMaxLength(128)
+					.IsUnicode(false);
+
+				entity.Property(e => e.Nombre)
+					.IsRequired()
+					.HasMaxLength(64)
+					.IsUnicode(false);
+			});
+
 			// OnModelCreatingPartial(modelBuilder);
 		}
 

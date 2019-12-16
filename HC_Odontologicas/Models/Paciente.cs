@@ -20,7 +20,7 @@ namespace HC_Odontologicas.Models
 		[Required(ErrorMessage = "Campo requerido.")]
 		public string Apellidos { get; set; }
 		[Required(ErrorMessage = "Campo requerido.")]
-		public string Cedula { get; set; }
+		public string Identificacion { get; set; }
 		[Required(ErrorMessage = "Campo requerido.")]
 		public DateTime FechaNacimiento { get; set; }
 		[Required(ErrorMessage = "Campo requerido.")]
@@ -41,8 +41,10 @@ namespace HC_Odontologicas.Models
 		[Required(ErrorMessage = "Campo requerido.")]
 		public bool Estado { get; set; }
 		public string NombreCompleto { get; set; }
+		public string CodigoTipoIdentificacion { get; set; }
 
-        public virtual ICollection<Agenda> Agenda { get; set; }
+		public virtual ICollection<Agenda> Agenda { get; set; }
         public virtual ICollection<HistoriaClinica> HistoriaClinica { get; set; }
-    }
+		public virtual TipoIdentificacion CodigoTipoIdentificacionNavigation { get; set; }
+	}
 }

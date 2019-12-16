@@ -16,7 +16,7 @@ namespace HC_Odontologicas.Controllers
 		private readonly HCOdontologicasContext _context;
 		private ValidacionesController validaciones;
 		private readonly AuditoriaController _auditoria;
-
+		SelectListItem vacio = new SelectListItem(value: "0", text: "Seleccione...");
 		public PacientesController(HCOdontologicasContext context)
 		{
 			_context = context;
@@ -88,7 +88,12 @@ namespace HC_Odontologicas.Controllers
 				//Permisos de usuario
 				var permisos = i.Claims.Where(c => c.Type == "Pacientes").Select(c => c.Value).SingleOrDefault().Split(";");
 				if (Convert.ToBoolean(permisos[1]))
-				{
+				{				
+					
+					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
+					TipoIdentificacion.Insert(0, vacio);
+					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
+
 					return View();
 				}
 				else
@@ -123,6 +128,9 @@ namespace HC_Odontologicas.Controllers
 						ViewBag.Message = "Save";
 						return View(paciente);
 					}
+					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
+					TipoIdentificacion.Insert(0, vacio);
+					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 					return View(paciente);
 				}
 				catch (Exception e)
@@ -132,6 +140,9 @@ namespace HC_Odontologicas.Controllers
 						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
 
 					ViewBag.Message = mensaje;
+					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
+					TipoIdentificacion.Insert(0, vacio);
+					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 					return View(paciente);
 				}
 			}
@@ -159,6 +170,11 @@ namespace HC_Odontologicas.Controllers
 					if (paciente == null)
 						return NotFound();
 
+					
+					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
+					TipoIdentificacion.Insert(0, vacio);
+					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
+
 					return View(paciente);
 				}
 				else
@@ -174,10 +190,11 @@ namespace HC_Odontologicas.Controllers
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 		public async Task<IActionResult> Edit(Paciente paciente)
 		{
 			var i = (ClaimsIdentity)User.Identity;
+			List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
 			if (i.IsAuthenticated)
 			{
 				try
@@ -191,6 +208,9 @@ namespace HC_Odontologicas.Controllers
 							await _context.SaveChangesAsync();
 							await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Paciente", paciente.Codigo, "U");
 							ViewBag.Message = "Save";
+							
+							TipoIdentificacion.Insert(0, vacio);
+							ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 							return View(paciente);
 						}
 						catch (DbUpdateConcurrencyException)
@@ -198,6 +218,10 @@ namespace HC_Odontologicas.Controllers
 							throw;
 						}
 					}
+					
+					TipoIdentificacion.Insert(0, vacio);
+					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
+
 					return View(paciente);
 				}
 				catch (Exception e)
@@ -207,6 +231,9 @@ namespace HC_Odontologicas.Controllers
 						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
 
 					ViewBag.Message = mensaje;
+					
+					TipoIdentificacion.Insert(0, vacio);
+					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 					return View(paciente);
 				}
 			}

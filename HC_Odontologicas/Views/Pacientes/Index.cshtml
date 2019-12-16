@@ -6,6 +6,7 @@
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <h1>Pacientes</h1>
+<br />
 @if ((bool)ViewData["Crear"])
 {
 	<a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> Nuevo</a>
@@ -14,6 +15,8 @@
 {
 	<a asp-action="GetExcel" class="btn btn-primary"><i class="fa fa-download"></i> Exportar</a>
 }
+<br />
+<br />
 @* Buscar *@
 <form asp-action="Index" method="get">
 	<div class="input-group col-lg-3 col-md-4 col-sm-6 col-xs-10 pull-right">
@@ -24,6 +27,7 @@
 		</div>
 	</div>
 </form>
+<br />
 <table class="table">
 	<thead>
 		<tr>
@@ -56,7 +60,7 @@
 					@Html.DisplayFor(modelItem => item.NombreCompleto)
 				</td>				
 				<td>
-					@Html.DisplayFor(modelItem => item.Cedula)
+					@Html.DisplayFor(modelItem => item.Identificacion)
 				</td>				
 				<td>
 					@Html.DisplayFor(modelItem => item.MailEpn)
@@ -65,14 +69,15 @@
 					@Html.DisplayFor(modelItem => item.Estado)
 				</td>
 				<td>
-					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-xs btn-warning" data-toggle="tooltip" title="Editar">Editar</a>
-					<a onclick="eliminar('@item.Codigo','../Pacientes/DeleteConfirmed','/../Pacientes')" class="btn btn-xs btn-danger" data-toggle="tooltip" title="Eliminar">Eliminar</a>
+					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white" data-toggle="tooltip" title="Editar">Editar</a>
+					<a onclick="eliminar('@item.Codigo','../Pacientes/DeleteConfirmed','/../Pacientes')" class="btn btn-white" data-toggle="tooltip" title="Eliminar">Eliminar</a>
 
 				</td>
 			</tr>
 		}
 	</tbody>
 </table>
+<br/>
 @* Paginación *@
 @{
 	var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
