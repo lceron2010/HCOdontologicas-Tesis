@@ -1,0 +1,86 @@
+﻿@model Paginacion<HC_Odontologicas.Models.Perfil>
+
+@using HC_Odontologicas.FuncionesGenerales;
+@{
+	ViewData["Title"] = "Index";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Perfiles de Seguridad</h2>
+
+<p>
+	@if ((bool)ViewData["Crear"])
+	{
+		<a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> Nuevo</a>
+	}
+	@if ((bool)ViewData["Exportar"])
+	{
+		<a asp-action="GetExcel" class="btn btn-primary"><i class="fa fa-download"></i> Exportar</a>
+	}
+</p>
+@* Buscar *@
+<form asp-action="Index" method="get">
+	<div class="input-group col-lg-3 col-md-4 col-sm-6 col-xs-10 pull-right">
+		<input class="form-control" type="search" name="search" placeholder="Buscar..." value="@ViewData["Filter"]" />
+		<div class="input-group-btn">
+			<button type="submit" class="btn btn-sm btn-primary" title="Buscar">Buscar</button>
+			<a asp-action="Index" class="btn btn-sm btn-danger" title="Limpiar filtro">Limpiar</a>
+		</div>
+	</div>
+</form>
+<br />
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["NombreSortParam"]" asp-route-filter="@ViewData["Filter"]">Nombre</a>
+			</th>
+			<th>
+				Estado
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Nombre)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Estado)
+				</td>
+				<td>
+					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white" data-toggle="tooltip" title="Editar">Editar</a>
+					<a onclick="eliminar('@item.Codigo','../Perfiles/DeleteConfirmed','/../Perfiles')" class="btn btn-white" data-toggle="tooltip" title="Eliminar">Eliminar</a>
+
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+<br />
+@* Paginación *@
+@{
+	var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+	var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+<a asp-action="Index" asp-route-sortOrden="@ViewData["CurrentSort"]" asp-route-page="@(Model.PageIndex-1)" asp-route-filter="@ViewData["Filter"]" class="btn btn-sm btn-default @prevDisabled">Anterior</a>
+@for (int i = 1; i <= Model.TotalPages; i++)
+{
+	if (Model.PageIndex == i)
+	{
+		<a asp-action="Index" asp-route-sortOrden="@ViewData["CurrentSort"]" asp-route-page="@i" asp-route-filter="@ViewData["Filter"]" class="btn btn-sm btn-default active">@i</a>
+	}
+	else
+	{
+		<a asp-action="Index" asp-route-sortOrden="@ViewData["CurrentSort"]" asp-route-page="@i" asp-route-filter="@ViewData["Filter"]" class="btn btn-sm btn-default ">@i</a>
+	}
+}
+
+<a asp-action="Index" asp-route-sortOrden="@ViewData["CurrentSort"]" asp-route-page="@(Model.PageIndex+1)" asp-route-filter="@ViewData["Filter"]" class="btn btn-sm btn-default @nextDisabled">Siguiente</a>
+
+<div class="pull-right">
+	Registros: @Model.TotalR
+</div>

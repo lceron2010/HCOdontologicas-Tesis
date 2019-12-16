@@ -17,6 +17,7 @@ namespace HC_Odontologicas.Controllers
 		private ValidacionesController validaciones;
 		private readonly AuditoriaController _auditoria;
 		SelectListItem vacio = new SelectListItem(value: "0", text: "Seleccione...");
+
 		public PacientesController(HCOdontologicasContext context)
 		{
 			_context = context;
@@ -88,8 +89,8 @@ namespace HC_Odontologicas.Controllers
 				//Permisos de usuario
 				var permisos = i.Claims.Where(c => c.Type == "Pacientes").Select(c => c.Value).SingleOrDefault().Split(";");
 				if (Convert.ToBoolean(permisos[1]))
-				{				
-					
+				{
+
 					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
@@ -108,7 +109,7 @@ namespace HC_Odontologicas.Controllers
 		// POST: Pacientes/Create
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-		[HttpPost]		
+		[HttpPost]
 		public async Task<IActionResult> Create(Paciente paciente)
 		{
 			var i = (ClaimsIdentity)User.Identity;
@@ -170,7 +171,7 @@ namespace HC_Odontologicas.Controllers
 					if (paciente == null)
 						return NotFound();
 
-					
+
 					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
@@ -190,7 +191,7 @@ namespace HC_Odontologicas.Controllers
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
-		
+
 		public async Task<IActionResult> Edit(Paciente paciente)
 		{
 			var i = (ClaimsIdentity)User.Identity;
@@ -203,12 +204,12 @@ namespace HC_Odontologicas.Controllers
 					{
 						try
 						{
-							paciente.Codigo = Encriptacion.Decrypt(paciente.Codigo);							
+							paciente.Codigo = Encriptacion.Decrypt(paciente.Codigo);
 							_context.Update(paciente);
 							await _context.SaveChangesAsync();
 							await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Paciente", paciente.Codigo, "U");
 							ViewBag.Message = "Save";
-							
+
 							TipoIdentificacion.Insert(0, vacio);
 							ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 							return View(paciente);
@@ -218,7 +219,7 @@ namespace HC_Odontologicas.Controllers
 							throw;
 						}
 					}
-					
+
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 
@@ -231,7 +232,7 @@ namespace HC_Odontologicas.Controllers
 						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
 
 					ViewBag.Message = mensaje;
-					
+
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 					return View(paciente);
@@ -242,9 +243,9 @@ namespace HC_Odontologicas.Controllers
 				return Redirect("../Identity/Account/Login");
 			}
 		}
-				
+
 		// POST: Pacientes/Delete/5
-		[HttpPost]		
+		[HttpPost]
 		public async Task<String> DeleteConfirmed(string codigo)
 		{
 			try
@@ -266,6 +267,6 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-		
+
 	}
 }
