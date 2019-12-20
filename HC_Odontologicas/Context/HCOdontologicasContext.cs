@@ -163,7 +163,7 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(128)
 					.IsUnicode(false);
 
-				entity.HasOne(d => d.CodigoHistoriaClinicaNavigation)
+				entity.HasOne(d => d.HistoriaClinica)
 					.WithMany(p => p.Anamnesis)
 					.HasForeignKey(d => d.CodigoHistoriaClinica)
 					.OnDelete(DeleteBehavior.ClientSetNull)
@@ -387,13 +387,13 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(512)
 					.IsUnicode(false);
 
-				entity.HasOne(d => d.CodigoPacienteNavigation)
+				entity.HasOne(d => d.Paciente)
 					.WithMany(p => p.HistoriaClinica)
 					.HasForeignKey(d => d.CodigoPaciente)
 					.OnDelete(DeleteBehavior.ClientSetNull)
 					.HasConstraintName("FK_HistoriaClinica_Paciente");
 
-				entity.HasOne(d => d.CodigoPersonalNavigation)
+				entity.HasOne(d => d.Personal)
 					.WithMany(p => p.HistoriaClinica)
 					.HasForeignKey(d => d.CodigoPersonal)
 					.OnDelete(DeleteBehavior.ClientSetNull)
@@ -616,14 +616,14 @@ namespace HC_Odontologicas.Models
 				entity.HasOne(d => d.CodigoTipoIdentificacionNavigation)
 				   .WithMany(p => p.Paciente)
 				   .HasForeignKey(d => d.CodigoTipoIdentificacion)
-				   .HasConstraintName("FK_TipoIdentificacionPaciente");
+				   .HasConstraintName("FK_Paciente_TipoIdentificacion");
 
 			});
 
 			modelBuilder.Entity<Perfil>(entity =>
 			{
 				entity.HasKey(e => e.Codigo)
-					.HasName("PK_Perfil_1");
+					.HasName("PK_Perfil");
 
 				entity.Property(e => e.Codigo)
 					.HasMaxLength(4)
@@ -650,7 +650,7 @@ namespace HC_Odontologicas.Models
 			modelBuilder.Entity<PerfilDetalle>(entity =>
 			{
 				entity.HasKey(e => new { e.CodigoPerfil, e.CodigoMenu })
-					.HasName("PK_PerfilDetalle_1");
+					.HasName("PK_PerfilDetalle");
 
 				entity.Property(e => e.CodigoPerfil)
 					.HasMaxLength(4)
@@ -756,7 +756,7 @@ namespace HC_Odontologicas.Models
 					.WithMany(p => p.Personal)
 					.HasForeignKey(d => d.CodigoCargo)
 					.OnDelete(DeleteBehavior.ClientSetNull)
-					.HasConstraintName("FK_PersonalCargo");
+					.HasConstraintName("FK_Personal_Cargo");
 
 				entity.HasOne(d => d.Perfil)
 				   .WithMany(p => p.Personal)
@@ -768,7 +768,7 @@ namespace HC_Odontologicas.Models
 					.WithMany(p => p.Personal)
 					.HasForeignKey(d => d.CodigoTipoIdentificacion)
 					.OnDelete(DeleteBehavior.ClientSetNull)
-					.HasConstraintName("FK_TipoIdentificacionPersonal");
+					.HasConstraintName("FK_Personal_TipoIdentificacion");
 			});
 
 			modelBuilder.Entity<PlantillaCertificadoMedico>(entity =>

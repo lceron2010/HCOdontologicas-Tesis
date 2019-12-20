@@ -54,7 +54,7 @@
 		{
 			<tr>
 				<td>
-
+					@Html.DisplayFor(modelItem => item.HistoriaClinica.Paciente.NombreCompleto)
 				</td>
 				<td>
 					@Html.DisplayFor(modelItem => item.MotivoConsulta)
@@ -63,7 +63,7 @@
 					@Html.DisplayFor(modelItem => item.EnfermedadActual)
 				</td>
 				<td>
-					
+					@Html.DisplayFor(modelItem => item.HistoriaClinica.Personal.NombreCompleto)
 				</td>				
 				<td>
 					@Html.DisplayFor(modelItem => item.Fecha)

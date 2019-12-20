@@ -22,8 +22,8 @@ namespace HC_Odontologicas.Models
         public string Observaciones { get; set; }
         public bool Estado { get; set; }
 
-        public virtual Paciente CodigoPacienteNavigation { get; set; }
-        public virtual Personal CodigoPersonalNavigation { get; set; }
+        public virtual Paciente Paciente { get; set; }
+        public virtual Personal Personal { get; set; }
         public virtual ICollection<Anamnesis> Anamnesis { get; set; }
         public virtual ICollection<ConsentimientoInformado> ConsentimientoInformado { get; set; }
         public virtual ICollection<Diagnostico> Diagnostico { get; set; }
