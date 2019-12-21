@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HC_Odontologicas.Models
 {
@@ -12,7 +13,12 @@ namespace HC_Odontologicas.Models
         public string Firma { get; set; }
         public DateTime Fecha { get; set; }
         public bool Estado { get; set; }
+		[NotMapped]
+		public string CodigoPaciente { get; set; }
+		[NotMapped]
+		public string CodigoPersonal { get; set; }
 
-        public virtual HistoriaClinica CodigoHistoriaClinicaNavigation { get; set; }
+
+		public virtual HistoriaClinica HistoriaClinica { get; set; }
     }
 }

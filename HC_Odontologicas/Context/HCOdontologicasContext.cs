@@ -273,7 +273,7 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(128)
 					.IsUnicode(false);
 
-				entity.HasOne(d => d.CodigoHistoriaClinicaNavigation)
+				entity.HasOne(d => d.HistoriaClinica)
 					.WithMany(p => p.ConsentimientoInformado)
 					.HasForeignKey(d => d.CodigoHistoriaClinica)
 					.OnDelete(DeleteBehavior.ClientSetNull)
@@ -828,7 +828,7 @@ namespace HC_Odontologicas.Models
 
 				entity.Property(e => e.Fecha).HasColumnType("datetime");
 
-				entity.HasOne(d => d.CodigoHistoriaClinicaNavigation)
+				entity.HasOne(d => d.HistoriaClinica)
 					.WithMany(p => p.RecetaMedica)
 					.HasForeignKey(d => d.CodigoHistoriaClinica)
 					.OnDelete(DeleteBehavior.ClientSetNull)
