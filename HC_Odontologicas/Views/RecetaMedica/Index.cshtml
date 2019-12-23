@@ -53,7 +53,7 @@
 				@Html.DisplayFor(modelItem => item.Fecha)
 			</td>			
 			<td>
-				@Html.DisplayFor(modelItem => item.HistoriaClinica.Personal.NombreCompleto)
+				@Html.DisplayFor(modelItem => item.CitaOdontologica.Personal.NombreCompleto)
 			</td>			
 			<td>
 				<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white" data-toggle="tooltip" title="Editar">Editar</a>
