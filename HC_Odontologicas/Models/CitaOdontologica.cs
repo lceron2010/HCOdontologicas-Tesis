@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace HC_Odontologicas.Models
 {
-    public partial class HistoriaClinica
+    public partial class CitaOdontologica
     {
-        public HistoriaClinica()
+        public CitaOdontologica()
         {
             Anamnesis = new HashSet<Anamnesis>();
             ConsentimientoInformado = new HashSet<ConsentimientoInformado>();
@@ -21,8 +21,13 @@ namespace HC_Odontologicas.Models
         public DateTime FechaCreacion { get; set; }
         public string Observaciones { get; set; }
         public bool Estado { get; set; }
+		public DateTime FechaInicio { get; set; }
+		public DateTime FechaFin { get; set; }
+		public TimeSpan HoraInicio { get; set; }
+		public TimeSpan HoraFin { get; set; }
+		public string UsuarioCreacion { get; set; }
 
-        public virtual Paciente Paciente { get; set; }
+		public virtual Paciente Paciente { get; set; }
         public virtual Personal Personal { get; set; }
         public virtual ICollection<Anamnesis> Anamnesis { get; set; }
         public virtual ICollection<ConsentimientoInformado> ConsentimientoInformado { get; set; }

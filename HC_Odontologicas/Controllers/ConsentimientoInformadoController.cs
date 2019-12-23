@@ -11,23 +11,23 @@ using HC_Odontologicas.FuncionesGenerales;
 
 namespace HC_Odontologicas.Controllers
 {
-    public class ConsentimientoInformadoController : Controller
-    {
+	public class ConsentimientoInformadoController : Controller
+	{
 		private readonly HCOdontologicasContext _context;
 		private ValidacionesController validaciones;
 		private readonly AuditoriaController _auditoria;
 		SelectListItem vacio = new SelectListItem(value: "0", text: "Seleccione...");
 
 		public ConsentimientoInformadoController(HCOdontologicasContext context)
-        {
+		{
 			_context = context;
 			validaciones = new ValidacionesController(_context);
 			_auditoria = new AuditoriaController(context);
 		}
 
-        // GET: ConsentimientoInformado
-        public async Task<IActionResult> Index(string sortOrder, string Filter, int? page, string search)
-        {
+		// GET: ConsentimientoInformado
+		public async Task<IActionResult> Index(string sortOrder, string Filter, int? page, string search)
+		{
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
@@ -49,8 +49,8 @@ namespace HC_Odontologicas.Controllers
 						search = Filter;
 
 					ViewData["Filter"] = search;
-					ViewData["CurrentSort"] = sortOrder;					
-					var consentimiento = from c in _context.ConsentimientoInformado.Include(a => a.HistoriaClinica).ThenInclude(h => h.Paciente).Include(an => an.HistoriaClinica).ThenInclude(hc => hc.Personal) select c;
+					ViewData["CurrentSort"] = sortOrder;
+					var consentimiento = from c in _context.ConsentimientoInformado.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente).Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal) select c;
 					if (!String.IsNullOrEmpty(search))
 						consentimiento = consentimiento.Where(s => s.Nombre.Contains(search));
 
@@ -78,10 +78,10 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-       
-        // GET: ConsentimientoInformado/Create
-        public IActionResult Create()
-        {
+
+		// GET: ConsentimientoInformado/Create
+		public IActionResult Create()
+		{
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
@@ -109,34 +109,41 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-        // POST: ConsentimientoInformado/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]        
-        public async Task<IActionResult> Create(ConsentimientoInformado consentimientoInformado)
-        {
+		// POST: ConsentimientoInformado/Create
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		public async Task<IActionResult> Create(ConsentimientoInformado consentimientoInformado)
+		{
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
 				try
 				{
+					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
+					Personal.Insert(0, vacio);
+					ViewData["CodigoPersonal"] = Personal;
+
+					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
+					Paciente.Insert(0, vacio);
+					ViewData["CodigoPaciente"] = Paciente;
 
 					if (ModelState.IsValid)
 					{
-						HistoriaClinica historiaClinica = new HistoriaClinica();
+						CitaOdontologica historiaClinica = new CitaOdontologica();
 						Int64 maxCodigo = 0;
 						maxCodigo = Convert.ToInt64(_context.ConsentimientoInformado.Max(f => f.Codigo));
 						maxCodigo += 1;
 						consentimientoInformado.Codigo = maxCodigo.ToString("D8");
 						//
-						var codigoHC = _context.HistoriaClinica.SingleOrDefault(h => h.CodigoPaciente == consentimientoInformado.CodigoPaciente && h.CodigoPersonal == consentimientoInformado.CodigoPersonal);
+						var codigoHC = _context.CitaOdontologica.SingleOrDefault(h => h.CodigoPaciente == consentimientoInformado.CodigoPaciente && h.CodigoPersonal == consentimientoInformado.CodigoPersonal);
 						if (codigoHC == null)
 						{
 
 							Int64 maxCodigoHC = 0;
-							maxCodigoHC = Convert.ToInt64(_context.HistoriaClinica.Max(f => f.Codigo));
+							maxCodigoHC = Convert.ToInt64(_context.CitaOdontologica.Max(f => f.Codigo));
 							maxCodigoHC += 1;
-							historiaClinica.Codigo = maxCodigo.ToString("D8");
+							historiaClinica.Codigo = maxCodigoHC.ToString("D8");
 							historiaClinica.CodigoPaciente = consentimientoInformado.CodigoPaciente;
 							historiaClinica.CodigoPersonal = consentimientoInformado.CodigoPersonal;
 							historiaClinica.FechaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
@@ -145,30 +152,21 @@ namespace HC_Odontologicas.Controllers
 							_context.Add(historiaClinica);
 							await _context.SaveChangesAsync();
 							await _auditoria.GuardarLogAuditoria(historiaClinica.FechaCreacion, i.Name, "HistoriaClinica", historiaClinica.Codigo, "I");
-							consentimientoInformado.CodigoHistoriaClinica = historiaClinica.Codigo;
+							consentimientoInformado.CodigoCitaOdontologica = historiaClinica.Codigo;
 						}
 						else
 						{
-							consentimientoInformado.CodigoHistoriaClinica = codigoHC.Codigo;
+							consentimientoInformado.CodigoCitaOdontologica = codigoHC.Codigo;
 						}
 
 						consentimientoInformado.Fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 						_context.Add(consentimientoInformado);
 						await _context.SaveChangesAsync();
 						await _auditoria.GuardarLogAuditoria(consentimientoInformado.Fecha, i.Name, "ConsentimientoInformado", consentimientoInformado.Codigo, "I");
-
-
 						ViewBag.Message = "Save";
 						return View(consentimientoInformado);
-
 					}
-					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
-					Personal.Insert(0, vacio);
-					ViewData["CodigoPersonal"] = Personal;
 
-					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
-					Paciente.Insert(0, vacio);
-					ViewData["CodigoPaciente"] = Paciente;
 					return View(consentimientoInformado);
 				}
 				catch (Exception e)
@@ -194,9 +192,9 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-        // GET: ConsentimientoInformado/Edit/5
-        public async Task<IActionResult> Edit(string codigo)
-        {
+		// GET: ConsentimientoInformado/Edit/5
+		public async Task<IActionResult> Edit(string codigo)
+		{
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
@@ -207,18 +205,18 @@ namespace HC_Odontologicas.Controllers
 					if (codigo == null)
 						return NotFound();
 
-					var consentimiento = await _context.ConsentimientoInformado.Include(a => a.HistoriaClinica).ThenInclude(h => h.Paciente)
-						.Include(an => an.HistoriaClinica).ThenInclude(hc => hc.Personal).SingleOrDefaultAsync(f => f.Codigo == codigo);
+					var consentimiento = await _context.ConsentimientoInformado.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente)
+						.Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal).SingleOrDefaultAsync(f => f.Codigo == codigo);
 
 					if (consentimiento == null)
 						return NotFound();
 
 
-					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", consentimiento.HistoriaClinica.Personal.Codigo).ToList();
+					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", consentimiento.CitaOdontologica.Personal.Codigo).ToList();
 					Personal.Insert(0, vacio);
 					ViewData["CodigoPersonal"] = Personal;
 
-					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", consentimiento.HistoriaClinica.Paciente.Codigo).ToList();
+					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", consentimiento.CitaOdontologica.Paciente.Codigo).ToList();
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
@@ -234,34 +232,42 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-        // POST: ConsentimientoInformado/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]        
-        public async Task<IActionResult> Edit(ConsentimientoInformado consentimientoInformado)
-        {
+		// POST: ConsentimientoInformado/Edit/5
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		public async Task<IActionResult> Edit(ConsentimientoInformado consentimientoInformado)
+		{
 			var i = (ClaimsIdentity)User.Identity;
-			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
-			List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
+
 			if (i.IsAuthenticated)
 			{
+
 				try
 				{
+					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
+					Personal.Insert(0, vacio);
+					ViewData["CodigoPersonal"] = Personal;
+
+					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
+					Paciente.Insert(0, vacio);
+					ViewData["CodigoPaciente"] = Paciente;
 					if (ModelState.IsValid)
 					{
 						try
 						{
 							consentimientoInformado.Codigo = Encriptacion.Decrypt(consentimientoInformado.Codigo);
+							consentimientoInformado.Fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 							_context.Update(consentimientoInformado);
 							await _context.SaveChangesAsync();
-							await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "ConsentimientoInformado", consentimientoInformado.Codigo, "U");
+							await _auditoria.GuardarLogAuditoria(consentimientoInformado.Fecha, i.Name, "ConsentimientoInformado", consentimientoInformado.Codigo, "U");
 							ViewBag.Message = "Save";
 
-							Personal.Insert(0, vacio);
-							ViewData["CodigoPersonal"] = Personal;
+							//Personal.Insert(0, vacio);
+							//ViewData["CodigoPersonal"] = Personal;
 
-							Paciente.Insert(0, vacio);
-							ViewData["CodigoPaciente"] = Paciente;
+							//Paciente.Insert(0, vacio);
+							//ViewData["CodigoPaciente"] = Paciente;
 
 							return View(consentimientoInformado);
 						}
@@ -271,11 +277,8 @@ namespace HC_Odontologicas.Controllers
 						}
 					}
 
-					Personal.Insert(0, vacio);
-					ViewData["CodigoPersonal"] = Personal;
 
-					Paciente.Insert(0, vacio);
-					ViewData["CodigoPaciente"] = Paciente;
+
 
 					return View(consentimientoInformado);
 				}
@@ -287,11 +290,19 @@ namespace HC_Odontologicas.Controllers
 
 					ViewBag.Message = mensaje;
 
+					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
 					Personal.Insert(0, vacio);
 					ViewData["CodigoPersonal"] = Personal;
 
+					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
+
+					//Personal.Insert(0, vacio);
+					//ViewData["CodigoPersonal"] = Personal;
+
+					//Paciente.Insert(0, vacio);
+					//ViewData["CodigoPaciente"] = Paciente;
 
 					return View(consentimientoInformado);
 				}
@@ -301,11 +312,11 @@ namespace HC_Odontologicas.Controllers
 				return Redirect("../Identity/Account/Login");
 			}
 		}
-      
-        // POST: ConsentimientoInformado/Delete/5
-        [HttpPost]      
-        public async Task<String> DeleteConfirmed(string codigo)
-        {
+
+		// POST: ConsentimientoInformado/Delete/5
+		[HttpPost]
+		public async Task<String> DeleteConfirmed(string codigo)
+		{
 			try
 			{
 				var i = (ClaimsIdentity)User.Identity;
@@ -324,6 +335,6 @@ namespace HC_Odontologicas.Controllers
 				return mensaje;
 			}
 		}
-      
-    }
+
+	}
 }

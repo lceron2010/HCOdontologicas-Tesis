@@ -12,7 +12,7 @@ namespace HC_Odontologicas.Models
         }
 
         public string Codigo { get; set; }
-        public string CodigoHistoriaClinica { get; set; }
+        public string CodigoCitaOdontologica { get; set; }
         public string MotivoConsulta { get; set; }
         public string EnfermedadActual { get; set; }
         public string Alerta { get; set; }
@@ -34,7 +34,7 @@ namespace HC_Odontologicas.Models
 
 		
 
-        public virtual HistoriaClinica HistoriaClinica { get; set; }
+        public virtual CitaOdontologica CitaOdontologica { get; set; }
         public virtual List<AnamnesisEnfermedad> AnamnesisEnfermedad { get; set; }
     }
 }

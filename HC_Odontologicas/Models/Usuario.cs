@@ -9,6 +9,6 @@
         public string CorreoElectronico { get; set; }
         public bool Estado { get; set; }
 
-        public virtual Perfil CodigoPerfilNavigation { get; set; }
+        public virtual Perfil Perfil { get; set; }
     }
 }

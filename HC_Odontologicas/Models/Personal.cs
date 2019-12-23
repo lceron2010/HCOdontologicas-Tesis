@@ -8,7 +8,7 @@ namespace HC_Odontologicas.Models
         public Personal()
         {
             Agenda = new HashSet<Agenda>();
-            HistoriaClinica = new HashSet<HistoriaClinica>();
+			CitaOdontologica = new HashSet<CitaOdontologica>();
         }
 
         public string Codigo { get; set; }
@@ -32,6 +32,6 @@ namespace HC_Odontologicas.Models
 
 		public virtual Perfil Perfil { get; set; }
         public virtual ICollection<Agenda> Agenda { get; set; }
-        public virtual ICollection<HistoriaClinica> HistoriaClinica { get; set; }
+        public virtual ICollection<CitaOdontologica> CitaOdontologica { get; set; }
     }
 }

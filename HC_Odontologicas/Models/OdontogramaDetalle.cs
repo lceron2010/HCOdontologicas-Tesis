@@ -8,8 +8,7 @@ namespace HC_Odontologicas.Models
         public string Codigo { get; set; }
         public string CodigoOdontograma { get; set; }
         public DateTime Fecha { get; set; }
-
-        public virtual Odontograma CodigoOdontograma1 { get; set; }
-        public virtual HistoriaClinica CodigoOdontogramaNavigation { get; set; }
+		
+        public virtual CitaOdontologica CitaOdontologica { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace HC_Odontologicas.Models
         public Paciente()
         {
             Agenda = new HashSet<Agenda>();
-            HistoriaClinica = new HashSet<HistoriaClinica>();
+			CitaOdontologica = new HashSet<CitaOdontologica>();
         }
 
         public string Codigo { get; set; }
@@ -44,7 +44,7 @@ namespace HC_Odontologicas.Models
 		public string CodigoTipoIdentificacion { get; set; }
 
 		public virtual ICollection<Agenda> Agenda { get; set; }
-        public virtual ICollection<HistoriaClinica> HistoriaClinica { get; set; }
-		public virtual TipoIdentificacion CodigoTipoIdentificacionNavigation { get; set; }
+        public virtual ICollection<CitaOdontologica> CitaOdontologica { get; set; }
+		public virtual TipoIdentificacion TipoIdentificacion { get; set; }
 	}
 }

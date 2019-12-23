@@ -51,7 +51,7 @@ namespace HC_Odontologicas.Controllers
 					ViewData["Filter"] = search;
 					ViewData["CurrentSort"] = sortOrder;
 					//var personal = from c in _context.Personal.Include(a => a.Cargo).OrderBy(p => p.NombreCompleto) select c;
-					var anamnesis = from c in _context.Anamnesis.Include(a => a.HistoriaClinica).ThenInclude(h => h.Paciente).Include(an => an.HistoriaClinica).ThenInclude(hc => hc.Personal) select c;
+					var anamnesis = from c in _context.Anamnesis.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente).Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal) select c;
 
 					if (!String.IsNullOrEmpty(search))
 						//anamnesis = anamnesis.Where(s => s.Nombres.Contains(search));
@@ -121,20 +121,21 @@ namespace HC_Odontologicas.Controllers
 			{
 				try
 				{
+
 					if (ModelState.IsValid)
 					{
-						HistoriaClinica historiaClinica = new HistoriaClinica();
+						CitaOdontologica historiaClinica = new CitaOdontologica();
 						Int64 maxCodigo = 0;
 						maxCodigo = Convert.ToInt64(_context.Anamnesis.Max(f => f.Codigo));
 						maxCodigo += 1;
 						anamnesis.Codigo = maxCodigo.ToString("D8");
 						//
-						var codigoHC = _context.HistoriaClinica.SingleOrDefault(h => h.CodigoPaciente == anamnesis.CodigoPaciente && h.CodigoPersonal == anamnesis.CodigoPersonal);
+						var codigoHC = _context.CitaOdontologica.SingleOrDefault(h => h.CodigoPaciente == anamnesis.CodigoPaciente && h.CodigoPersonal == anamnesis.CodigoPersonal);
 						if (codigoHC == null)
 						{
 
 							Int64 maxCodigoHC = 0;
-							maxCodigoHC = Convert.ToInt64(_context.HistoriaClinica.Max(f => f.Codigo));
+							maxCodigoHC = Convert.ToInt64(_context.CitaOdontologica.Max(f => f.Codigo));
 							maxCodigoHC += 1;
 							historiaClinica.Codigo = maxCodigo.ToString("D8");
 							historiaClinica.CodigoPaciente = anamnesis.CodigoPaciente;
@@ -145,11 +146,11 @@ namespace HC_Odontologicas.Controllers
 							_context.Add(historiaClinica);
 							await _context.SaveChangesAsync();
 							await _auditoria.GuardarLogAuditoria(historiaClinica.FechaCreacion, i.Name, "HistoriaClinica", historiaClinica.Codigo, "I");
-							anamnesis.CodigoHistoriaClinica = historiaClinica.Codigo;
+							anamnesis.CodigoCitaOdontologica = historiaClinica.Codigo;
 						}
 						else
 						{
-							anamnesis.CodigoHistoriaClinica = codigoHC.Codigo;
+							anamnesis.CodigoCitaOdontologica = codigoHC.Codigo;
 						}
 
 						anamnesis.Fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
@@ -207,18 +208,18 @@ namespace HC_Odontologicas.Controllers
 					if (codigo == null)
 						return NotFound();
 
-					var anamnesis = await _context.Anamnesis.Include(a => a.HistoriaClinica).ThenInclude(h => h.Paciente)
-						.Include(an => an.HistoriaClinica).ThenInclude(hc => hc.Personal).SingleOrDefaultAsync(f => f.Codigo == codigo);
+					var anamnesis = await _context.Anamnesis.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente)
+						.Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal).SingleOrDefaultAsync(f => f.Codigo == codigo);
 
 					if (anamnesis == null)
 						return NotFound();
 
 
-					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto" , anamnesis.HistoriaClinica.Personal.Codigo).ToList();
+					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto" , anamnesis.CitaOdontologica.Personal.Codigo).ToList();
 					Personal.Insert(0, vacio);
 					ViewData["CodigoPersonal"] = Personal;
 
-					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", anamnesis.HistoriaClinica.Paciente.Codigo).ToList();
+					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", anamnesis.CitaOdontologica.Paciente.Codigo).ToList();
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 

@@ -7,7 +7,7 @@ namespace HC_Odontologicas.Models
     public partial class ConsentimientoInformado
     {
         public string Codigo { get; set; }
-        public string CodigoHistoriaClinica { get; set; }
+        public string CodigoCitaOdontologica { get; set; }
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
         public string Firma { get; set; }
@@ -19,6 +19,6 @@ namespace HC_Odontologicas.Models
 		public string CodigoPersonal { get; set; }
 
 
-		public virtual HistoriaClinica HistoriaClinica { get; set; }
+		public virtual CitaOdontologica CitaOdontologica { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace HC_Odontologicas.Models
     public partial class RecetaMedica
     {
         public string Codigo { get; set; }
-        public string CodigoHistoriaClinica { get; set; }
+        public string CodigoCitaOdontologica { get; set; }
         public string Descripcion { get; set; }
         public DateTime Fecha { get; set; }
         public bool Estado { get; set; }
@@ -16,6 +16,6 @@ namespace HC_Odontologicas.Models
 		[NotMapped]
 		public string CodigoPersonal { get; set; }
 
-		public virtual HistoriaClinica HistoriaClinica { get; set; }
+		public virtual CitaOdontologica CitaOdontologica { get; set; }
     }
 }

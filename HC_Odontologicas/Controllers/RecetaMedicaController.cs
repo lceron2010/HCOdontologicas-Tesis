@@ -50,7 +50,7 @@ namespace HC_Odontologicas.Controllers
 
 					ViewData["Filter"] = search;
 					ViewData["CurrentSort"] = sortOrder;
-					var receta = from c in _context.RecetaMedica.Include(a => a.HistoriaClinica).ThenInclude(h => h.Paciente).Include(an => an.HistoriaClinica).ThenInclude(hc => hc.Personal) select c;
+					var receta = from c in _context.RecetaMedica.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente).Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal) select c;
 					if (!String.IsNullOrEmpty(search))
 						receta = receta.Where(s => s.Descripcion.Contains(search));
 
@@ -122,20 +122,20 @@ namespace HC_Odontologicas.Controllers
 
 					if (ModelState.IsValid)
 					{
-						HistoriaClinica historiaClinica = new HistoriaClinica();
+						CitaOdontologica historiaClinica = new CitaOdontologica();
 						Int64 maxCodigo = 0;
 						maxCodigo = Convert.ToInt64(_context.RecetaMedica.Max(f => f.Codigo));
 						maxCodigo += 1;
 						recetaMedica.Codigo = maxCodigo.ToString("D8");
 						//
-						var codigoHC = _context.HistoriaClinica.SingleOrDefault(h => h.CodigoPaciente == recetaMedica.CodigoPaciente && h.CodigoPersonal == recetaMedica.CodigoPersonal);
+						var codigoHC = _context.CitaOdontologica.SingleOrDefault(h => h.CodigoPaciente == recetaMedica.CodigoPaciente && h.CodigoPersonal == recetaMedica.CodigoPersonal);
 						if (codigoHC == null)
 						{
 
 							Int64 maxCodigoHC = 0;
-							maxCodigoHC = Convert.ToInt64(_context.HistoriaClinica.Max(f => f.Codigo));
+							maxCodigoHC = Convert.ToInt64(_context.CitaOdontologica.Max(f => f.Codigo));
 							maxCodigoHC += 1;
-							historiaClinica.Codigo = maxCodigo.ToString("D8");
+							historiaClinica.Codigo = maxCodigoHC.ToString("D8");
 							historiaClinica.CodigoPaciente = recetaMedica.CodigoPaciente;
 							historiaClinica.CodigoPersonal = recetaMedica.CodigoPersonal;
 							historiaClinica.FechaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
@@ -144,11 +144,11 @@ namespace HC_Odontologicas.Controllers
 							_context.Add(historiaClinica);
 							await _context.SaveChangesAsync();
 							await _auditoria.GuardarLogAuditoria(historiaClinica.FechaCreacion, i.Name, "HistoriaClinica", historiaClinica.Codigo, "I");
-							recetaMedica.CodigoHistoriaClinica = historiaClinica.Codigo;
+							recetaMedica.CodigoCitaOdontologica = historiaClinica.Codigo;
 						}
 						else
 						{
-							recetaMedica.CodigoHistoriaClinica = codigoHC.Codigo;
+							recetaMedica.CodigoCitaOdontologica = codigoHC.Codigo;
 						}
 
 						recetaMedica.Fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
@@ -206,18 +206,18 @@ namespace HC_Odontologicas.Controllers
 					if (codigo == null)
 						return NotFound();
 
-					var receta = await _context.RecetaMedica.Include(a => a.HistoriaClinica).ThenInclude(h => h.Paciente)
-						.Include(an => an.HistoriaClinica).ThenInclude(hc => hc.Personal).SingleOrDefaultAsync(f => f.Codigo == codigo);
+					var receta = await _context.RecetaMedica.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente)
+						.Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal).SingleOrDefaultAsync(f => f.Codigo == codigo);
 
 					if (receta == null)
 						return NotFound();
 
 
-					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", receta.HistoriaClinica.Personal.Codigo).ToList();
+					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", receta.CitaOdontologica.Personal.Codigo).ToList();
 					Personal.Insert(0, vacio);
 					ViewData["CodigoPersonal"] = Personal;
 
-					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", receta.HistoriaClinica.Paciente.Codigo).ToList();
+					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", receta.CitaOdontologica.Paciente.Codigo).ToList();
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
