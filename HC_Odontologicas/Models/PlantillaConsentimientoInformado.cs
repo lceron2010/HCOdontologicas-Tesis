@@ -5,9 +5,16 @@ namespace HC_Odontologicas.Models
 {
     public partial class PlantillaConsentimientoInformado
     {
-        public string Codigo { get; set; }
+		public PlantillaConsentimientoInformado()
+		{
+			ConsentimientoInformado = new HashSet<ConsentimientoInformado>();
+		}
+
+		public string Codigo { get; set; }
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
         public bool Estado { get; set; }
-    }
+
+		public virtual ICollection<ConsentimientoInformado> ConsentimientoInformado { get; set; }
+	}
 }

@@ -257,6 +257,10 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(8)
 					.IsUnicode(false);
 
+				entity.Property(e => e.CodigoPlantillaConsentimiento)
+					.HasMaxLength(4)
+					.IsUnicode(false);
+
 				entity.Property(e => e.Descripcion)
 					.IsRequired()
 					.IsUnicode(false);
@@ -278,6 +282,12 @@ namespace HC_Odontologicas.Models
 					.HasForeignKey(d => d.CodigoCitaOdontologica)
 					.OnDelete(DeleteBehavior.ClientSetNull)
 					.HasConstraintName("FK_ConsentimientoInformado_CitaOdontologica");
+
+				entity.HasOne(d => d.PlantillaConsentimiento)
+				   .WithMany(p => p.ConsentimientoInformado)
+				   .HasForeignKey(d => d.CodigoPlantillaConsentimiento)
+				   .HasConstraintName("FK_ConsentimientoInformado_PlantillaConsentimiento");
+
 			});
 
 			modelBuilder.Entity<Diagnostico>(entity =>
@@ -863,6 +873,10 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(8)
 					.IsUnicode(false);
 
+				entity.Property(e => e.CodigoPlantillaRecetaMedica)
+					.HasMaxLength(4)
+					.IsUnicode(false);
+
 				entity.Property(e => e.Descripcion)
 					.IsRequired()
 					.HasMaxLength(512)
@@ -870,11 +884,22 @@ namespace HC_Odontologicas.Models
 
 				entity.Property(e => e.Fecha).HasColumnType("datetime");
 
+				entity.Property(e => e.Nombre)
+				   .IsRequired()				   
+				   .HasMaxLength(128)
+				   .IsUnicode(false);
+
 				entity.HasOne(d => d.CitaOdontologica)
 					.WithMany(p => p.RecetaMedica)
 					.HasForeignKey(d => d.CodigoCitaOdontologica)
 					.OnDelete(DeleteBehavior.ClientSetNull)
 					.HasConstraintName("FK_RecetaMedica_CitaOdontologica");
+
+				entity.HasOne(d => d.PlantillaRecetaMedica)
+					.WithMany(p => p.RecetaMedica)
+					.HasForeignKey(d => d.CodigoPlantillaRecetaMedica)
+					.HasConstraintName("FK_RecetaMedica_PlantillaRecetaMedica");
+
 			});
 
 			modelBuilder.Entity<Usuario>(entity =>
