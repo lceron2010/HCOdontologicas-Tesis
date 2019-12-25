@@ -188,13 +188,13 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(8)
 					.IsUnicode(false);
 
-				entity.HasOne(d => d.CodigoAnamnesisNavigation)
+				entity.HasOne(d => d.Anamnesis)
 					.WithMany(p => p.AnamnesisEnfermedad)
 					.HasForeignKey(d => d.CodigoAnamnesis)
 					.OnDelete(DeleteBehavior.ClientSetNull)
 					.HasConstraintName("FK_AnamnesisEnfermedad_Anamnesis");
 
-				entity.HasOne(d => d.CodigoEnfermedadNavigation)
+				entity.HasOne(d => d.Enfermedad)
 					.WithMany(p => p.AnamnesisEnfermedad)
 					.HasForeignKey(d => d.CodigoEnfermedad)
 					.OnDelete(DeleteBehavior.ClientSetNull)
@@ -399,6 +399,10 @@ namespace HC_Odontologicas.Models
 
 				entity.Property(e => e.Observaciones)
 					.HasMaxLength(512)
+					.IsUnicode(false);
+
+				entity.Property(e => e.Estado)
+					.HasMaxLength(1)
 					.IsUnicode(false);
 
 				entity.Property(e => e.UsuarioCreacion)

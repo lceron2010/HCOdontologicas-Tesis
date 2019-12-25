@@ -43,13 +43,13 @@
 							<span asp-validation-for="MotivoConsulta" class="text-danger"></span>
 						</div>
 					</div>
-					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					@*<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="EnfermedadActual" class="control-label">Enfermedad Actual</label>
 							<input asp-for="EnfermedadActual" class="form-control" />
 							<span asp-validation-for="EnfermedadActual" class="text-danger"></span>
 						</div>
-					</div>
+					</div>*@
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Alerta" class="control-label">Alerta</label>
@@ -58,6 +58,51 @@
 						</div>
 					</div>
 				</div>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th hidden>
+								Enfermedad.Codigo
+							</th>
+							<th hidden>
+								Enfermedad.Nombre
+							</th>
+							<th class="cabeceraTabla">
+								Enfermedades
+							</th>
+							<th class="cabeceraTabla">
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						@for (int i = 0; i < Model.AnamnesisEnfermedad.Count; i++)
+						{
+							<tr>
+								@*<td class="hidden">
+							<input asp-for="@Model.AnamnesisEnfermedad[i].CodigoAnamnesis" />
+						</td>*@
+								<td hidden>
+									<input asp-for="@Model.AnamnesisEnfermedad[i].Enfermedad.Codigo" />
+								</td>
+								<td hidden>
+									<input asp-for="@Model.AnamnesisEnfermedad[i].Enfermedad.Nombre" />
+								</td>
+								<td>
+									@if (@Model.AnamnesisEnfermedad[i].Enfermedad != null)
+									{
+										<span class="control-label">@Model.AnamnesisEnfermedad[i].Enfermedad.Nombre</span>
+									}
+								</td>
+								<td>
+									<input asp-for="@Model.AnamnesisEnfermedad[i].Seleccionado" type="checkbox" class="checkbox" />
+								</td>
+							</tr>
+						}
+					</tbody>
+
+				</table>
+
+
 			</fieldset>
 			<fieldset>
 				<legend class="titulo text-uppercase" style="font-size:inherit">Antecedentes</legend>

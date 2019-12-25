@@ -5,19 +5,21 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>@ViewData["Title"] - HC_Odontologicas</title>
 	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+
 	<link rel="stylesheet" href="~/css/site.css" />
 	<script src="~/lib/alertas.js"></script>
 </head>
 <body>
 	@*con esto carga el menu en la parte superior dinamicamente*@
-		@*<header class="my-header">
+	@*<header class="my-header">
 			<nav class="navbar bg-header navbar-fixed-top">
 				<div class="container-fluid">
 					<div class="navbar-header">
 						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
 							<i class="fas fa-bars" style="color:white;"></i>
 						</button>
-					
+
 					</div>
 					<div class="navbar-collapse collapse">
 						<partial name="_Menu.cshtml" />
@@ -63,38 +65,38 @@
 					</ul>
 
 					@*<ul class="navbar-nav flex-grow-1">
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Historia Clínica</a>
-							<ul>
-								<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Pacientes</a></li>
-								<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Anamnesis Odontológico</a></li>
-								<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Odontogramas</a></li>
-								<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Diagnóstico</a></li>
-								<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Receta</a></li>
-							</ul>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Agenda</a>
-							<ul>
-								<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Calendario</a></li>
-								<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Citas Odontológicas</a></li>
-							</ul>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Configuración</a>
-							<ul>
-								<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Personal</a></li>
-								<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Usuarios</a></li>
-							</ul>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Seguridad</a>
-							<ul>
-								<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Perfiles</a></li>
-								<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Cambiar Contraseña</a></li>
-							</ul>
-						</li>
-					</ul>*@
+							<li class="nav-item">
+								<a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Historia Clínica</a>
+								<ul>
+									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Pacientes</a></li>
+									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Anamnesis Odontológico</a></li>
+									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Odontogramas</a></li>
+									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Diagnóstico</a></li>
+									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Receta</a></li>
+								</ul>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Agenda</a>
+								<ul>
+									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Calendario</a></li>
+									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Citas Odontológicas</a></li>
+								</ul>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Configuración</a>
+								<ul>
+									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Personal</a></li>
+									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Usuarios</a></li>
+								</ul>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Seguridad</a>
+								<ul>
+									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Perfiles</a></li>
+									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Cambiar Contraseña</a></li>
+								</ul>
+							</li>
+						</ul>*@
 
 				</div>
 			</div>
@@ -114,6 +116,7 @@
 	</footer>
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
 	<script src="~/lib/alertas.js"></script>
 	<script src="~/js/funcionesJS.js"></script>

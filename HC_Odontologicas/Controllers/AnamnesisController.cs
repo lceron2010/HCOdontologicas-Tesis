@@ -18,6 +18,8 @@ namespace HC_Odontologicas.Controllers
 		private readonly AuditoriaController _auditoria;
 		SelectListItem vacio = new SelectListItem(value: "0", text: "Seleccione...");
 
+		DateTime fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+
 		public AnamnesisController(HCOdontologicasContext context)
 		{
 			_context = context;
@@ -90,16 +92,56 @@ namespace HC_Odontologicas.Controllers
 
 				if (Convert.ToBoolean(permisos[1]))
 				{
+					//lista de enfermedades
+					List<AnamnesisEnfermedad> ae = new List<AnamnesisEnfermedad>();
+					var enfermedad = _context.Enfermedad.OrderBy(f => f.Nombre).ToList();
+					enfermedad = enfermedad.FindAll(f => f.Estado == true);
+					//agregar los impuestos a la lista de tipocomprobanteImpuesto
+					foreach (Enfermedad item in enfermedad)
+					{
+						AnamnesisEnfermedad aenfermedad = new AnamnesisEnfermedad();
+						aenfermedad.Enfermedad = item;
+						aenfermedad.Seleccionado = false;
+						ae.Add(aenfermedad);
+					}
 
-					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
-					Personal.Insert(0, vacio);
+					Anamnesis anamnesis = new Anamnesis();
+					anamnesis.AnamnesisEnfermedad = ae;
+
+					//llenar combos de paciente y doctor select * from citaodontologica where HoraInicio >= '9:00' and HoraFin <= '10:30'
+
+					//TimeSpan intInicial = new TimeSpan(fecha.Hour, fecha.Minute, 00);
+					TimeSpan intInicial = new TimeSpan(19, 30, 00);
+					TimeSpan intFinal = new TimeSpan(22, 30, 00);
+					var c = _context.CitaOdontologica;
+					//ver estos condiciones.
+					//var cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date).ToList();
+					//cita = cita.FindAll(ci => ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal);
+
+					CitaOdontologica cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal).SingleOrDefault();
+					//-- fin ver las condiciones
+					List<SelectListItem> Personal = null;
+					List<SelectListItem> Paciente = null;
+					if (cita == null)
+					{
+						Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
+						Personal.Insert(0, vacio);
+						Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
+						Paciente.Insert(0, vacio);
+						anamnesis.CodigoCitaOdontologica = null;
+					}
+					else
+					{
+						Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", cita.CodigoPersonal).ToList();
+						Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", cita.CodigoPaciente).ToList();
+						anamnesis.CodigoCitaOdontologica = cita.Codigo;
+					}
+
 					ViewData["CodigoPersonal"] = Personal;
-
-					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
-					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
-					return View();
+
+					return View(anamnesis);
 				}
 				else
 					return Redirect("../Personal");
@@ -121,55 +163,92 @@ namespace HC_Odontologicas.Controllers
 			{
 				try
 				{
-
 					if (ModelState.IsValid)
 					{
-						CitaOdontologica historiaClinica = new CitaOdontologica();
-						Int64 maxCodigo = 0;
-						maxCodigo = Convert.ToInt64(_context.Anamnesis.Max(f => f.Codigo));
-						maxCodigo += 1;
-						anamnesis.Codigo = maxCodigo.ToString("D8");
-						//
-						var codigoHC = _context.CitaOdontologica.SingleOrDefault(h => h.CodigoPaciente == anamnesis.CodigoPaciente && h.CodigoPersonal == anamnesis.CodigoPersonal);
-						if (codigoHC == null)
-						{
 
+						//cita odontologica
+						TimeSpan intInicial = new TimeSpan(fecha.Hour, fecha.Minute, 00);
+						TimeSpan intFinal = new TimeSpan(22, 30, 00);
+
+						CitaOdontologica citaOdontologica = _context.CitaOdontologica.Where(ci => ci.Codigo == anamnesis.CodigoCitaOdontologica).SingleOrDefault();//_context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio <= intInicial && ci.HoraFin >= intFinal && ci.CodigoPaciente == anamnesis.CodigoPaciente && ci.CodigoPersonal == anamnesis.CodigoPersonal).FirstOrDefault();
+						DateTime FechaCitaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+						if (citaOdontologica == null)
+						{
+							CitaOdontologica cita = new CitaOdontologica();
 							Int64 maxCodigoHC = 0;
 							maxCodigoHC = Convert.ToInt64(_context.CitaOdontologica.Max(f => f.Codigo));
 							maxCodigoHC += 1;
-							historiaClinica.Codigo = maxCodigo.ToString("D8");
-							historiaClinica.CodigoPaciente = anamnesis.CodigoPaciente;
-							historiaClinica.CodigoPersonal = anamnesis.CodigoPersonal;
-							historiaClinica.FechaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
-							historiaClinica.Observaciones = null;
-							historiaClinica.Estado = true;
-							_context.Add(historiaClinica);
+							cita.Codigo = maxCodigoHC.ToString("D8");
+							cita.CodigoPaciente = anamnesis.CodigoPaciente;
+							cita.CodigoPersonal = anamnesis.CodigoPersonal;
+							cita.FechaCreacion = FechaCitaCreacion;
+							cita.Observaciones = null;
+							cita.Estado = "N";
+							cita.FechaInicio = FechaCitaCreacion;
+							cita.FechaFin = FechaCitaCreacion;
+							cita.HoraInicio = new TimeSpan(FechaCitaCreacion.Hour, FechaCitaCreacion.Minute, 00);
+							cita.HoraFin = new TimeSpan(FechaCitaCreacion.Hour, FechaCitaCreacion.Minute, 00);
+							cita.UsuarioCreacion = i.Name;
+							_context.Add(cita);
 							await _context.SaveChangesAsync();
-							await _auditoria.GuardarLogAuditoria(historiaClinica.FechaCreacion, i.Name, "HistoriaClinica", historiaClinica.Codigo, "I");
-							anamnesis.CodigoCitaOdontologica = historiaClinica.Codigo;
+							await _auditoria.GuardarLogAuditoria(cita.FechaCreacion, i.Name, "CitaOdontologica", cita.Codigo, "I");
+							anamnesis.CodigoCitaOdontologica = cita.Codigo;
 						}
 						else
 						{
-							anamnesis.CodigoCitaOdontologica = codigoHC.Codigo;
+							anamnesis.CodigoCitaOdontologica = citaOdontologica.Codigo;
 						}
 
-						anamnesis.Fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
-						_context.Add(anamnesis);
+
+						var transaction = _context.Database.BeginTransaction();
+						//guardar el tipoComprobante
+						Anamnesis anm = new Anamnesis();
+						Int64 maxCodigo = 0;
+						maxCodigo = Convert.ToInt64(_context.Anamnesis.Max(f => f.Codigo));
+						maxCodigo += 1;
+
+						anm.Codigo = maxCodigo.ToString("D8");
+						anm.CodigoCitaOdontologica = anamnesis.CodigoCitaOdontologica;
+						anm.MotivoConsulta = anamnesis.MotivoConsulta;
+						anm.EnfermedadActual = anamnesis.EnfermedadActual;
+						anm.Alergico = anamnesis.Alergico;
+						anm.AntecedentesQuirurgicos = anamnesis.AntecedentesQuirurgicos;
+						anm.Alergico = anamnesis.Alergico;
+						anm.Medicamentos = anamnesis.Medicamentos;
+						anm.Habitos = anamnesis.Habitos;
+						anm.AntecedentesFamiliares = anamnesis.AntecedentesFamiliares;
+						anm.Fuma = anamnesis.Fuma;
+						anm.Embarazada = anamnesis.Embarazada;
+						anm.GrupoSanguineo = anamnesis.GrupoSanguineo;
+						anm.Endocrino = anamnesis.Endocrino;
+						anm.Traumatologico = anamnesis.Traumatologico;
+						anm.Fecha = fecha;
+
+						_context.Anamnesis.Add(anm);
+
+						//guardar AnamenesisEnefermedad
+						Int64 maxCodigoAe = 0;
+						maxCodigoAe = Convert.ToInt64(_context.AnamnesisEnfermedad.Max(f => f.Codigo));						
+						foreach (var enf in anamnesis.AnamnesisEnfermedad)
+						{
+							if (enf.Seleccionado)
+							{
+								AnamnesisEnfermedad anamnesisEnfermedad = new AnamnesisEnfermedad();
+								maxCodigoAe += 1;
+								anamnesisEnfermedad.Codigo = maxCodigoAe.ToString("D8");
+								//anamnesisEnfermedad.CodigoAnamnesis = anamnesis.Codigo;
+								anamnesisEnfermedad.CodigoAnamnesis = anm.Codigo;
+								anamnesisEnfermedad.CodigoEnfermedad = enf.Enfermedad.Codigo;
+								_context.AnamnesisEnfermedad.Add(anamnesisEnfermedad);
+							}
+						}
+
 						await _context.SaveChangesAsync();
-						await _auditoria.GuardarLogAuditoria(anamnesis.Fecha, i.Name, "Anamnesis", anamnesis.Codigo, "I");
-
-
+						transaction.Commit();
+						await _auditoria.GuardarLogAuditoria(anm.Fecha, i.Name, "Anamnesis", anm.Codigo, "I");
 						ViewBag.Message = "Save";
 						return View(anamnesis);
-
 					}
-					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
-					Personal.Insert(0, vacio);
-					ViewData["CodigoPersonal"] = Personal;
-
-					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
-					Paciente.Insert(0, vacio);
-					ViewData["CodigoPaciente"] = Paciente;
 					return View(anamnesis);
 				}
 				catch (Exception e)
@@ -208,21 +287,53 @@ namespace HC_Odontologicas.Controllers
 					if (codigo == null)
 						return NotFound();
 
-					var anamnesis = await _context.Anamnesis.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente)
-						.Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal).SingleOrDefaultAsync(f => f.Codigo == codigo);
-
+					var anamnesis = await _context.Anamnesis.Include(a => a.AnamnesisEnfermedad)
+						.ThenInclude(a => a.Enfermedad)
+						.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente)
+						.Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal)
+						
+						.SingleOrDefaultAsync(f => f.Codigo == codigo);
+					
 					if (anamnesis == null)
 						return NotFound();
 
+					//lista de enfermedades
+					var listaImpuestos = _context.Enfermedad.OrderBy(f => f.Nombre).ToList();
+					listaImpuestos = listaImpuestos.FindAll(f => f.Estado == true);
 
-					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto" , anamnesis.CitaOdontologica.Personal.Codigo).ToList();
+					List<AnamnesisEnfermedad> tci = new List<AnamnesisEnfermedad>();
+					tci = anamnesis.AnamnesisEnfermedad;
+					for (int l = 0; l < tci.Count(); l++)
+					{
+						tci[l].Seleccionado = true;
+					}
+					//enfermedades que estan en anamnesisenfermedad
+					List<Enfermedad> listaImpuestosTCI = new List<Enfermedad>();
+					foreach (var item in tci)
+					{
+						listaImpuestosTCI.Add(item.Enfermedad);
+					}
+					//enfermedad que faltan en anamnesisEnfermedad
+					var listaImpuestosAgregar = (from t in listaImpuestos where !listaImpuestosTCI.Any(x => x.Codigo == t.Codigo) select t).ToList();
+
+					//agregar a la lista de anamnesisEnfermedad
+					foreach (var l in listaImpuestosAgregar)
+					{
+						AnamnesisEnfermedad ti = new AnamnesisEnfermedad();
+						ti.Enfermedad = l;
+						ti.Seleccionado = false;
+						anamnesis.AnamnesisEnfermedad.Add(ti);
+					}
+
+					anamnesis.AnamnesisEnfermedad.OrderBy(p => p.Enfermedad.Nombre);
+					
+					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", anamnesis.CitaOdontologica.Personal.Codigo).ToList();
 					Personal.Insert(0, vacio);
 					ViewData["CodigoPersonal"] = Personal;
 
 					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", anamnesis.CitaOdontologica.Paciente.Codigo).ToList();
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
-
 
 					return View(anamnesis);
 				}
@@ -252,19 +363,74 @@ namespace HC_Odontologicas.Controllers
 					{
 						try
 						{
+							var transaction = _context.Database.BeginTransaction();
+							//actualizar tipocomprobante
 							anamnesis.Codigo = Encriptacion.Decrypt(anamnesis.Codigo);
-							_context.Update(anamnesis);
-							await _context.SaveChangesAsync();
+							Anamnesis anamnesisAntiguo = _context.Anamnesis.SingleOrDefault(p =>p.Codigo == anamnesis.Codigo);
+							anamnesisAntiguo.Codigo anamnesis.Codigo;							
+							anamnesisAntiguo.CodigoCitaOdontologica = anamnesis.CodigoCitaOdontologica;
+							anamnesisAntiguo.MotivoConsulta = anamnesis.MotivoConsulta;
+							anamnesisAntiguo.EnfermedadActual = anamnesis.EnfermedadActual;
+							anamnesisAntiguo.Alergico = anamnesis.Alergico;
+							anamnesisAntiguo.AntecedentesQuirurgicos = anamnesis.AntecedentesQuirurgicos;
+							anamnesisAntiguo.Alergico = anamnesis.Alergico;
+							anamnesisAntiguo.Medicamentos = anamnesis.Medicamentos;
+							anamnesisAntiguo.Habitos = anamnesis.Habitos;
+							anamnesisAntiguo.AntecedentesFamiliares = anamnesis.AntecedentesFamiliares;
+							anamnesisAntiguo.Fuma = anamnesis.Fuma;
+							anamnesisAntiguo.Embarazada = anamnesis.Embarazada;
+							anamnesisAntiguo.GrupoSanguineo = anamnesis.GrupoSanguineo;
+							anamnesisAntiguo.Endocrino = anamnesis.Endocrino;
+							anamnesisAntiguo.Traumatologico = anamnesis.Traumatologico;
+							anamnesisAntiguo.Fecha = fecha;
+
+
+							
+							var tipoComprobantesImpuesto = _context.AnamnesisEnfermedad.Where(a => a.CodigoAnamnesis == anamnesis.Codigo).ToList();
+							foreach (var item in tipoComprobantesImpuesto)
+								_context.AnamnesisEnfermedad.Remove(item);
+							_context.SaveChanges();
+
+							//guardar AnamenesisEnefermedad
+							Int64 maxCodigoAe = 0;
+							maxCodigoAe = Convert.ToInt64(_context.AnamnesisEnfermedad.Max(f => f.Codigo));
+							foreach (var enf in anamnesis.AnamnesisEnfermedad)
+							{
+								if (enf.Seleccionado)
+								{
+									AnamnesisEnfermedad anamnesisEnfermedad = new AnamnesisEnfermedad();
+									maxCodigoAe += 1;
+									anamnesisEnfermedad.Codigo = maxCodigoAe.ToString("D8");
+									//anamnesisEnfermedad.CodigoAnamnesis = anamnesis.Codigo;
+									anamnesisEnfermedad.CodigoAnamnesis = anamnesis.Codigo;
+									anamnesisEnfermedad.CodigoEnfermedad = enf.Enfermedad.Codigo;
+									_context.AnamnesisEnfermedad.Add(anamnesisEnfermedad);
+								}
+							}
+
+							_context.Update(anamnesisAntiguo);
+							_context.SaveChanges();
+							transaction.Commit();
 							await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Anamnesis", anamnesis.Codigo, "U");
 							ViewBag.Message = "Save";
 
-							Personal.Insert(0, vacio);
-							ViewData["CodigoPersonal"] = Personal;
-
-							Paciente.Insert(0, vacio);
-							ViewData["CodigoPaciente"] = Paciente;
-
 							return View(anamnesis);
+
+
+
+							//anamnesis.Codigo = Encriptacion.Decrypt(anamnesis.Codigo);
+							//_context.Update(anamnesis);
+							//await _context.SaveChangesAsync();
+							//await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Anamnesis", anamnesis.Codigo, "U");
+							//ViewBag.Message = "Save";
+
+							//Personal.Insert(0, vacio);
+							//ViewData["CodigoPersonal"] = Personal;
+
+							//Paciente.Insert(0, vacio);
+							//ViewData["CodigoPaciente"] = Paciente;
+
+							//return View(anamnesis);
 						}
 						catch (DbUpdateConcurrencyException)
 						{

@@ -140,7 +140,7 @@ namespace HC_Odontologicas.Controllers
 							historiaClinica.CodigoPersonal = recetaMedica.CodigoPersonal;
 							historiaClinica.FechaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 							historiaClinica.Observaciones = null;
-							historiaClinica.Estado = true;
+							//historiaClinica.Estado = true;
 							_context.Add(historiaClinica);
 							await _context.SaveChangesAsync();
 							await _auditoria.GuardarLogAuditoria(historiaClinica.FechaCreacion, i.Name, "HistoriaClinica", historiaClinica.Codigo, "I");
