@@ -17,6 +17,7 @@ namespace HC_Odontologicas.Controllers
 		private ValidacionesController validaciones;
 		private readonly AuditoriaController _auditoria;
 		SelectListItem vacio = new SelectListItem(value: "0", text: "Seleccione...");
+		DateTime fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 
 		public RecetaMedicaController(HCOdontologicasContext context)
         {
@@ -89,12 +90,38 @@ namespace HC_Odontologicas.Controllers
 				if (Convert.ToBoolean(permisos[1]))
 				{
 
-					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
-					Personal.Insert(0, vacio);
-					ViewData["CodigoPersonal"] = Personal;
+					RecetaMedica recetaMedica = new RecetaMedica();
 
-					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
-					Paciente.Insert(0, vacio);
+					//llenar combos de paciente y doctor select * from citaodontologica where HoraInicio >= '9:00' and HoraFin <= '10:30'
+
+					//TimeSpan intInicial = new TimeSpan(fecha.Hour, fecha.Minute, 00);
+					TimeSpan intInicial = new TimeSpan(19, 30, 00);
+					TimeSpan intFinal = new TimeSpan(22, 30, 00);
+
+					//ver estos condiciones.
+					//var cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date).ToList();
+					//cita = cita.FindAll(ci => ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal);
+
+					CitaOdontologica cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal).SingleOrDefault();
+					//-- fin ver las condiciones
+					List<SelectListItem> Personal = null;
+					List<SelectListItem> Paciente = null;
+					if (cita == null)
+					{
+						Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
+						Personal.Insert(0, vacio);
+						Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
+						Paciente.Insert(0, vacio);
+						recetaMedica.CodigoCitaOdontologica = null;
+					}
+					else
+					{
+						Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", cita.CodigoPersonal).ToList();
+						Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", cita.CodigoPaciente).ToList();
+						recetaMedica.CodigoCitaOdontologica = cita.Codigo;
+					}
+
+					ViewData["CodigoPersonal"] = Personal;
 					ViewData["CodigoPaciente"] = Paciente;
 
 					return View();
@@ -122,36 +149,38 @@ namespace HC_Odontologicas.Controllers
 
 					if (ModelState.IsValid)
 					{
-						CitaOdontologica historiaClinica = new CitaOdontologica();
-						Int64 maxCodigo = 0;
-						maxCodigo = Convert.ToInt64(_context.RecetaMedica.Max(f => f.Codigo));
-						maxCodigo += 1;
-						recetaMedica.Codigo = maxCodigo.ToString("D8");
-						//
-						var codigoHC = _context.CitaOdontologica.SingleOrDefault(h => h.CodigoPaciente == recetaMedica.CodigoPaciente && h.CodigoPersonal == recetaMedica.CodigoPersonal);
-						if (codigoHC == null)
+						//cita odontologica						
+						CitaOdontologica citaOdontologica = _context.CitaOdontologica.Where(ci => ci.Codigo == recetaMedica.CodigoCitaOdontologica).SingleOrDefault();//_context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio <= intInicial && ci.HoraFin >= intFinal && ci.CodigoPaciente == anamnesis.CodigoPaciente && ci.CodigoPersonal == anamnesis.CodigoPersonal).FirstOrDefault();
+						DateTime FechaCitaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+						if (citaOdontologica == null)
 						{
-
+							CitaOdontologica cita = new CitaOdontologica();
 							Int64 maxCodigoHC = 0;
 							maxCodigoHC = Convert.ToInt64(_context.CitaOdontologica.Max(f => f.Codigo));
 							maxCodigoHC += 1;
-							historiaClinica.Codigo = maxCodigoHC.ToString("D8");
-							historiaClinica.CodigoPaciente = recetaMedica.CodigoPaciente;
-							historiaClinica.CodigoPersonal = recetaMedica.CodigoPersonal;
-							historiaClinica.FechaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
-							historiaClinica.Observaciones = null;
-							//historiaClinica.Estado = true;
-							_context.Add(historiaClinica);
+							cita.Codigo = maxCodigoHC.ToString("D8");
+							cita.CodigoPaciente = recetaMedica.CodigoPaciente;
+							cita.CodigoPersonal = recetaMedica.CodigoPersonal;
+							cita.FechaCreacion = FechaCitaCreacion;
+							cita.Observaciones = null;
+							cita.Estado = "N";
+							cita.FechaInicio = FechaCitaCreacion;
+							cita.FechaFin = FechaCitaCreacion;
+							cita.HoraInicio = new TimeSpan(FechaCitaCreacion.Hour, FechaCitaCreacion.Minute, 00);
+							cita.HoraFin = new TimeSpan(FechaCitaCreacion.Hour, FechaCitaCreacion.Minute, 00);
+							cita.UsuarioCreacion = i.Name;
+							_context.Add(cita);
 							await _context.SaveChangesAsync();
-							await _auditoria.GuardarLogAuditoria(historiaClinica.FechaCreacion, i.Name, "HistoriaClinica", historiaClinica.Codigo, "I");
-							recetaMedica.CodigoCitaOdontologica = historiaClinica.Codigo;
+							await _auditoria.GuardarLogAuditoria(cita.FechaCreacion, i.Name, "CitaOdontologica", cita.Codigo, "I");
+							recetaMedica.CodigoCitaOdontologica = cita.Codigo;
 						}
 						else
 						{
-							recetaMedica.CodigoCitaOdontologica = codigoHC.Codigo;
+							recetaMedica.CodigoCitaOdontologica = citaOdontologica.Codigo;
 						}
 
-						recetaMedica.Fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+
+						recetaMedica.Fecha = FechaCitaCreacion;
 						_context.Add(recetaMedica);
 						await _context.SaveChangesAsync();
 						await _auditoria.GuardarLogAuditoria(recetaMedica.Fecha, i.Name, "RecetaMedica", recetaMedica.Codigo, "I");
@@ -240,8 +269,10 @@ namespace HC_Odontologicas.Controllers
         public async Task<IActionResult> Edit(RecetaMedica recetaMedica)
         {
 			var i = (ClaimsIdentity)User.Identity;
-			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
-			List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
+			
+			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", recetaMedica.CodigoPersonal).ToList();
+			List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", recetaMedica.CodigoPaciente).ToList();
+
 			if (i.IsAuthenticated)
 			{
 				try

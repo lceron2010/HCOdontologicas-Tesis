@@ -144,7 +144,7 @@ namespace HC_Odontologicas.Controllers
 					return View(anamnesis);
 				}
 				else
-					return Redirect("../Personal");
+					return Redirect("../Anamnesis");
 			}
 			else
 			{
@@ -166,10 +166,7 @@ namespace HC_Odontologicas.Controllers
 					if (ModelState.IsValid)
 					{
 
-						//cita odontologica
-						TimeSpan intInicial = new TimeSpan(fecha.Hour, fecha.Minute, 00);
-						TimeSpan intFinal = new TimeSpan(22, 30, 00);
-
+						//cita odontologica						
 						CitaOdontologica citaOdontologica = _context.CitaOdontologica.Where(ci => ci.Codigo == anamnesis.CodigoCitaOdontologica).SingleOrDefault();//_context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio <= intInicial && ci.HoraFin >= intFinal && ci.CodigoPaciente == anamnesis.CodigoPaciente && ci.CodigoPersonal == anamnesis.CodigoPersonal).FirstOrDefault();
 						DateTime FechaCitaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 						if (citaOdontologica == null)

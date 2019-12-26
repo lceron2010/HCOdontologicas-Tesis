@@ -17,6 +17,7 @@ namespace HC_Odontologicas.Controllers
 		private ValidacionesController validaciones;
 		private readonly AuditoriaController _auditoria;
 		SelectListItem vacio = new SelectListItem(value: "0", text: "Seleccione...");
+		DateTime fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 
 		public ConsentimientoInformadoController(HCOdontologicasContext context)
 		{
@@ -89,16 +90,45 @@ namespace HC_Odontologicas.Controllers
 
 				if (Convert.ToBoolean(permisos[1]))
 				{
+					ConsentimientoInformado consentimientoInformado = new ConsentimientoInformado();
 
-					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
-					Personal.Insert(0, vacio);
+					//llenar combos de paciente y doctor select * from citaodontologica where HoraInicio >= '9:00' and HoraFin <= '10:30'
+
+					//TimeSpan intInicial = new TimeSpan(fecha.Hour, fecha.Minute, 00);
+					TimeSpan intInicial = new TimeSpan(19, 30, 00);
+					TimeSpan intFinal = new TimeSpan(22, 30, 00);
+					
+					//ver estos condiciones.
+					//var cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date).ToList();
+					//cita = cita.FindAll(ci => ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal);
+
+					CitaOdontologica cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal).SingleOrDefault();
+					//-- fin ver las condiciones
+					List<SelectListItem> Personal = null;
+					List<SelectListItem> Paciente = null;
+					if (cita == null)
+					{
+						Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
+						Personal.Insert(0, vacio);
+						Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
+						Paciente.Insert(0, vacio);
+						consentimientoInformado.CodigoCitaOdontologica = null;
+					}
+					else
+					{
+						Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", cita.CodigoPersonal).ToList();
+						Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", cita.CodigoPaciente).ToList();
+						consentimientoInformado.CodigoCitaOdontologica = cita.Codigo;
+					}
+
 					ViewData["CodigoPersonal"] = Personal;
-
-					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
-					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
-					return View();
+					List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre", cita.CodigoPersonal).ToList(); ;
+					PlantillaCI.Insert(0, vacio);
+					ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
+
+					return View(consentimientoInformado);
 				}
 				else
 					return Redirect("../ConsentimientoInformado");
@@ -130,36 +160,38 @@ namespace HC_Odontologicas.Controllers
 
 					if (ModelState.IsValid)
 					{
-						CitaOdontologica historiaClinica = new CitaOdontologica();
-						Int64 maxCodigo = 0;
-						maxCodigo = Convert.ToInt64(_context.ConsentimientoInformado.Max(f => f.Codigo));
-						maxCodigo += 1;
-						consentimientoInformado.Codigo = maxCodigo.ToString("D8");
-						//
-						var codigoHC = _context.CitaOdontologica.SingleOrDefault(h => h.CodigoPaciente == consentimientoInformado.CodigoPaciente && h.CodigoPersonal == consentimientoInformado.CodigoPersonal);
-						if (codigoHC == null)
+						//cita odontologica						
+						CitaOdontologica citaOdontologica = _context.CitaOdontologica.Where(ci => ci.Codigo == consentimientoInformado.CodigoCitaOdontologica).SingleOrDefault();//_context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio <= intInicial && ci.HoraFin >= intFinal && ci.CodigoPaciente == anamnesis.CodigoPaciente && ci.CodigoPersonal == anamnesis.CodigoPersonal).FirstOrDefault();
+						DateTime FechaCitaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+						if (citaOdontologica == null)
 						{
-
+							CitaOdontologica cita = new CitaOdontologica();
 							Int64 maxCodigoHC = 0;
 							maxCodigoHC = Convert.ToInt64(_context.CitaOdontologica.Max(f => f.Codigo));
 							maxCodigoHC += 1;
-							historiaClinica.Codigo = maxCodigoHC.ToString("D8");
-							historiaClinica.CodigoPaciente = consentimientoInformado.CodigoPaciente;
-							historiaClinica.CodigoPersonal = consentimientoInformado.CodigoPersonal;
-							historiaClinica.FechaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
-							historiaClinica.Observaciones = null;
-							//historiaClinica.Estado = true;
-							_context.Add(historiaClinica);
+							cita.Codigo = maxCodigoHC.ToString("D8");
+							cita.CodigoPaciente = consentimientoInformado.CodigoPaciente;
+							cita.CodigoPersonal = consentimientoInformado.CodigoPersonal;
+							cita.FechaCreacion = FechaCitaCreacion;
+							cita.Observaciones = null;
+							cita.Estado = "N";
+							cita.FechaInicio = FechaCitaCreacion;
+							cita.FechaFin = FechaCitaCreacion;
+							cita.HoraInicio = new TimeSpan(FechaCitaCreacion.Hour, FechaCitaCreacion.Minute, 00);
+							cita.HoraFin = new TimeSpan(FechaCitaCreacion.Hour, FechaCitaCreacion.Minute, 00);
+							cita.UsuarioCreacion = i.Name;
+							_context.Add(cita);
 							await _context.SaveChangesAsync();
-							await _auditoria.GuardarLogAuditoria(historiaClinica.FechaCreacion, i.Name, "HistoriaClinica", historiaClinica.Codigo, "I");
-							consentimientoInformado.CodigoCitaOdontologica = historiaClinica.Codigo;
+							await _auditoria.GuardarLogAuditoria(cita.FechaCreacion, i.Name, "CitaOdontologica", cita.Codigo, "I");
+							consentimientoInformado.CodigoCitaOdontologica = cita.Codigo;
 						}
 						else
 						{
-							consentimientoInformado.CodigoCitaOdontologica = codigoHC.Codigo;
+							consentimientoInformado.CodigoCitaOdontologica = citaOdontologica.Codigo;
 						}
 
-						consentimientoInformado.Fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+
+						consentimientoInformado.Fecha = FechaCitaCreacion;
 						_context.Add(consentimientoInformado);
 						await _context.SaveChangesAsync();
 						await _auditoria.GuardarLogAuditoria(consentimientoInformado.Fecha, i.Name, "ConsentimientoInformado", consentimientoInformado.Codigo, "I");
@@ -239,19 +271,15 @@ namespace HC_Odontologicas.Controllers
 		public async Task<IActionResult> Edit(ConsentimientoInformado consentimientoInformado)
 		{
 			var i = (ClaimsIdentity)User.Identity;
+			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", consentimientoInformado.CodigoPersonal).ToList();
+			List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", consentimientoInformado.CodigoPaciente).ToList();
 
 			if (i.IsAuthenticated)
 			{
 
 				try
 				{
-					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
-					Personal.Insert(0, vacio);
-					ViewData["CodigoPersonal"] = Personal;
-
-					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
-					Paciente.Insert(0, vacio);
-					ViewData["CodigoPaciente"] = Paciente;
+					
 					if (ModelState.IsValid)
 					{
 						try
@@ -263,11 +291,11 @@ namespace HC_Odontologicas.Controllers
 							await _auditoria.GuardarLogAuditoria(consentimientoInformado.Fecha, i.Name, "ConsentimientoInformado", consentimientoInformado.Codigo, "U");
 							ViewBag.Message = "Save";
 
-							//Personal.Insert(0, vacio);
-							//ViewData["CodigoPersonal"] = Personal;
+							Personal.Insert(0, vacio);
+							ViewData["CodigoPersonal"] = Personal;
 
-							//Paciente.Insert(0, vacio);
-							//ViewData["CodigoPaciente"] = Paciente;
+							Paciente.Insert(0, vacio);
+							ViewData["CodigoPaciente"] = Paciente;
 
 							return View(consentimientoInformado);
 						}
@@ -276,8 +304,11 @@ namespace HC_Odontologicas.Controllers
 							throw;
 						}
 					}
+					Personal.Insert(0, vacio);
+					ViewData["CodigoPersonal"] = Personal;
 
-
+					Paciente.Insert(0, vacio);
+					ViewData["CodigoPaciente"] = Paciente;
 
 
 					return View(consentimientoInformado);
@@ -290,19 +321,11 @@ namespace HC_Odontologicas.Controllers
 
 					ViewBag.Message = mensaje;
 
-					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
 					Personal.Insert(0, vacio);
 					ViewData["CodigoPersonal"] = Personal;
 
-					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
-
-					//Personal.Insert(0, vacio);
-					//ViewData["CodigoPersonal"] = Personal;
-
-					//Paciente.Insert(0, vacio);
-					//ViewData["CodigoPaciente"] = Paciente;
 
 					return View(consentimientoInformado);
 				}
