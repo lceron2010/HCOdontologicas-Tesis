@@ -211,6 +211,7 @@ namespace HC_Odontologicas.Controllers
 						anm.CodigoCitaOdontologica = anamnesis.CodigoCitaOdontologica;
 						anm.MotivoConsulta = anamnesis.MotivoConsulta;
 						anm.EnfermedadActual = anamnesis.EnfermedadActual;
+						anm.Alerta = anamnesis.Alerta;
 						anm.Alergico = anamnesis.Alergico;
 						anm.AntecedentesQuirurgicos = anamnesis.AntecedentesQuirurgicos;
 						anm.Alergico = anamnesis.Alergico;
@@ -352,9 +353,10 @@ namespace HC_Odontologicas.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Edit(Anamnesis anamnesis)
 		{
-			var i = (ClaimsIdentity)User.Identity;
-			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
-			List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
+			var i = (ClaimsIdentity)User.Identity;				
+			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", anamnesis.CodigoPersonal).ToList();
+			List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", anamnesis.CodigoPaciente).ToList();
+
 			if (i.IsAuthenticated)
 			{
 				try
@@ -367,10 +369,11 @@ namespace HC_Odontologicas.Controllers
 							//actualizar tipocomprobante
 							anamnesis.Codigo = Encriptacion.Decrypt(anamnesis.Codigo);
 							Anamnesis anamnesisAntiguo = _context.Anamnesis.SingleOrDefault(p =>p.Codigo == anamnesis.Codigo);
-							anamnesisAntiguo.Codigo anamnesis.Codigo;							
+							anamnesisAntiguo.Codigo= anamnesis.Codigo;							
 							anamnesisAntiguo.CodigoCitaOdontologica = anamnesis.CodigoCitaOdontologica;
 							anamnesisAntiguo.MotivoConsulta = anamnesis.MotivoConsulta;
 							anamnesisAntiguo.EnfermedadActual = anamnesis.EnfermedadActual;
+							anamnesisAntiguo.Alerta = anamnesis.Alerta;
 							anamnesisAntiguo.Alergico = anamnesis.Alergico;
 							anamnesisAntiguo.AntecedentesQuirurgicos = anamnesis.AntecedentesQuirurgicos;
 							anamnesisAntiguo.Alergico = anamnesis.Alergico;
@@ -383,9 +386,7 @@ namespace HC_Odontologicas.Controllers
 							anamnesisAntiguo.Endocrino = anamnesis.Endocrino;
 							anamnesisAntiguo.Traumatologico = anamnesis.Traumatologico;
 							anamnesisAntiguo.Fecha = fecha;
-
-
-							
+													   							
 							var tipoComprobantesImpuesto = _context.AnamnesisEnfermedad.Where(a => a.CodigoAnamnesis == anamnesis.Codigo).ToList();
 							foreach (var item in tipoComprobantesImpuesto)
 								_context.AnamnesisEnfermedad.Remove(item);
@@ -401,7 +402,7 @@ namespace HC_Odontologicas.Controllers
 									AnamnesisEnfermedad anamnesisEnfermedad = new AnamnesisEnfermedad();
 									maxCodigoAe += 1;
 									anamnesisEnfermedad.Codigo = maxCodigoAe.ToString("D8");
-									//anamnesisEnfermedad.CodigoAnamnesis = anamnesis.Codigo;
+									//anamnesisEnfermedad.CodigoAnamnesis = null;
 									anamnesisEnfermedad.CodigoAnamnesis = anamnesis.Codigo;
 									anamnesisEnfermedad.CodigoEnfermedad = enf.Enfermedad.Codigo;
 									_context.AnamnesisEnfermedad.Add(anamnesisEnfermedad);
@@ -414,23 +415,14 @@ namespace HC_Odontologicas.Controllers
 							await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Anamnesis", anamnesis.Codigo, "U");
 							ViewBag.Message = "Save";
 
+							Personal.Insert(0, vacio);
+							ViewData["CodigoPersonal"] = Personal;
+
+							Paciente.Insert(0, vacio);
+							ViewData["CodigoPaciente"] = Paciente;
+
 							return View(anamnesis);
-
-
-
-							//anamnesis.Codigo = Encriptacion.Decrypt(anamnesis.Codigo);
-							//_context.Update(anamnesis);
-							//await _context.SaveChangesAsync();
-							//await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Anamnesis", anamnesis.Codigo, "U");
-							//ViewBag.Message = "Save";
-
-							//Personal.Insert(0, vacio);
-							//ViewData["CodigoPersonal"] = Personal;
-
-							//Paciente.Insert(0, vacio);
-							//ViewData["CodigoPaciente"] = Paciente;
-
-							//return View(anamnesis);
+														
 						}
 						catch (DbUpdateConcurrencyException)
 						{
@@ -469,11 +461,8 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-
-
 		// POST: Anamnesis/Delete/5
 		[HttpPost]
-
 		public async Task<string> DeleteConfirmed(string codigo)
 		{
 			try
@@ -494,7 +483,6 @@ namespace HC_Odontologicas.Controllers
 				return mensaje;
 			}
 		}
-
 
 	}
 }
