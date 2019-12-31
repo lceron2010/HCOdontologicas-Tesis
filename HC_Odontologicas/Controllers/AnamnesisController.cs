@@ -96,7 +96,7 @@ namespace HC_Odontologicas.Controllers
 					List<AnamnesisEnfermedad> ae = new List<AnamnesisEnfermedad>();
 					var enfermedad = _context.Enfermedad.OrderBy(f => f.Nombre).ToList();
 					enfermedad = enfermedad.FindAll(f => f.Estado == true);
-					//agregar los impuestos a la lista de tipocomprobanteImpuesto
+					//agregar las enferemedades a la lista de anamnesisEnfermedad.
 					foreach (Enfermedad item in enfermedad)
 					{
 						AnamnesisEnfermedad aenfermedad = new AnamnesisEnfermedad();
@@ -113,12 +113,13 @@ namespace HC_Odontologicas.Controllers
 					//TimeSpan intInicial = new TimeSpan(fecha.Hour, fecha.Minute, 00);
 					TimeSpan intInicial = new TimeSpan(19, 30, 00);
 					TimeSpan intFinal = new TimeSpan(22, 30, 00);
-					var c = _context.CitaOdontologica;
+					
 					//ver estos condiciones.
-					//var cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date).ToList();
-					//cita = cita.FindAll(ci => ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal);
-
-					CitaOdontologica cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal).SingleOrDefault();
+					var c = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date);
+					c = c.Where(ci => ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal);
+					CitaOdontologica cita = c.FirstOrDefault();
+					
+					//CitaOdontologica cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal).SingleOrDefault();
 					//-- fin ver las condiciones
 					List<SelectListItem> Personal = null;
 					List<SelectListItem> Paciente = null;
@@ -169,6 +170,7 @@ namespace HC_Odontologicas.Controllers
 						//cita odontologica						
 						CitaOdontologica citaOdontologica = _context.CitaOdontologica.Where(ci => ci.Codigo == anamnesis.CodigoCitaOdontologica).SingleOrDefault();//_context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio <= intInicial && ci.HoraFin >= intFinal && ci.CodigoPaciente == anamnesis.CodigoPaciente && ci.CodigoPersonal == anamnesis.CodigoPersonal).FirstOrDefault();
 						DateTime FechaCitaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+						var transaction = _context.Database.BeginTransaction();
 						if (citaOdontologica == null)
 						{
 							CitaOdontologica cita = new CitaOdontologica();
@@ -195,15 +197,12 @@ namespace HC_Odontologicas.Controllers
 						{
 							anamnesis.CodigoCitaOdontologica = citaOdontologica.Codigo;
 						}
-
-
-						var transaction = _context.Database.BeginTransaction();
-						//guardar el tipoComprobante
+											   						
+						//guardar el anamnesos
 						Anamnesis anm = new Anamnesis();
 						Int64 maxCodigo = 0;
 						maxCodigo = Convert.ToInt64(_context.Anamnesis.Max(f => f.Codigo));
 						maxCodigo += 1;
-
 						anm.Codigo = maxCodigo.ToString("D8");
 						anm.CodigoCitaOdontologica = anamnesis.CodigoCitaOdontologica;
 						anm.MotivoConsulta = anamnesis.MotivoConsulta;

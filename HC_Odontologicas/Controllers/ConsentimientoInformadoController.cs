@@ -97,12 +97,12 @@ namespace HC_Odontologicas.Controllers
 					//TimeSpan intInicial = new TimeSpan(fecha.Hour, fecha.Minute, 00);
 					TimeSpan intInicial = new TimeSpan(19, 30, 00);
 					TimeSpan intFinal = new TimeSpan(22, 30, 00);
-					
-					//ver estos condiciones.
-					//var cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date).ToList();
-					//cita = cita.FindAll(ci => ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal);
 
-					CitaOdontologica cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal).SingleOrDefault();
+					//ver estos condiciones.
+					var c = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date);
+					c = c.Where(ci => ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal);
+					CitaOdontologica cita = c.FirstOrDefault();
+					//CitaOdontologica cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal).SingleOrDefault();
 					//-- fin ver las condiciones
 					List<SelectListItem> Personal = null;
 					List<SelectListItem> Paciente = null;
@@ -124,7 +124,7 @@ namespace HC_Odontologicas.Controllers
 					ViewData["CodigoPersonal"] = Personal;
 					ViewData["CodigoPaciente"] = Paciente;
 
-					List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre", cita.CodigoPersonal).ToList(); ;
+					List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList(); ;
 					PlantillaCI.Insert(0, vacio);
 					ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
 
@@ -158,11 +158,16 @@ namespace HC_Odontologicas.Controllers
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
+					List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList(); ;
+					PlantillaCI.Insert(0, vacio);
+					ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
+
 					if (ModelState.IsValid)
 					{
 						//cita odontologica						
 						CitaOdontologica citaOdontologica = _context.CitaOdontologica.Where(ci => ci.Codigo == consentimientoInformado.CodigoCitaOdontologica).SingleOrDefault();//_context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio <= intInicial && ci.HoraFin >= intFinal && ci.CodigoPaciente == anamnesis.CodigoPaciente && ci.CodigoPersonal == anamnesis.CodigoPersonal).FirstOrDefault();
 						DateTime FechaCitaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+						var transaction = _context.Database.BeginTransaction();
 						if (citaOdontologica == null)
 						{
 							CitaOdontologica cita = new CitaOdontologica();
@@ -189,11 +194,19 @@ namespace HC_Odontologicas.Controllers
 						{
 							consentimientoInformado.CodigoCitaOdontologica = citaOdontologica.Codigo;
 						}
-
-
+						//consentimientoInformado
+						Int64 maxCodigo = 0;
+						maxCodigo = Convert.ToInt64(_context.ConsentimientoInformado.Max(f => f.Codigo));
+						maxCodigo += 1;
+						consentimientoInformado.Codigo = maxCodigo.ToString("D8");
 						consentimientoInformado.Fecha = FechaCitaCreacion;
+						if (consentimientoInformado.CodigoPlantillaConsentimiento == "0")
+						{
+							consentimientoInformado.CodigoPlantillaConsentimiento = null;
+						}
 						_context.Add(consentimientoInformado);
 						await _context.SaveChangesAsync();
+						transaction.Commit();
 						await _auditoria.GuardarLogAuditoria(consentimientoInformado.Fecha, i.Name, "ConsentimientoInformado", consentimientoInformado.Codigo, "I");
 						ViewBag.Message = "Save";
 						return View(consentimientoInformado);
@@ -215,6 +228,11 @@ namespace HC_Odontologicas.Controllers
 					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
+
+					List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList(); ;
+					PlantillaCI.Insert(0, vacio);
+					ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
+
 					return View(consentimientoInformado);
 				}
 			}
@@ -252,6 +270,9 @@ namespace HC_Odontologicas.Controllers
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
+					List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre", consentimiento.CodigoPlantillaConsentimiento).ToList(); ;
+					PlantillaCI.Insert(0, vacio);
+					ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
 
 					return View(consentimiento);
 				}
@@ -273,19 +294,23 @@ namespace HC_Odontologicas.Controllers
 			var i = (ClaimsIdentity)User.Identity;
 			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", consentimientoInformado.CodigoPersonal).ToList();
 			List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", consentimientoInformado.CodigoPaciente).ToList();
+			List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre", consentimientoInformado.CodigoPlantillaConsentimiento).ToList(); ;
 
 			if (i.IsAuthenticated)
 			{
-
 				try
 				{
-					
+
 					if (ModelState.IsValid)
 					{
 						try
 						{
 							consentimientoInformado.Codigo = Encriptacion.Decrypt(consentimientoInformado.Codigo);
 							consentimientoInformado.Fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+							if (consentimientoInformado.CodigoPlantillaConsentimiento == "0")
+							{
+								consentimientoInformado.CodigoPlantillaConsentimiento = null;
+							}
 							_context.Update(consentimientoInformado);
 							await _context.SaveChangesAsync();
 							await _auditoria.GuardarLogAuditoria(consentimientoInformado.Fecha, i.Name, "ConsentimientoInformado", consentimientoInformado.Codigo, "U");
@@ -296,6 +321,9 @@ namespace HC_Odontologicas.Controllers
 
 							Paciente.Insert(0, vacio);
 							ViewData["CodigoPaciente"] = Paciente;
+
+							PlantillaCI.Insert(0, vacio);
+							ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
 
 							return View(consentimientoInformado);
 						}
@@ -310,6 +338,8 @@ namespace HC_Odontologicas.Controllers
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
+					PlantillaCI.Insert(0, vacio);
+					ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
 
 					return View(consentimientoInformado);
 				}
@@ -326,6 +356,9 @@ namespace HC_Odontologicas.Controllers
 
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
+
+					PlantillaCI.Insert(0, vacio);
+					ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
 
 					return View(consentimientoInformado);
 				}
@@ -356,6 +389,22 @@ namespace HC_Odontologicas.Controllers
 				if (e.InnerException != null)
 					mensaje = MensajesError.ForeignKey(e.InnerException.Message);
 				return mensaje;
+			}
+		}
+
+		[HttpPost]
+		public async Task<PlantillaConsentimientoInformado> CargarDatosPlantillaConsentimiento(String CodigoPlantilla)
+		{
+			try
+			{
+
+				//PlantillaConsentimientoInformado plantillaConsentimientoInformado = new PlantillaConsentimientoInformado();
+				var plantillaConsentimientoInformado = await _context.PlantillaConsentimientoInformado.Where(f => f.Codigo == CodigoPlantilla).SingleOrDefaultAsync();
+				return plantillaConsentimientoInformado;
+			}
+			catch (Exception e)
+			{
+				return null;
 			}
 		}
 

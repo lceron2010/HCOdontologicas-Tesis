@@ -342,13 +342,13 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(8)
 					.IsUnicode(false);
 
-				entity.HasOne(d => d.CodigoCie10Navigation)
+				entity.HasOne(d => d.Cie10)
 					.WithMany(p => p.DiagnosticoCie10)
 					.HasForeignKey(d => d.CodigoCie10)
 					.OnDelete(DeleteBehavior.ClientSetNull)
 					.HasConstraintName("FK_DiagnosticoCIE10_CIE10");
 
-				entity.HasOne(d => d.CodigoDiagnosticoNavigation)
+				entity.HasOne(d => d.Diagnostico)
 					.WithMany(p => p.DiagnosticoCie10)
 					.HasForeignKey(d => d.CodigoDiagnostico)
 					.OnDelete(DeleteBehavior.ClientSetNull)

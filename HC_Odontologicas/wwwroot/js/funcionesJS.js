@@ -32,12 +32,12 @@ function regresar(url, tipo) {
 	//if (modified)
 	//	WarningAlert2btn("¿Está seguro de salir de la página?", url, tipo);
 	//else {
-		if (tipo === "salir") {
-			var form = document.getElementById("logoutForm");
-			if (typeof (form) !== "undefined")
-				form.submit();
-		} else
-			window.location.href = url;
+	if (tipo === "salir") {
+		var form = document.getElementById("logoutForm");
+		if (typeof (form) !== "undefined")
+			form.submit();
+	} else
+		window.location.href = url;
 	//}
 }
 
@@ -63,7 +63,7 @@ function eliminar(Codigo, url, urlRet) {
 			//$("#loading").modal();
 			$.ajax({
 				type: "POST",
-				data: {Codigo},
+				data: { Codigo },
 				url: url,
 				success: function (r) {
 					if (r === "Delete") {
@@ -76,4 +76,48 @@ function eliminar(Codigo, url, urlRet) {
 			});
 		}
 	});
+}
+
+/// cargarDatosConsentimiento
+
+function cargarDatosConsentimiento(PlantillaConsentimiento) {
+	
+	var CodigoPlantilla = $(PlantillaConsentimiento).find("option:selected").val();
+	$.ajax({
+		type: "POST",
+		url: "/../ConsentimientoInformado/CargarDatosPlantillaConsentimiento",
+		data: { CodigoPlantilla },
+		success: function (response) {
+			if (response !== undefined) {
+				$("#Nombre").val(response.nombre);
+				$("#Descripcion").val(response.descripcion);
+			}
+			else {
+				$("#Nombre").val("");
+				$("#Descripcion").val("");
+			}	
+		}
+	});
+
+}
+
+function cargarDatosReceta(PlantillaReceta) {
+	var CodigoPlantilla = $(PlantillaReceta).find("option:selected").val();
+	$.ajax({
+		type: "POST",
+		url: "/../RecetaMedica/CargarDatosPlantillaReceta",
+		data: { CodigoPlantilla },
+		success: function (response) {
+			console.log(response);
+			if (response !== undefined) {
+				$("#Nombre").val(response.nombre);
+				$("#Descripcion").val(response.descripcion);
+			}
+			else {
+				$("#Nombre").val("");
+				$("#Descripcion").val("");
+			}
+		}
+	});
+
 }

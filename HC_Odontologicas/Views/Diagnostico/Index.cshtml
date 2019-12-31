@@ -1,0 +1,74 @@
+﻿@model Paginacion<HC_Odontologicas.Models.Diagnostico>
+@using HC_Odontologicas.FuncionesGenerales;
+@{
+	ViewData["Title"] = "Index";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Diagnostico</h1>
+
+<br />
+@if ((bool)ViewData["Crear"])
+{
+	<a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> Nuevo</a>
+}
+@if ((bool)ViewData["Exportar"])
+{
+	<a asp-action="GetExcel" class="btn btn-primary"><i class="fa fa-download"></i> Exportar</a>
+}
+<br />
+<br />
+@* Buscar *@
+<form asp-action="Index" method="get">
+	<div class="input-group col-lg-3 col-md-4 col-sm-6 col-xs-10 pull-right">
+		<input class="form-control" type="search" name="search" placeholder="Buscar..." value="@ViewData["Filter"]" />
+		<div class="input-group-btn">
+			<button type="submit" class="btn btn-sm btn-primary" title="Buscar">Buscar</button>
+			<a asp-action="Index" class="btn btn-sm btn-danger" title="Limpiar filtro">Limpiar</a>
+		</div>
+	</div>
+</form>
+<br />
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				Paciente
+			</th>
+			<th>
+				Doctor
+			</th>
+			<th>
+				Observación
+			</th>
+			<th>
+				Fecha
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.CitaOdontologica.Paciente.NombreCompleto)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.CitaOdontologica.Personal.NombreCompleto)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Observacion)
+				</td>				
+				<td>
+					@Html.DisplayFor(modelItem => item.Fecha)
+				</td>				
+				<td>
+					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white" data-toggle="tooltip" title="Editar">Editar</a>
+					<a onclick="eliminar('@item.Codigo','../Diagnostico/DeleteConfirmed','/../Diagnostico')" class="btn btn-white" data-toggle="tooltip" title="Eliminar">Eliminar</a>
+
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

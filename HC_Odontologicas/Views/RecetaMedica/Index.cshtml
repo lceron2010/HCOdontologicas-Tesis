@@ -30,8 +30,9 @@
 <table class="table">
 	<thead>
 		<tr>
+			<th>Paciente</th>
 			<th>
-				Descripcion
+				Descripción
 			</th>
 			<th>
 				Fecha
@@ -46,6 +47,9 @@
 		@foreach (var item in Model)
 		{
 		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => item.CitaOdontologica.Paciente.NombreCompleto)
+			</td>
 			<td>
 				@Html.DisplayFor(modelItem => item.Descripcion)
 			</td>

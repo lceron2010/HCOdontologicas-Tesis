@@ -11,8 +11,8 @@ using HC_Odontologicas.FuncionesGenerales;
 
 namespace HC_Odontologicas.Controllers
 {
-    public class RecetaMedicaController : Controller
-    {
+	public class RecetaMedicaController : Controller
+	{
 		private readonly HCOdontologicasContext _context;
 		private ValidacionesController validaciones;
 		private readonly AuditoriaController _auditoria;
@@ -20,15 +20,15 @@ namespace HC_Odontologicas.Controllers
 		DateTime fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 
 		public RecetaMedicaController(HCOdontologicasContext context)
-        {
+		{
 			_context = context;
 			validaciones = new ValidacionesController(_context);
 			_auditoria = new AuditoriaController(context);
 		}
 
-        // GET: RecetaMedica
-        public async Task<IActionResult> Index(string sortOrder, string Filter, int? page, string search)
-        {
+		// GET: RecetaMedica
+		public async Task<IActionResult> Index(string sortOrder, string Filter, int? page, string search)
+		{
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
@@ -78,10 +78,10 @@ namespace HC_Odontologicas.Controllers
 				return Redirect("../Identity/Account/Login");
 			}
 		}
-		        
-        // GET: RecetaMedica/Create
-        public IActionResult Create()
-        {
+
+		// GET: RecetaMedica/Create
+		public IActionResult Create()
+		{
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
@@ -99,10 +99,10 @@ namespace HC_Odontologicas.Controllers
 					TimeSpan intFinal = new TimeSpan(22, 30, 00);
 
 					//ver estos condiciones.
-					//var cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date).ToList();
-					//cita = cita.FindAll(ci => ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal);
-
-					CitaOdontologica cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal).SingleOrDefault();
+					var c = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date);
+					c = c.Where(ci => ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal);
+					CitaOdontologica cita = c.FirstOrDefault();
+					//CitaOdontologica cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal).SingleOrDefault();
 					//-- fin ver las condiciones
 					List<SelectListItem> Personal = null;
 					List<SelectListItem> Paciente = null;
@@ -124,6 +124,10 @@ namespace HC_Odontologicas.Controllers
 					ViewData["CodigoPersonal"] = Personal;
 					ViewData["CodigoPaciente"] = Paciente;
 
+					List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
+					PlantillaRM.Insert(0, vacio);
+					ViewData["CodigoPlantillaReceta"] = PlantillaRM;
+
 					return View();
 				}
 				else
@@ -135,23 +139,35 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-        // POST: RecetaMedica/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]        
-        public async Task<IActionResult> Create(RecetaMedica recetaMedica)
-        {
+		// POST: RecetaMedica/Create
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		public async Task<IActionResult> Create(RecetaMedica recetaMedica)
+		{
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
 				try
 				{
+					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
+					Personal.Insert(0, vacio);
+					ViewData["CodigoPersonal"] = Personal;
+
+					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
+					Paciente.Insert(0, vacio);
+					ViewData["CodigoPaciente"] = Paciente;
+
+					List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList(); ;
+					PlantillaRM.Insert(0, vacio);
+					ViewData["CodigoPlantillaReceta"] = PlantillaRM;
 
 					if (ModelState.IsValid)
 					{
 						//cita odontologica						
 						CitaOdontologica citaOdontologica = _context.CitaOdontologica.Where(ci => ci.Codigo == recetaMedica.CodigoCitaOdontologica).SingleOrDefault();//_context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio <= intInicial && ci.HoraFin >= intFinal && ci.CodigoPaciente == anamnesis.CodigoPaciente && ci.CodigoPersonal == anamnesis.CodigoPersonal).FirstOrDefault();
 						DateTime FechaCitaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+						var transaction = _context.Database.BeginTransaction();
 						if (citaOdontologica == null)
 						{
 							CitaOdontologica cita = new CitaOdontologica();
@@ -178,26 +194,28 @@ namespace HC_Odontologicas.Controllers
 						{
 							recetaMedica.CodigoCitaOdontologica = citaOdontologica.Codigo;
 						}
-
-
+						//guardar receta medica						
+						Int64 maxCodigo = 0;
+						maxCodigo = Convert.ToInt64(_context.RecetaMedica.Max(f => f.Codigo));
+						maxCodigo += 1;
+						recetaMedica.Codigo = maxCodigo.ToString("D8");
 						recetaMedica.Fecha = FechaCitaCreacion;
+						if (recetaMedica.CodigoPlantillaRecetaMedica == "0")
+						{
+							recetaMedica.CodigoPlantillaRecetaMedica = null;
+						}
 						_context.Add(recetaMedica);
 						await _context.SaveChangesAsync();
+						transaction.Commit();
 						await _auditoria.GuardarLogAuditoria(recetaMedica.Fecha, i.Name, "RecetaMedica", recetaMedica.Codigo, "I");
-
 
 						ViewBag.Message = "Save";
 						return View(recetaMedica);
 
 					}
-					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
-					Personal.Insert(0, vacio);
-					ViewData["CodigoPersonal"] = Personal;
 
-					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
-					Paciente.Insert(0, vacio);
-					ViewData["CodigoPaciente"] = Paciente;
 					return View(recetaMedica);
+
 				}
 				catch (Exception e)
 				{
@@ -213,7 +231,13 @@ namespace HC_Odontologicas.Controllers
 					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
+
+					List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList(); ;
+					PlantillaRM.Insert(0, vacio);
+					ViewData["CodigoPlantillaReceta"] = PlantillaRM;
+
 					return View(recetaMedica);
+
 				}
 			}
 			else
@@ -222,9 +246,9 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-        // GET: RecetaMedica/Edit/5
-        public async Task<IActionResult> Edit(string codigo)
-        {
+		// GET: RecetaMedica/Edit/5
+		public async Task<IActionResult> Edit(string codigo)
+		{
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
@@ -250,6 +274,9 @@ namespace HC_Odontologicas.Controllers
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
+					List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre", receta.CodigoPlantillaRecetaMedica).ToList(); ;
+					PlantillaRM.Insert(0, vacio);
+					ViewData["CodigoPlantillaReceta"] = PlantillaRM;
 
 					return View(receta);
 				}
@@ -262,17 +289,17 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-        // POST: RecetaMedica/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]        
-        public async Task<IActionResult> Edit(RecetaMedica recetaMedica)
-        {
+		// POST: RecetaMedica/Edit/5
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		public async Task<IActionResult> Edit(RecetaMedica recetaMedica)
+		{
 			var i = (ClaimsIdentity)User.Identity;
-			
+
 			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", recetaMedica.CodigoPersonal).ToList();
 			List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", recetaMedica.CodigoPaciente).ToList();
-
+			List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre", recetaMedica.CodigoPlantillaRecetaMedica).ToList();
 			if (i.IsAuthenticated)
 			{
 				try
@@ -282,9 +309,14 @@ namespace HC_Odontologicas.Controllers
 						try
 						{
 							recetaMedica.Codigo = Encriptacion.Decrypt(recetaMedica.Codigo);
+							recetaMedica.Fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+							if (recetaMedica.CodigoPlantillaRecetaMedica == "0")
+							{
+								recetaMedica.CodigoPlantillaRecetaMedica = null;
+							}
 							_context.Update(recetaMedica);
 							await _context.SaveChangesAsync();
-							await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "RecetaMedica", recetaMedica.Codigo, "U");
+							await _auditoria.GuardarLogAuditoria(recetaMedica.Fecha, i.Name, "RecetaMedica", recetaMedica.Codigo, "U");
 							ViewBag.Message = "Save";
 
 							Personal.Insert(0, vacio);
@@ -292,6 +324,9 @@ namespace HC_Odontologicas.Controllers
 
 							Paciente.Insert(0, vacio);
 							ViewData["CodigoPaciente"] = Paciente;
+
+							PlantillaRM.Insert(0, vacio);
+							ViewData["CodigoPlantillaReceta"] = PlantillaRM;
 
 							return View(recetaMedica);
 						}
@@ -306,6 +341,9 @@ namespace HC_Odontologicas.Controllers
 
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
+
+					PlantillaRM.Insert(0, vacio);
+					ViewData["CodigoPlantillaReceta"] = PlantillaRM;
 
 					return View(recetaMedica);
 				}
@@ -323,6 +361,9 @@ namespace HC_Odontologicas.Controllers
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
+					PlantillaRM.Insert(0, vacio);
+					ViewData["CodigoPlantillaReceta"] = PlantillaRM;
+
 					return View(recetaMedica);
 				}
 			}
@@ -331,11 +372,11 @@ namespace HC_Odontologicas.Controllers
 				return Redirect("../Identity/Account/Login");
 			}
 		}
-       
-        // POST: RecetaMedica/Delete/5
-        [HttpPost]       
-        public async Task<String> DeleteConfirmed(string codigo)
-        {
+
+		// POST: RecetaMedica/Delete/5
+		[HttpPost]
+		public async Task<String> DeleteConfirmed(string codigo)
+		{
 			try
 			{
 				var i = (ClaimsIdentity)User.Identity;
@@ -355,8 +396,19 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
+		[HttpPost]
+		public async Task<PlantillaRecetaMedica> CargarDatosPlantillaReceta(String CodigoPlantilla)
+		{
+			try
+			{
+				var plantillaRecetaMedica = await _context.PlantillaRecetaMedica.Where(f => f.Codigo == CodigoPlantilla).SingleOrDefaultAsync();
+				return plantillaRecetaMedica;
+			}
+			catch (Exception e)
+			{
+				return null;
+			}
+		}
 	}
-
-
 }
 
