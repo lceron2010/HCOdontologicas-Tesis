@@ -119,5 +119,24 @@ function cargarDatosReceta(PlantillaReceta) {
 			}
 		}
 	});
+}
+	//OJOOOOO......cambiar al controlador de carrera
+function cargarDatosCarrera(Facultad) {
+	var CodigoFacultad = $(Facultad).find("option:selected").val();
+	$.ajax({
+		type: "POST",
+		url: "/../Pacientes/CargarDatosCarrera",v	
+		data: { CodigoFacultad },
+		success: function (response) {
+			console.log(response);
+			$("#CodigoCarrera").find('option').remove();
+			$.each(response, function (key, registro) {
+				$("#CodigoCarrera").append($('<option>', {
+					value: registro.value,
+					text: registro.text
+				}));
+			});
+		}
+	});
 
 }

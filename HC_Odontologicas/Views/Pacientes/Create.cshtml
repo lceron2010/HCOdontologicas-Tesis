@@ -127,6 +127,20 @@
 							<span asp-validation-for="MailEpn" class="text-danger"></span>
 						</div>
 					</div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="CodigoFacultad" class="control-label">Facultad</label>
+							<select asp-for="CodigoFacultad" class="form-control" asp-items="ViewBag.CodigoFacultad" onchange="cargarDatosCarrera(this);"></select>
+							<span asp-validation-for="CodigoFacultad" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="CodigoCarrera" class="control-label">Carrera</label>
+							<select asp-for="CodigoCarrera" class="form-control" asp-items="ViewBag.CodigoCarrera"></select>
+							<span asp-validation-for="CodigoCarrera" class="text-danger"></span>
+						</div>
+					</div>
 				</div>
 			</fieldset>
 			<fieldset>

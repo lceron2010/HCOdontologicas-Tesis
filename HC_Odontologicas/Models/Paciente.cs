@@ -42,7 +42,11 @@ namespace HC_Odontologicas.Models
 		public bool Estado { get; set; }
 		public string NombreCompleto { get; set; }
 		public string CodigoTipoIdentificacion { get; set; }
+		public string CodigoFacultad { get; set; }
+		public string CodigoCarrera { get; set; }
 
+		public virtual Carrera Carrera { get; set; }
+		public virtual Facultad Facultad { get; set; }
 		public virtual ICollection<Agenda> Agenda { get; set; }
         public virtual ICollection<CitaOdontologica> CitaOdontologica { get; set; }
 		public virtual TipoIdentificacion TipoIdentificacion { get; set; }

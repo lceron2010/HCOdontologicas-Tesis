@@ -21,11 +21,13 @@ namespace HC_Odontologicas.Models
 		public virtual DbSet<Anamnesis> Anamnesis { get; set; }
 		public virtual DbSet<AnamnesisEnfermedad> AnamnesisEnfermedad { get; set; }
 		public virtual DbSet<Cargo> Cargo { get; set; }
+		public virtual DbSet<Carrera> Carrera { get; set; }
 		public virtual DbSet<Cie10> Cie10 { get; set; }
 		public virtual DbSet<ConsentimientoInformado> ConsentimientoInformado { get; set; }
 		public virtual DbSet<Diagnostico> Diagnostico { get; set; }
 		public virtual DbSet<DiagnosticoCie10> DiagnosticoCie10 { get; set; }
 		public virtual DbSet<Enfermedad> Enfermedad { get; set; }
+		public virtual DbSet<Facultad> Facultad { get; set; }
 		public virtual DbSet<CitaOdontologica> CitaOdontologica { get; set; }
 		public virtual DbSet<LogAuditoria> LogAuditoria { get; set; }
 		public virtual DbSet<Menu> Menu { get; set; }
@@ -219,6 +221,37 @@ namespace HC_Odontologicas.Models
 					.IsUnicode(false);
 			});
 
+			modelBuilder.Entity<Carrera>(entity =>
+			{
+				entity.HasKey(e => e.Codigo);
+
+				entity.Property(e => e.Codigo)
+					.HasMaxLength(4)
+					.IsUnicode(false);
+
+				entity.Property(e => e.CodigoFacultad)
+					.IsRequired()
+					.HasMaxLength(4)
+					.IsUnicode(false);
+
+				entity.Property(e => e.Descripcion)
+					.HasMaxLength(512)
+					.IsUnicode(false);
+
+				entity.Property(e => e.Nombre)
+					.IsRequired()
+					.HasMaxLength(128)
+					.IsUnicode(false);
+
+				entity.HasOne(d => d.Facultad)
+					.WithMany(p => p.Carrera)
+					.HasForeignKey(d => d.CodigoFacultad)
+					.OnDelete(DeleteBehavior.ClientSetNull)
+					.HasConstraintName("FK_Carrera_Facultad");
+			});
+
+
+
 			modelBuilder.Entity<Cie10>(entity =>
 			{
 				entity.HasKey(e => e.Codigo);
@@ -242,6 +275,56 @@ namespace HC_Odontologicas.Models
 					.IsRequired()
 					.HasMaxLength(256)
 					.IsUnicode(false);
+			});
+
+			modelBuilder.Entity<CitaOdontologica>(entity =>
+			{
+				entity.HasKey(e => e.Codigo);
+
+				entity.Property(e => e.Codigo)
+					.HasMaxLength(8)
+					.IsUnicode(false);
+
+				entity.Property(e => e.CodigoPaciente)
+					.IsRequired()
+					.HasMaxLength(8)
+					.IsUnicode(false);
+
+				entity.Property(e => e.CodigoPersonal)
+					.IsRequired()
+					.HasMaxLength(8)
+					.IsUnicode(false);
+
+				entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+
+				entity.Property(e => e.FechaFin).HasColumnType("datetime");
+
+				entity.Property(e => e.FechaInicio).HasColumnType("datetime");
+
+				entity.Property(e => e.Observaciones)
+					.HasMaxLength(512)
+					.IsUnicode(false);
+
+				entity.Property(e => e.Estado)
+					.HasMaxLength(1)
+					.IsUnicode(false);
+
+				entity.Property(e => e.UsuarioCreacion)
+					.IsRequired()
+					.HasMaxLength(64)
+					.IsUnicode(false);
+
+				entity.HasOne(d => d.Paciente)
+					.WithMany(p => p.CitaOdontologica)
+					.HasForeignKey(d => d.CodigoPaciente)
+					.OnDelete(DeleteBehavior.ClientSetNull)
+					.HasConstraintName("FK_CitaOdontologica_Paciente");
+
+				entity.HasOne(d => d.Personal)
+					.WithMany(p => p.CitaOdontologica)
+					.HasForeignKey(d => d.CodigoPersonal)
+					.OnDelete(DeleteBehavior.ClientSetNull)
+					.HasConstraintName("FK_CitaOdontologica_Personal");
 			});
 
 			modelBuilder.Entity<ConsentimientoInformado>(entity =>
@@ -373,55 +456,23 @@ namespace HC_Odontologicas.Models
 					.IsUnicode(false);
 			});
 
-			modelBuilder.Entity<CitaOdontologica>(entity =>
+			modelBuilder.Entity<Facultad>(entity =>
 			{
 				entity.HasKey(e => e.Codigo);
 
 				entity.Property(e => e.Codigo)
-					.HasMaxLength(8)
+					.HasMaxLength(4)
 					.IsUnicode(false);
 
-				entity.Property(e => e.CodigoPaciente)
-					.IsRequired()
-					.HasMaxLength(8)
-					.IsUnicode(false);
-
-				entity.Property(e => e.CodigoPersonal)
-					.IsRequired()
-					.HasMaxLength(8)
-					.IsUnicode(false);
-
-				entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
-
-				entity.Property(e => e.FechaFin).HasColumnType("datetime");
-
-				entity.Property(e => e.FechaInicio).HasColumnType("datetime");
-
-				entity.Property(e => e.Observaciones)
+				entity.Property(e => e.Descripcion)
 					.HasMaxLength(512)
 					.IsUnicode(false);
 
-				entity.Property(e => e.Estado)
-					.HasMaxLength(1)
-					.IsUnicode(false);
-
-				entity.Property(e => e.UsuarioCreacion)
+				entity.Property(e => e.Nombre)
 					.IsRequired()
-					.HasMaxLength(64)
+					.HasMaxLength(128)
 					.IsUnicode(false);
-
-				entity.HasOne(d => d.Paciente)
-					.WithMany(p => p.CitaOdontologica)
-					.HasForeignKey(d => d.CodigoPaciente)
-					.OnDelete(DeleteBehavior.ClientSetNull)
-					.HasConstraintName("FK_CitaOdontologica_Paciente");
-
-				entity.HasOne(d => d.Personal)
-					.WithMany(p => p.CitaOdontologica)
-					.HasForeignKey(d => d.CodigoPersonal)
-					.OnDelete(DeleteBehavior.ClientSetNull)
-					.HasConstraintName("FK_CitaOdontologica_Personal");
-			});
+			});			
 
 			modelBuilder.Entity<LogAuditoria>(entity =>
 			{
@@ -545,6 +596,18 @@ namespace HC_Odontologicas.Models
 			{
 				entity.HasKey(e => e.Codigo);
 
+				entity.HasIndex(e => e.MailEpn)
+					.HasName("UK_MailEPN")
+					.IsUnique();
+
+				entity.HasIndex(e => e.MailPersonal)
+					.HasName("UK_MailPersonal")
+					.IsUnique();
+
+				entity.HasIndex(e => e.NumeroUnico)
+					.HasName("UK_NumeroUnico")
+					.IsUnique();
+
 				entity.Property(e => e.Codigo)
 					.HasMaxLength(8)
 					.IsUnicode(false);
@@ -565,6 +628,14 @@ namespace HC_Odontologicas.Models
 
 				entity.Property(e => e.Celular)
 					.HasMaxLength(32)
+					.IsUnicode(false);
+
+				entity.Property(e => e.CodigoCarrera)
+				   .HasMaxLength(4)
+				   .IsUnicode(false);
+
+				entity.Property(e => e.CodigoFacultad)
+					.HasMaxLength(4)
 					.IsUnicode(false);
 
 				entity.Property(e => e.CodigoTipoIdentificacion)
@@ -593,6 +664,11 @@ namespace HC_Odontologicas.Models
 					.IsUnicode(false)
 					.IsFixedLength();
 
+				entity.Property(e => e.Identificacion)
+					.IsRequired()
+					.HasMaxLength(13)
+					.IsUnicode(false);
+				
 				entity.Property(e => e.MailEpn)
 					.HasColumnName("MailEPN")
 					.HasMaxLength(64)
@@ -631,6 +707,16 @@ namespace HC_Odontologicas.Models
 				  .HasMaxLength(129)
 				  .IsUnicode(false)
 				  .HasComputedColumnSql("(([Empleado].[Apellidos]+' ')+[Empleado].[Nombres])");
+
+				entity.HasOne(d => d.Carrera)
+				  .WithMany(p => p.Paciente)
+				  .HasForeignKey(d => d.CodigoCarrera)
+				  .HasConstraintName("FK_Paciente_Carrera");
+
+				entity.HasOne(d => d.Facultad)
+					.WithMany(p => p.Paciente)
+					.HasForeignKey(d => d.CodigoFacultad)
+					.HasConstraintName("FK_Paciente_Facultad");
 
 				entity.HasOne(d => d.TipoIdentificacion)
 				   .WithMany(p => p.Paciente)
@@ -862,7 +948,6 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(128)
 					.IsUnicode(false);
 			});
-
 
 			modelBuilder.Entity<RecetaMedica>(entity =>
 			{

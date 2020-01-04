@@ -95,6 +95,10 @@ namespace HC_Odontologicas.Controllers
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 
+					List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
+					Facultad.Insert(0, vacio);
+					ViewData["CodigoFacultad"] = Facultad;
+
 					return View();
 				}
 				else
@@ -266,6 +270,15 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-
+		[HttpPost]
+		public async Task<List<SelectListItem>> CargarDatosCarrera(String CodigoFacultad)
+		{			
+			List<SelectListItem> list = new List<SelectListItem>();			
+			var Carrera = await _context.Carrera.OrderBy(f => f.Nombre).Where(p=> p.CodigoFacultad == CodigoFacultad && p.Estado == true).ToListAsync();
+			list.Insert(0, new SelectListItem("Seleccione...", "0"));
+			foreach (Carrera item in Carrera.ToList())
+				list.Add(new SelectListItem(item.Nombre, item.Codigo));			
+			return list;
+		}
 	}
-}
+} 
