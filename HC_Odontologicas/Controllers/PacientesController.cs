@@ -40,7 +40,7 @@ namespace HC_Odontologicas.Controllers
 
 				if (Convert.ToBoolean(permisos[0]))
 				{
-					ViewData["NombreSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
+					ViewData["NombreSortParam"] = string.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";					
 
 					//permite mantener la busqueda introducida en el filtro de busqueda
 					if (search != null)
@@ -50,20 +50,20 @@ namespace HC_Odontologicas.Controllers
 
 					ViewData["Filter"] = search;
 					ViewData["CurrentSort"] = sortOrder;
-					var pacientes = from c in _context.Paciente select c;
+					var pacientes = from c in _context.Paciente.OrderBy(p => p.NombreCompleto) select c;
 
 					if (!String.IsNullOrEmpty(search))
-						pacientes = pacientes.Where(s => s.Nombres.Contains(search));
+						pacientes = pacientes.Where(s => s.NombreCompleto.Contains(search) || s.Identificacion.Contains(search) || s.NumeroUnico.Contains(search));
 
 					switch (sortOrder)
 					{
 						case "nombre_desc":
-							pacientes = pacientes.OrderByDescending(s => s.Nombres);
-							break;
+							pacientes = pacientes.OrderByDescending(s => s.NombreCompleto);
+							break;			
+						
 						default:
-							pacientes = pacientes.OrderBy(s => s.Nombres);
+							pacientes = pacientes.OrderBy(s => s.NombreCompleto);
 							break;
-
 					}
 					int pageSize = 10;
 					return View(await Paginacion<Paciente>.CreateAsync(pacientes, page ?? 1, pageSize)); // page devuelve valor si lo tiene caso contrario devuelve 1

@@ -29,6 +29,7 @@
 			</nav>
 		</header>*@
 	@*fin de cargar el menu dinamico*@
+
 	<header>
 		<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
 			<div class="container">
@@ -38,92 +39,29 @@
 					<span class="navbar-toggler-icon"></span>
 				</button>
 				<div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-					@*<partial name="_Menu.cshtml" />*@
-					<partial name="_LoginPartial" />
-					<ul name="menu" class="navbar-nav flex-grow-1">
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Pacientes" asp-action="Index">Pacientes</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Personal" asp-action="Index">Personal</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Perfiles" asp-action="Index">Perfiles</a>
-						</li>
-
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Anamnesis" asp-action="Index">Anamnesis</a>
-						</li>
-
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="ConsentimientoInformado" asp-action="Index">Consentimiento</a>
-						</li>
-
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Recetamedica" asp-action="Index">Receta</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Diagnostico" asp-action="Index">Diagnostico</a>
-						</li>
-					</ul>
-
-					@*<ul class="navbar-nav flex-grow-1">
-							<li class="nav-item">
-								<a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Historia Clínica</a>
-								<ul>
-									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Pacientes</a></li>
-									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Anamnesis Odontológico</a></li>
-									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Odontogramas</a></li>
-									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Diagnóstico</a></li>
-									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Receta</a></li>
-								</ul>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Agenda</a>
-								<ul>
-									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Calendario</a></li>
-									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Citas Odontológicas</a></li>
-								</ul>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Configuración</a>
-								<ul>
-									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Personal</a></li>
-									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Usuarios</a></li>
-								</ul>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Seguridad</a>
-								<ul>
-									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Perfiles</a></li>
-									<li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Cambiar Contraseña</a></li>
-								</ul>
-							</li>
-						</ul>*@
-
+					<partial name="_LoginPartial" />	
+					<partial name="_Menu.cshtml" />
 				</div>
 			</div>
 		</nav>
-
 	</header>
 	<div class="container">
 		<main role="main" class="pb-3">
 			@RenderBody()
 		</main>
 	</div>
-
 	<footer class="border-top footer text-muted">
 		<div class="container">
 			&copy; 2019 - HC_Odontologicas - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
 		</div>
 	</footer>
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
-	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>	
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
 	<script src="~/lib/alertas.js"></script>
 	<script src="~/js/funcionesJS.js"></script>
 	<script src="~/lib/sweetalert.min.js"></script>
-	
+
 	@RenderSection("Scripts", required: false)
 </body>
 </html>
