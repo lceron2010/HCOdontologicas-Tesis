@@ -7,8 +7,7 @@
         public string NombreUsuario { get; set; }
         public string Contrasenia { get; set; }
         public string CorreoElectronico { get; set; }
-        public bool Estado { get; set; }
-
+        
         public virtual Perfil Perfil { get; set; }
     }
 }

@@ -92,11 +92,7 @@ namespace HC_Odontologicas.Controllers
 
 					List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
 					Cargo.Insert(0, vacio);
-					ViewData["CodigoCargo"] = Cargo;
-
-					List<SelectListItem> Perfil = new SelectList(_context.Perfil.OrderBy(p => p.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
-					Perfil.Insert(0, vacio);
-					ViewData["CodigoPerfil"] = Perfil;
+					ViewData["CodigoCargo"] = Cargo;									
 
 					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(ti => ti.Nombre).Where(ti => ti.Estado == true), "Codigo", "Nombre").ToList();
 					TipoIdentificacion.Insert(0, vacio);
@@ -141,10 +137,7 @@ namespace HC_Odontologicas.Controllers
 					List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
 					Cargo.Insert(0, vacio);
 					ViewData["CodigoCargo"] = Cargo;
-
-					List<SelectListItem> Perfil = new SelectList(_context.Perfil.OrderBy(p => p.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
-					Perfil.Insert(0, vacio);
-					ViewData["CodigoPerfil"] = Perfil;
+										
 
 					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(ti => ti.Nombre).Where(ti => ti.Estado == true), "Codigo", "Nombre").ToList();
 					TipoIdentificacion.Insert(0, vacio);
@@ -161,10 +154,7 @@ namespace HC_Odontologicas.Controllers
 					List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
 					Cargo.Insert(0, vacio);
 					ViewData["CodigoCargo"] = Cargo;
-
-					List<SelectListItem> Perfil = new SelectList(_context.Perfil.OrderBy(p => p.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
-					Perfil.Insert(0, vacio);
-					ViewData["CodigoPerfil"] = Perfil;
+										
 
 					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(ti => ti.Nombre).Where(ti => ti.Estado == true), "Codigo", "Nombre").ToList();
 					TipoIdentificacion.Insert(0, vacio);
@@ -200,10 +190,7 @@ namespace HC_Odontologicas.Controllers
 					List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
 					Cargo.Insert(0, vacio);
 					ViewData["CodigoCargo"] = Cargo;
-
-					List<SelectListItem> Perfil = new SelectList(_context.Perfil.OrderBy(p => p.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
-					Perfil.Insert(0, vacio);
-					ViewData["CodigoPerfil"] = Perfil;
+										
 
 					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(ti => ti.Nombre).Where(ti => ti.Estado == true), "Codigo", "Nombre").ToList();
 					TipoIdentificacion.Insert(0, vacio);
@@ -228,7 +215,6 @@ namespace HC_Odontologicas.Controllers
 		{
 			var i = (ClaimsIdentity)User.Identity;
 			List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
-			List<SelectListItem> Perfil = new SelectList(_context.Perfil.OrderBy(p => p.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
 			List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
 
 			if (i.IsAuthenticated)
@@ -248,9 +234,7 @@ namespace HC_Odontologicas.Controllers
 
 							Cargo.Insert(0, vacio);
 							ViewData["CodigoCargo"] = Cargo;
-
-							Perfil.Insert(0, vacio);
-							ViewData["CodigoPerfil"] = Perfil;
+														
 							
 							TipoIdentificacion.Insert(0, vacio);
 							ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
@@ -264,9 +248,7 @@ namespace HC_Odontologicas.Controllers
 
 					Cargo.Insert(0, vacio);
 					ViewData["CodigoCargo"] = Cargo;
-
-					Perfil.Insert(0, vacio);
-					ViewData["CodigoPerfil"] = Perfil;
+										
 
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
@@ -284,9 +266,7 @@ namespace HC_Odontologicas.Controllers
 					Cargo.Insert(0, vacio);
 					ViewData["CodigoCargo"] = Cargo;
 
-					Perfil.Insert(0, vacio);
-					ViewData["CodigoPerfil"] = Perfil;
-
+				
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 

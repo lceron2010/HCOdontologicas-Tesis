@@ -7,8 +7,7 @@ namespace HC_Odontologicas.Models
     {
         public Perfil()
         {
-            PerfilDetalle = new List<PerfilDetalle>();
-            Personal = new HashSet<Personal>();
+            PerfilDetalle = new List<PerfilDetalle>();            
             Usuario = new HashSet<Usuario>();
         }
 
@@ -20,8 +19,7 @@ namespace HC_Odontologicas.Models
         public DateTime? FechaModificacion { get; set; }
         public string UsuarioModificacion { get; set; }
 
-        public virtual List<PerfilDetalle> PerfilDetalle { get; set; }
-        public virtual ICollection<Personal> Personal { get; set; }
+        public virtual List<PerfilDetalle> PerfilDetalle { get; set; }        
         public virtual ICollection<Usuario> Usuario { get; set; }
     }
 }

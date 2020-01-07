@@ -7,8 +7,7 @@ namespace HC_Odontologicas.Models
     public partial class Paciente
     {
         public Paciente()
-        {
-            Agenda = new HashSet<Agenda>();
+        {            
 			CitaOdontologica = new HashSet<CitaOdontologica>();
         }
 
@@ -46,8 +45,7 @@ namespace HC_Odontologicas.Models
 		public string CodigoCarrera { get; set; }
 
 		public virtual Carrera Carrera { get; set; }
-		public virtual Facultad Facultad { get; set; }
-		public virtual ICollection<Agenda> Agenda { get; set; }
+		public virtual Facultad Facultad { get; set; }		
         public virtual ICollection<CitaOdontologica> CitaOdontologica { get; set; }
 		public virtual TipoIdentificacion TipoIdentificacion { get; set; }
 	}

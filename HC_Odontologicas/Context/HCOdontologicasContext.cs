@@ -16,8 +16,7 @@ namespace HC_Odontologicas.Models
 			: base(options)
 		{
 		}
-
-		public virtual DbSet<Agenda> Agenda { get; set; }
+				
 		public virtual DbSet<Anamnesis> Anamnesis { get; set; }
 		public virtual DbSet<AnamnesisEnfermedad> AnamnesisEnfermedad { get; set; }
 		public virtual DbSet<Cargo> Cargo { get; set; }
@@ -59,52 +58,7 @@ namespace HC_Odontologicas.Models
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
-			modelBuilder.Entity<Agenda>(entity =>
-			{
-				entity.HasKey(e => e.Codigo);
-
-				entity.Property(e => e.Codigo)
-					.HasMaxLength(8)
-					.IsUnicode(false);
-
-				entity.Property(e => e.CodigoPaciente)
-					.IsRequired()
-					.HasMaxLength(8)
-					.IsUnicode(false);
-
-				entity.Property(e => e.CodigoPersonal)
-					.IsRequired()
-					.HasMaxLength(8)
-					.IsUnicode(false);
-
-				entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
-
-				entity.Property(e => e.FechaFin).HasColumnType("datetime");
-
-				entity.Property(e => e.FechaInicio).HasColumnType("datetime");
-
-				entity.Property(e => e.Observaciones)
-					.HasMaxLength(512)
-					.IsUnicode(false);
-
-				entity.Property(e => e.UsuarioCreacion)
-					.IsRequired()
-					.HasMaxLength(64)
-					.IsUnicode(false);
-
-				entity.HasOne(d => d.Paciente)
-					.WithMany(p => p.Agenda)
-					.HasForeignKey(d => d.CodigoPaciente)
-					.OnDelete(DeleteBehavior.ClientSetNull)
-					.HasConstraintName("FK_Agenda_Paciente");
-
-				entity.HasOne(d => d.Personal)
-					.WithMany(p => p.Agenda)
-					.HasForeignKey(d => d.CodigoPersonal)
-					.OnDelete(DeleteBehavior.ClientSetNull)
-					.HasConstraintName("FK_Agenda_Personal");
-			});
-
+			
 			modelBuilder.Entity<Anamnesis>(entity =>
 			{
 				entity.HasKey(e => e.Codigo);
@@ -249,8 +203,6 @@ namespace HC_Odontologicas.Models
 					.OnDelete(DeleteBehavior.ClientSetNull)
 					.HasConstraintName("FK_Carrera_Facultad");
 			});
-
-
 
 			modelBuilder.Entity<Cie10>(entity =>
 			{
@@ -806,21 +758,13 @@ namespace HC_Odontologicas.Models
 					.IsRequired()
 					.HasMaxLength(4)
 					.IsUnicode(false);
-
-				entity.Property(e => e.CodigoPerfil)
-					.IsRequired()
-					.HasMaxLength(4)
-					.IsUnicode(false);
+								
 
 				entity.Property(e => e.CodigoTipoIdentificacion)
 					.IsRequired()
 					.HasMaxLength(4)
 					.IsUnicode(false);
-
-				entity.Property(e => e.Contrasenia)
-					.IsRequired()
-					.HasMaxLength(64)
-					.IsUnicode(false);
+								
 
 				entity.Property(e => e.CorreoElectronico)
 					.IsRequired()
@@ -837,11 +781,7 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(15)
 					.IsUnicode(false);
 
-				entity.Property(e => e.NombreUsuario)
-					.IsRequired()
-					.HasMaxLength(64)
-					.IsUnicode(false);
-
+				
 				entity.Property(e => e.Nombres)
 					.IsRequired()
 					.HasMaxLength(128)
@@ -863,11 +803,6 @@ namespace HC_Odontologicas.Models
 					.OnDelete(DeleteBehavior.ClientSetNull)
 					.HasConstraintName("FK_Personal_Cargo");
 
-				entity.HasOne(d => d.Perfil)
-				   .WithMany(p => p.Personal)
-				   .HasForeignKey(d => d.CodigoPerfil)
-				   .OnDelete(DeleteBehavior.ClientSetNull)
-				   .HasConstraintName("FK_Personal_Perfil");
 
 				entity.HasOne(d => d.TipoIdentificacion)
 					.WithMany(p => p.Personal)

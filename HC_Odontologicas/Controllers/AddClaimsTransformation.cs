@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HC_Odontologicas.Controllers
 {
-    public class AddClaimsTransformation : IClaimsTransformation
+	public class AddClaimsTransformation : IClaimsTransformation
 	{
 		private readonly HCOdontologicasContext _context;
 		private readonly UserManager<UsuarioLogin> _userManager;
@@ -23,20 +23,26 @@ namespace HC_Odontologicas.Controllers
 		}
 		public Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
 		{
-			var identity = (ClaimsIdentity)principal.Identity;
-			var user = _context.Usuario.SingleOrDefault(p => p.CorreoElectronico == identity.Name);
-			//identity.AddClaim(new Claim("ActiveDirectory", activeDirectory));
-			//identity.AddClaim(new Claim("AutoLoginAD", autoLoginAD));
-			//identity.AddClaim(new Claim("CodigoCompania", user.CodigoCompania));
-			identity.AddClaim(new Claim("CodigoPerfil", user.CodigoPerfil));
-			identity.AddClaim(new Claim("NombreCompleto", user.NombreUsuario));
-			var perfilDetalle = _context.PerfilDetalle.Include(p => p.Menu).Where(p => p.CodigoPerfil == user.CodigoPerfil).ToList();
-			List<Claim> perfilDetalles = new List<Claim>();
-			foreach (var item in perfilDetalle)
-				if (! item.Menu.Accion.Contains("#"))
-					perfilDetalles.Add(new Claim(item.Menu.Accion, item.Ver + ";" + item.Crear + ";" + item.Editar + ";" + item.Eliminar + ";" + item.Exportar + ";" + item.Importar));
-			identity.AddClaims(perfilDetalles);
-			return Task.FromResult(principal);
+			try
+			{
+				var identity = (ClaimsIdentity)principal.Identity;
+				var user = _context.Usuario.SingleOrDefault(p => p.CorreoElectronico == identity.Name);
+
+				identity.AddClaim(new Claim("CodigoPerfil", user.CodigoPerfil));
+				identity.AddClaim(new Claim("NombreCompleto", user.NombreUsuario));
+				var perfilDetalle = _context.PerfilDetalle.Include(p => p.Menu).Where(p => p.CodigoPerfil == user.CodigoPerfil).ToList();
+				List<Claim> perfilDetalles = new List<Claim>();
+				foreach (var item in perfilDetalle)
+					if (!item.Menu.Accion.Contains("#"))
+						perfilDetalles.Add(new Claim(item.Menu.Accion, item.Ver + ";" + item.Crear + ";" + item.Editar + ";" + item.Eliminar + ";" + item.Exportar + ";" + item.Importar));
+				identity.AddClaims(perfilDetalles);
+				return Task.FromResult(principal);
+			}
+			catch (Exception e)
+			{
+				throw new Exception(e.Message);
+			}
+
 		}
 	}
 }
