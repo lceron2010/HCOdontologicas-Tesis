@@ -52,7 +52,7 @@ namespace HC_Odontologicas.Controllers
 					ViewData["CurrentSort"] = sortOrder;
 					var pacientes = from c in _context.Paciente.OrderBy(p => p.NombreCompleto) select c;
 
-					if (!String.IsNullOrEmpty(search))
+					//if (!String.IsNullOrEmpty(search))
 						pacientes = pacientes.Where(s => s.NombreCompleto.Contains(search) || s.Identificacion.Contains(search) || s.NumeroUnico.Contains(search));
 
 					switch (sortOrder)
@@ -117,8 +117,12 @@ namespace HC_Odontologicas.Controllers
 		public async Task<IActionResult> Create(Paciente paciente)
 		{
 			var i = (ClaimsIdentity)User.Identity;
+			List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
+			List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
+			List<SelectListItem> Carrera = new SelectList(_context.Carrera.OrderBy(f => f.Nombre).Where(p => p.CodigoFacultad == paciente.CodigoFacultad &&  p.Estado == true), "Codigo", "Nombre", paciente.CodigoCarrera).ToList();
+
 			if (i.IsAuthenticated)
-			{
+			{				
 				try
 				{
 					if (ModelState.IsValid)
@@ -130,12 +134,21 @@ namespace HC_Odontologicas.Controllers
 						_context.Add(paciente);
 						await _context.SaveChangesAsync();
 						await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Paciente", paciente.Codigo, "I");
+
+						TipoIdentificacion.Insert(0, vacio);
+						ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
+
+						Facultad.Insert(0, vacio);
+						ViewData["CodigoFacultad"] = Facultad;
+
+						Carrera.Insert(0, vacio);
+						ViewData["CodigoCarrera"] = Carrera;
+
 						ViewBag.Message = "Save";
+
 						return View(paciente);
-					}
-					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
-					TipoIdentificacion.Insert(0, vacio);
-					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
+					}					
+
 					return View(paciente);
 				}
 				catch (Exception e)
@@ -143,11 +156,18 @@ namespace HC_Odontologicas.Controllers
 					string mensaje = e.Message;
 					if (e.InnerException != null)
 						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
-
-					ViewBag.Message = mensaje;
-					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
+										
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
+
+					Facultad.Insert(0, vacio);
+					ViewData["CodigoFacultad"] = Facultad;
+
+					Carrera.Insert(0, vacio);
+					ViewData["CodigoCarrera"] = Carrera;
+
+					ViewBag.Message = mensaje;
+
 					return View(paciente);
 				}
 			}
@@ -176,9 +196,17 @@ namespace HC_Odontologicas.Controllers
 						return NotFound();
 
 
-					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
+					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.Where(p => p.Estado == true), "Codigo", "Nombre",  paciente.CodigoTipoIdentificacion).ToList();
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
+
+					List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre" , paciente.CodigoFacultad).ToList();
+					Facultad.Insert(0, vacio);
+					ViewData["CodigoFacultad"] = Facultad;
+
+					List<SelectListItem> Carrera = new SelectList(_context.Carrera.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre" , paciente.CodigoCarrera).ToList();
+					Carrera.Insert(0, vacio);
+					ViewData["CodigoCarrera"] = Carrera;
 
 					return View(paciente);
 				}
@@ -199,6 +227,9 @@ namespace HC_Odontologicas.Controllers
 		{
 			var i = (ClaimsIdentity)User.Identity;
 			List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
+			List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
+			List<SelectListItem> Carrera = new SelectList(_context.Carrera.OrderBy(f => f.Nombre).Where(p => p.CodigoFacultad== paciente.CodigoFacultad && p.Estado == true ), "Codigo", "Nombre").ToList();
+
 			if (i.IsAuthenticated)
 			{
 				try
@@ -215,6 +246,13 @@ namespace HC_Odontologicas.Controllers
 
 							TipoIdentificacion.Insert(0, vacio);
 							ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
+
+							Facultad.Insert(0, vacio);
+							ViewData["CodigoFacultad"] = Facultad;
+
+							Carrera.Insert(0, vacio);
+							ViewData["CodigoCarrera"] = Carrera;
+
 							return View(paciente);
 						}
 						catch (DbUpdateConcurrencyException)
@@ -225,6 +263,12 @@ namespace HC_Odontologicas.Controllers
 
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
+
+					Facultad.Insert(0, vacio);
+					ViewData["CodigoFacultad"] = Facultad;
+
+					Carrera.Insert(0, vacio);
+					ViewData["CodigoCarrera"] = Carrera;
 
 					return View(paciente);
 				}
@@ -238,6 +282,13 @@ namespace HC_Odontologicas.Controllers
 
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
+
+					Facultad.Insert(0, vacio);
+					ViewData["CodigoFacultad"] = Facultad;
+
+					Carrera.Insert(0, vacio);
+					ViewData["CodigoCarrera"] = Carrera;
+
 					return View(paciente);
 				}
 			}

@@ -125,7 +125,7 @@ function cargarDatosCarrera(Facultad) {
 	var CodigoFacultad = $(Facultad).find("option:selected").val();
 	$.ajax({
 		type: "POST",
-		url: "/../Pacientes/CargarDatosCarrera",v	
+		url: "/../Pacientes/CargarDatosCarrera",	
 		data: { CodigoFacultad },
 		success: function (response) {
 			console.log(response);
