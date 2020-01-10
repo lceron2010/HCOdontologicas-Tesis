@@ -7,16 +7,16 @@ namespace HC_Odontologicas.Models
     {
         public Odontograma()
         {
-            OdontogramaDetalle = new HashSet<OdontogramaDetalle>();
+            OdontogramaDetalle = new List<OdontogramaDetalle>();
         }
 
-        public string Codigo { get; set; }
-        public string CodigoCitaOdontologica { get; set; }
-        public DateTime Fecha { get; set; }
-        public string Observaciones { get; set; }
-        public bool Estado { get; set; }
+		public string Codigo { get; set; }
+		public string CodigoCitaOdontologica { get; set; }
+		public DateTime FechaActualizacion { get; set; }
+		public string Observaciones { get; set; }
+		public string Estado { get; set; }
 
-        public virtual CitaOdontologica CitaOdontologica { get; set; }
-        public virtual ICollection<OdontogramaDetalle> OdontogramaDetalle { get; set; }
-    }
+		public virtual CitaOdontologica CitaOdontologica { get; set; }
+		public virtual List<OdontogramaDetalle> OdontogramaDetalle { get; set; }
+	}
 }

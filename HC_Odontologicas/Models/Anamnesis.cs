@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HC_Odontologicas.Models
@@ -13,7 +14,8 @@ namespace HC_Odontologicas.Models
 
         public string Codigo { get; set; }
         public string CodigoCitaOdontologica { get; set; }
-        public string MotivoConsulta { get; set; }
+		[Required(ErrorMessage = "Campo requerido.")]
+		public string MotivoConsulta { get; set; }
         public string EnfermedadActual { get; set; }
         public string Alerta { get; set; }
         public string AntecedentesQuirurgicos { get; set; }

@@ -38,27 +38,20 @@
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="MotivoConsulta" class="control-label">Motivo de Consulta*</label>
-							<input asp-for="MotivoConsulta" class="form-control" />
+							<input asp-for="MotivoConsulta" class="form-control" maxlength="512"/>
 							<span asp-validation-for="MotivoConsulta" class="text-danger"></span>
 						</div>
-					</div>
-					@*<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-					<div class="form-group">
-						<label asp-for="EnfermedadActual" class="control-label">Enfermedad Actual</label>
-						<input asp-for="EnfermedadActual" class="form-control" />
-						<span asp-validation-for="EnfermedadActual" class="text-danger"></span>
-					</div>
-				</div>*@
+					</div>				
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Alerta" class="control-label">Alerta</label>
-							<input asp-for="Alerta" class="form-control" />
+							<input asp-for="Alerta" class="form-control" maxlength="512"/>
 							<span asp-validation-for="Alerta" class="text-danger"></span>
 						</div>
 					</div>
 				</div>
 
-				<table class="table table-hover">
+				<table>
 					<thead>
 						<tr>
 							<th hidden>
@@ -77,10 +70,7 @@
 					<tbody>
 						@for (int i = 0; i < Model.AnamnesisEnfermedad.Count; i++)
 						{
-							<tr>
-								@*<td class="hidden">
-								<input asp-for="@Model.AnamnesisEnfermedad[i].CodigoAnamnesis" />
-							</td>*@
+							<tr>								
 								<td hidden>
 									<input asp-for="@Model.AnamnesisEnfermedad[i].Enfermedad.Codigo" />
 								</td>
@@ -99,73 +89,72 @@
 							</tr>
 						}
 					</tbody>
-
 				</table>
-
-
-
 			</fieldset>
-
 			<fieldset>
 				<legend class="titulo text-uppercase" style="font-size:inherit">Antecedentes</legend>
 				<div class="row">
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="AntecedentesQuirurgicos" class="control-label">Antecedentes Quirúrgicos</label>
-							<input asp-for="AntecedentesQuirurgicos" class="form-control" />
+							<input asp-for="AntecedentesQuirurgicos" class="form-control" maxlength="512" />
 							<span asp-validation-for="AntecedentesQuirurgicos" class="text-danger"></span>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Alergico" class="control-label">Alérgico</label>
-							<input asp-for="Alergico" class="form-control" />
+							<input asp-for="Alergico" class="form-control" maxlength="512" />
 							<span asp-validation-for="Alergico" class="text-danger"></span>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Medicamentos" class="control-label">Medicamentos</label>
-							<input asp-for="Medicamentos" class="form-control" />
+							<input asp-for="Medicamentos" class="form-control" maxlength="512" />
 							<span asp-validation-for="Medicamentos" class="text-danger"></span>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Habitos" class="control-label">Hábitos</label>
-							<input asp-for="Habitos" class="form-control" />
+							<input asp-for="Habitos" class="form-control" maxlength="512" />
 							<span asp-validation-for="Habitos" class="text-danger"></span>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="AntecedentesFamiliares" class="control-label">Antecedentes Familiares</label>
-							<input asp-for="AntecedentesFamiliares" class="form-control" />
+							<input asp-for="AntecedentesFamiliares" class="form-control" maxlength="512" />
 							<span asp-validation-for="AntecedentesFamiliares" class="text-danger"></span>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="GrupoSanguineo" class="control-label">Grupo Sanguineo</label>
-							<input asp-for="GrupoSanguineo" class="form-control" />
+							<input asp-for="GrupoSanguineo" class="form-control" maxlength="128" />
 							<span asp-validation-for="GrupoSanguineo" class="text-danger"></span>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Endocrino" class="control-label">Endocrino</label>
-							<input asp-for="Endocrino" class="form-control" />
+							<input asp-for="Endocrino" class="form-control" maxlength="128" />
 							<span asp-validation-for="Endocrino" class="text-danger"></span>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Traumatologico" class="control-label">Traumatológico</label>
-							<input asp-for="Traumatologico" class="form-control" />
+							<input asp-for="Traumatologico" class="form-control" maxlength="128" />
 							<span asp-validation-for="Traumatologico" class="text-danger"></span>
 						</div>
 					</div>
 				</div>
+
+
+
+
 				<div class="row">
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
@@ -185,6 +174,13 @@
 					</div>
 
 				</div>
+
+
+				<div class="custom-control custom-checkbox">
+					<input type="checkbox" class="custom-control-input" id="defaultUnchecked">
+					<label class="custom-control-label" for="defaultUnchecked">Default unchecked</label>
+				</div>
+
 
 			</fieldset>
 

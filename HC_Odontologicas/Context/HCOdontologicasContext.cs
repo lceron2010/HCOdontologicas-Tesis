@@ -26,6 +26,7 @@ namespace HC_Odontologicas.Models
 		public virtual DbSet<Diagnostico> Diagnostico { get; set; }
 		public virtual DbSet<DiagnosticoCie10> DiagnosticoCie10 { get; set; }
 		public virtual DbSet<Enfermedad> Enfermedad { get; set; }
+		public virtual DbSet<EnfermedadOdontograma> EnfermedadOdontograma { get; set; }
 		public virtual DbSet<Facultad> Facultad { get; set; }
 		public virtual DbSet<CitaOdontologica> CitaOdontologica { get; set; }
 		public virtual DbSet<LogAuditoria> LogAuditoria { get; set; }
@@ -41,6 +42,7 @@ namespace HC_Odontologicas.Models
 		public virtual DbSet<PlantillaCorreoElectronico> PlantillaCorreoElectronico { get; set; }
 		public virtual DbSet<PlantillaRecetaMedica> PlantillaRecetaMedica { get; set; }
 		public virtual DbSet<RecetaMedica> RecetaMedica { get; set; }
+		public virtual DbSet<RegionPiezaDental> RegionPiezaDental { get; set; }
 		public virtual DbSet<Usuario> Usuario { get; set; }
 		public virtual DbSet<TipoIdentificacion> TipoIdentificacion { get; set; }
 
@@ -408,6 +410,24 @@ namespace HC_Odontologicas.Models
 					.IsUnicode(false);
 			});
 
+			modelBuilder.Entity<EnfermedadOdontograma>(entity =>
+			{
+				entity.HasKey(e => e.Codigo);
+
+				entity.HasIndex(e => e.Nombre)
+					.HasName("UK_EnfermedadOdontograma")
+					.IsUnique();
+
+				entity.Property(e => e.Descripcion)
+					.HasMaxLength(512)
+					.IsUnicode(false);
+
+				entity.Property(e => e.Nombre)
+					.IsRequired()
+					.HasMaxLength(128)
+					.IsUnicode(false);
+			});
+
 			modelBuilder.Entity<Facultad>(entity =>
 			{
 				entity.HasKey(e => e.Codigo);
@@ -507,7 +527,13 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(8)
 					.IsUnicode(false);
 
-				entity.Property(e => e.Fecha).HasColumnType("datetime");
+				entity.Property(e => e.Estado)
+					.IsRequired()
+					.HasMaxLength(1)
+					.IsUnicode(false)
+					.IsFixedLength();
+
+				entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
 
 				entity.Property(e => e.Observaciones)
 					.HasMaxLength(512)
@@ -533,15 +559,43 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(8)
 					.IsUnicode(false);
 
-				entity.Property(e => e.Fecha).HasColumnType("datetime");
+				entity.Property(e => e.Diagnostico)
+					.IsRequired()
+					.HasMaxLength(128)
+					.IsUnicode(false);
 
-				entity.HasOne(d => d.CitaOdontologica)
+				entity.Property(e => e.Enfermedad)
+					.IsRequired()
+					.HasMaxLength(128)
+					.IsUnicode(false);
+
+				entity.Property(e => e.Region)
+					.IsRequired()
+					.HasMaxLength(1)
+					.IsUnicode(false)
+					.IsFixedLength();
+
+				entity.HasOne(d => d.Odontograma)
 					.WithMany(p => p.OdontogramaDetalle)
 					.HasForeignKey(d => d.CodigoOdontograma)
 					.OnDelete(DeleteBehavior.ClientSetNull)
-					.HasConstraintName("FK_OdontogramaDetalle_CitaOdontologica");
+					.HasConstraintName("FK_OdontogramaDetalle_Odontograma");
 
-				
+				entity.HasOne(d => d.EnfermedadOdontograma)
+					.WithMany(p => p.OdontogramaDetalle)
+					.HasPrincipalKey(p => p.Nombre)
+					.HasForeignKey(d => d.Enfermedad)
+					.OnDelete(DeleteBehavior.ClientSetNull)
+					.HasConstraintName("FK_OdontogramaDetalle_EnfermedadOdontograma");
+
+				entity.HasOne(d => d.RegionPiezaDental)
+					.WithMany(p => p.OdontogramaDetalle)
+					.HasPrincipalKey(p => p.Nombre)
+					.HasForeignKey(d => d.Region)
+					.OnDelete(DeleteBehavior.ClientSetNull)
+					.HasConstraintName("FK_OdontogramaDetalle_RegionPiezaDental");
+
+
 			});
 
 			modelBuilder.Entity<Paciente>(entity =>
