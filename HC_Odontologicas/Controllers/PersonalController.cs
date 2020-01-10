@@ -90,11 +90,11 @@ namespace HC_Odontologicas.Controllers
 				if (Convert.ToBoolean(permisos[1]))
 				{
 
-					List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
+					List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList();
 					Cargo.Insert(0, vacio);
 					ViewData["CodigoCargo"] = Cargo;									
 
-					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(ti => ti.Nombre).Where(ti => ti.Estado == true), "Codigo", "Nombre").ToList();
+					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(ti => ti.Nombre), "Codigo", "Nombre").ToList();
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 
@@ -134,12 +134,12 @@ namespace HC_Odontologicas.Controllers
 						return View(personal);
 
 					}
-					List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
+					List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList();
 					Cargo.Insert(0, vacio);
 					ViewData["CodigoCargo"] = Cargo;
 										
 
-					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(ti => ti.Nombre).Where(ti => ti.Estado == true), "Codigo", "Nombre").ToList();
+					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(ti => ti.Nombre), "Codigo", "Nombre").ToList();
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 					return View(personal);
@@ -151,12 +151,12 @@ namespace HC_Odontologicas.Controllers
 						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
 
 					ViewBag.Message = mensaje;
-					List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
+					List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList();
 					Cargo.Insert(0, vacio);
 					ViewData["CodigoCargo"] = Cargo;
 										
 
-					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(ti => ti.Nombre).Where(ti => ti.Estado == true), "Codigo", "Nombre").ToList();
+					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(ti => ti.Nombre), "Codigo", "Nombre").ToList();
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 					return View(personal);
@@ -187,12 +187,12 @@ namespace HC_Odontologicas.Controllers
 						return NotFound();
 
 
-					List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
+					List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList();
 					Cargo.Insert(0, vacio);
 					ViewData["CodigoCargo"] = Cargo;
 										
 
-					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(ti => ti.Nombre).Where(ti => ti.Estado == true), "Codigo", "Nombre").ToList();
+					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(ti => ti.Nombre), "Codigo", "Nombre").ToList();
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 
@@ -214,8 +214,8 @@ namespace HC_Odontologicas.Controllers
 		public async Task<IActionResult> Edit(Personal personal)
 		{
 			var i = (ClaimsIdentity)User.Identity;
-			List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
-			List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
+			List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList();
+			List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
 
 			if (i.IsAuthenticated)
 			{

@@ -10,6 +10,6 @@ namespace HC_Odontologicas.Models
         public string Asunto { get; set; }
         public string Cuerpo { get; set; }
         public string Comentario { get; set; }
-        public bool Estado { get; set; }
+        
     }
 }

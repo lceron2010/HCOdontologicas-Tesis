@@ -91,11 +91,11 @@ namespace HC_Odontologicas.Controllers
 				if (Convert.ToBoolean(permisos[1]))
 				{
 
-					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
+					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 
-					List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
+					List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
 					Facultad.Insert(0, vacio);
 					ViewData["CodigoFacultad"] = Facultad;
 
@@ -117,9 +117,9 @@ namespace HC_Odontologicas.Controllers
 		public async Task<IActionResult> Create(Paciente paciente)
 		{
 			var i = (ClaimsIdentity)User.Identity;
-			List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
-			List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
-			List<SelectListItem> Carrera = new SelectList(_context.Carrera.OrderBy(f => f.Nombre).Where(p => p.CodigoFacultad == paciente.CodigoFacultad &&  p.Estado == true), "Codigo", "Nombre", paciente.CodigoCarrera).ToList();
+			List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
+			List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
+			List<SelectListItem> Carrera = new SelectList(_context.Carrera.OrderBy(f => f.Nombre).Where(p => p.CodigoFacultad == paciente.CodigoFacultad), "Codigo", "Nombre", paciente.CodigoCarrera).ToList();
 
 			if (i.IsAuthenticated)
 			{				
@@ -196,15 +196,15 @@ namespace HC_Odontologicas.Controllers
 						return NotFound();
 
 
-					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.Where(p => p.Estado == true), "Codigo", "Nombre",  paciente.CodigoTipoIdentificacion).ToList();
+					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(t => t.Nombre), "Codigo", "Nombre",  paciente.CodigoTipoIdentificacion).ToList();
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 
-					List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre" , paciente.CodigoFacultad).ToList();
+					List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre), "Codigo", "Nombre" , paciente.CodigoFacultad).ToList();
 					Facultad.Insert(0, vacio);
 					ViewData["CodigoFacultad"] = Facultad;
 
-					List<SelectListItem> Carrera = new SelectList(_context.Carrera.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre" , paciente.CodigoCarrera).ToList();
+					List<SelectListItem> Carrera = new SelectList(_context.Carrera.OrderBy(f => f.Nombre), "Codigo", "Nombre" , paciente.CodigoCarrera).ToList();
 					Carrera.Insert(0, vacio);
 					ViewData["CodigoCarrera"] = Carrera;
 
@@ -226,9 +226,9 @@ namespace HC_Odontologicas.Controllers
 		public async Task<IActionResult> Edit(Paciente paciente)
 		{
 			var i = (ClaimsIdentity)User.Identity;
-			List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
-			List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre).Where(p => p.Estado == true), "Codigo", "Nombre").ToList();
-			List<SelectListItem> Carrera = new SelectList(_context.Carrera.OrderBy(f => f.Nombre).Where(p => p.CodigoFacultad== paciente.CodigoFacultad && p.Estado == true ), "Codigo", "Nombre").ToList();
+			List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
+			List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
+			List<SelectListItem> Carrera = new SelectList(_context.Carrera.OrderBy(f => f.Nombre).Where(p => p.CodigoFacultad== paciente.CodigoFacultad), "Codigo", "Nombre").ToList();
 
 			if (i.IsAuthenticated)
 			{
@@ -325,7 +325,7 @@ namespace HC_Odontologicas.Controllers
 		public async Task<List<SelectListItem>> CargarDatosCarrera(String CodigoFacultad)
 		{			
 			List<SelectListItem> list = new List<SelectListItem>();			
-			var Carrera = await _context.Carrera.OrderBy(f => f.Nombre).Where(p=> p.CodigoFacultad == CodigoFacultad && p.Estado == true).ToListAsync();
+			var Carrera = await _context.Carrera.OrderBy(f => f.Nombre).Where(p=> p.CodigoFacultad == CodigoFacultad).ToListAsync();
 			list.Insert(0, new SelectListItem("Seleccione...", "0"));
 			foreach (Carrera item in Carrera.ToList())
 				list.Add(new SelectListItem(item.Nombre, item.Codigo));			

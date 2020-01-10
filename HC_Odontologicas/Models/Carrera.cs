@@ -14,7 +14,7 @@ namespace HC_Odontologicas.Models
         public string CodigoFacultad { get; set; }
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
-        public bool Estado { get; set; }
+        
 
         public virtual Facultad Facultad { get; set; }
         public virtual ICollection<Paciente> Paciente { get; set; }

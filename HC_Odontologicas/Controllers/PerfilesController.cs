@@ -231,8 +231,7 @@ namespace HC_Odontologicas.Controllers
 					{
 						
 						Codigo = perfil.Codigo,
-						Nombre = perfil.Nombre,
-						Estado = perfil.Estado,
+						Nombre = perfil.Nombre,						
 						FechaCreacion = perfil.FechaCreacion,
 						UsuarioCreacion = perfil.UsuarioCreacion,
 						PerfilDetalle = new List<PerfilDetalle>()

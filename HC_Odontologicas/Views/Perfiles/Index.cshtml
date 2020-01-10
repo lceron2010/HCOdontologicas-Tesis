@@ -34,10 +34,7 @@
 		<tr>
 			<th>
 				<a asp-action="Index" asp-route-sortOrder="@ViewData["NombreSortParam"]" asp-route-filter="@ViewData["Filter"]">Nombre</a>
-			</th>
-			<th>
-				Estado
-			</th>
+			</th>		
 			<th></th>
 		</tr>
 	</thead>
@@ -47,10 +44,7 @@
 			<tr>
 				<td>
 					@Html.DisplayFor(modelItem => item.Nombre)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Estado)
-				</td>
+				</td>				
 				<td>
 					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white" data-toggle="tooltip" title="Editar">Editar</a>
 					<a onclick="eliminar('@item.Codigo','../Perfiles/DeleteConfirmed','/../Perfiles')" class="btn btn-white" data-toggle="tooltip" title="Eliminar">Eliminar</a>

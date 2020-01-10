@@ -124,7 +124,7 @@ namespace HC_Odontologicas.Controllers
 					ViewData["CodigoPersonal"] = Personal;
 					ViewData["CodigoPaciente"] = Paciente;
 
-					List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList(); ;
+					List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList(); ;
 					PlantillaCI.Insert(0, vacio);
 					ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
 
@@ -158,7 +158,7 @@ namespace HC_Odontologicas.Controllers
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
-					List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList(); ;
+					List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList(); ;
 					PlantillaCI.Insert(0, vacio);
 					ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
 
@@ -229,7 +229,7 @@ namespace HC_Odontologicas.Controllers
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
-					List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList(); ;
+					List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList(); ;
 					PlantillaCI.Insert(0, vacio);
 					ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
 
@@ -270,7 +270,7 @@ namespace HC_Odontologicas.Controllers
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
-					List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre", consentimiento.CodigoPlantillaConsentimiento).ToList(); ;
+					List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre), "Codigo", "Nombre", consentimiento.CodigoPlantillaConsentimiento).ToList(); ;
 					PlantillaCI.Insert(0, vacio);
 					ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
 
@@ -294,7 +294,7 @@ namespace HC_Odontologicas.Controllers
 			var i = (ClaimsIdentity)User.Identity;
 			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", consentimientoInformado.CodigoPersonal).ToList();
 			List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", consentimientoInformado.CodigoPaciente).ToList();
-			List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre", consentimientoInformado.CodigoPlantillaConsentimiento).ToList(); ;
+			List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre), "Codigo", "Nombre", consentimientoInformado.CodigoPlantillaConsentimiento).ToList(); ;
 
 			if (i.IsAuthenticated)
 			{

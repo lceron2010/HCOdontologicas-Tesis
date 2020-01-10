@@ -124,7 +124,7 @@ namespace HC_Odontologicas.Controllers
 					ViewData["CodigoPersonal"] = Personal;
 					ViewData["CodigoPaciente"] = Paciente;
 
-					List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
+					List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList();
 					PlantillaRM.Insert(0, vacio);
 					ViewData["CodigoPlantillaReceta"] = PlantillaRM;
 
@@ -158,7 +158,7 @@ namespace HC_Odontologicas.Controllers
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
-					List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList(); ;
+					List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList(); ;
 					PlantillaRM.Insert(0, vacio);
 					ViewData["CodigoPlantillaReceta"] = PlantillaRM;
 
@@ -232,7 +232,7 @@ namespace HC_Odontologicas.Controllers
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
-					List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList(); ;
+					List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList(); ;
 					PlantillaRM.Insert(0, vacio);
 					ViewData["CodigoPlantillaReceta"] = PlantillaRM;
 
@@ -274,7 +274,7 @@ namespace HC_Odontologicas.Controllers
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
-					List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre", receta.CodigoPlantillaRecetaMedica).ToList(); ;
+					List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre), "Codigo", "Nombre", receta.CodigoPlantillaRecetaMedica).ToList(); ;
 					PlantillaRM.Insert(0, vacio);
 					ViewData["CodigoPlantillaReceta"] = PlantillaRM;
 
@@ -299,7 +299,7 @@ namespace HC_Odontologicas.Controllers
 
 			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", recetaMedica.CodigoPersonal).ToList();
 			List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", recetaMedica.CodigoPaciente).ToList();
-			List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre", recetaMedica.CodigoPlantillaRecetaMedica).ToList();
+			List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre), "Codigo", "Nombre", recetaMedica.CodigoPlantillaRecetaMedica).ToList();
 			if (i.IsAuthenticated)
 			{
 				try

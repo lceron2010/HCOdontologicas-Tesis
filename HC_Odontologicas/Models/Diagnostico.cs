@@ -16,8 +16,7 @@ namespace HC_Odontologicas.Models
         public DateTime Fecha { get; set; }
         public int Pieza { get; set; }
         public string Observacion { get; set; }
-        public string Firma { get; set; }
-        public bool Estado { get; set; }
+        public string Firma { get; set; }        
 		[NotMapped]
 		public string CodigoPaciente { get; set; }
 		[NotMapped]

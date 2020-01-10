@@ -94,8 +94,7 @@ namespace HC_Odontologicas.Controllers
 				{
 					//lista de enfermedades
 					List<DiagnosticoCie10> diagnosticoC = new List<DiagnosticoCie10>();
-					var enfermedad = _context.Cie10.OrderBy(f => f.Nombre).ToList();
-					enfermedad = enfermedad.FindAll(f => f.Estado == true);
+					var enfermedad = _context.Cie10.OrderBy(f => f.Nombre).Where(f => f.Codigo.StartsWith("")).ToList(); //QUITAR LUEGO					
 					//agregar los cie10 a la lista de diagnosticoCIE10
 					foreach (Cie10 item in enfermedad)
 					{
@@ -218,7 +217,7 @@ namespace HC_Odontologicas.Controllers
 						diag.Pieza = diagnostico.Pieza;
 						diag.Observacion = diagnostico.Observacion;
 						diag.Firma = diagnostico.Firma;
-						diag.Estado = diagnostico.Estado;
+						
 						_context.Diagnostico.Add(diag);
 
 						//guardar diagnosticoCie10
@@ -293,8 +292,7 @@ namespace HC_Odontologicas.Controllers
 
 					//lista de cie10
 					var listaCie10 = _context.Cie10.OrderBy(f => f.Nombre).ToList();
-					listaCie10 = listaCie10.FindAll(f => f.Estado == true);
-
+					
 					List<DiagnosticoCie10> tci = new List<DiagnosticoCie10>();
 					tci = diagnostico.DiagnosticoCie10;
 					for (int l = 0; l < tci.Count(); l++)
@@ -367,8 +365,7 @@ namespace HC_Odontologicas.Controllers
 							diagnosticoAntiguo.Fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 							diagnosticoAntiguo.Pieza = diagnostico.Pieza;
 							diagnosticoAntiguo.Observacion = diagnostico.Observacion;
-							diagnosticoAntiguo.Firma = diagnostico.Firma;
-							diagnosticoAntiguo.Estado = diagnostico.Estado;							
+							diagnosticoAntiguo.Firma = diagnostico.Firma;													
 
 							var diagnosticoCie10 = _context.DiagnosticoCie10.Where(a => a.CodigoDiagnostico == diagnostico.Codigo).ToList();
 							foreach (var item in diagnosticoCie10)
