@@ -140,3 +140,38 @@ function cargarDatosCarrera(Facultad) {
 	});
 
 }
+
+
+//odontograma
+
+function cargarPopUp(idGrupo) {
+	console.log("hola es una prueba");
+	console.log(idGrupo);
+	
+
+	$("#idGrupo").val(idGrupo);
+	$("#modalImportarDatos").modal("show");
+	
+	//$('#modalOdontograma').modal('show'); // abrir
+//	$('#modalOdontograma').modal('hide'); // cerrar
+
+}
+
+function cambiarColor(enfermedadOdon) {
+	var idGrupo = $("#idGrupo").val();
+
+	console.log("cambiar color");
+	
+	console.log(idGrupo);
+
+	console.log(enfermedadOdon);
+
+	nombre = enfermedadOdon.substring(1) + "-" + idGrupo.substring(1,3);
+	console.log("nombe", nombre);
+	$("#" + nombre).attr("style", "fill:red");
+
+	$("#" + nombre).attr("cambioColor", "true");
+
+	
+
+}

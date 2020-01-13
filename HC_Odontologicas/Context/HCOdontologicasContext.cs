@@ -979,7 +979,25 @@ namespace HC_Odontologicas.Models
 					.HasConstraintName("FK_RecetaMedica_PlantillaRecetaMedica");
 
 			});
+			modelBuilder.Entity<RegionPiezaDental>(entity =>
+			{
+				entity.HasKey(e => e.Codigo);
 
+				entity.HasIndex(e => e.Nombre)
+					.HasName("UK_RegionPiezaDental")
+					.IsUnique();
+
+				entity.Property(e => e.Descripcion)
+					.IsRequired()
+					.HasMaxLength(512)
+					.IsUnicode(false);
+
+				entity.Property(e => e.Nombre)
+					.IsRequired()
+					.HasMaxLength(1)
+					.IsUnicode(false)
+					.IsFixedLength();
+			});
 			modelBuilder.Entity<Usuario>(entity =>
 			{
 				entity.HasKey(e => e.Codigo);
