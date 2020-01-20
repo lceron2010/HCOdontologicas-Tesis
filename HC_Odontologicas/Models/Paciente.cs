@@ -29,17 +29,16 @@ namespace HC_Odontologicas.Models
         public string Celular { get; set; }
         public string MailPersonal { get; set; }
 		[Required(ErrorMessage = "Campo requerido.")]
-		public string MailEpn { get; set; }
-		[Required(ErrorMessage = "Campo requerido.")]
-		public string EstadoCivl { get; set; }
+		public string MailEpn { get; set; }		
+		public string EstadoCivil { get; set; }
         public string DependenciaDondeTrabaja { get; set; }
         public string Cargo { get; set; }
-        public string Procedencia { get; set; }
-		[Required(ErrorMessage = "Campo requerido.")]
+        public string Procedencia { get; set; }		
 		public string TipoPaciente { get; set; }
 		[Required(ErrorMessage = "Campo requerido.")]
 		public bool Estado { get; set; }
 		public string NombreCompleto { get; set; }
+
 		public string CodigoTipoIdentificacion { get; set; }
 		public string CodigoFacultad { get; set; }
 		public string CodigoCarrera { get; set; }

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using HC_Odontologicas.Models;
 using HC_Odontologicas.FuncionesGenerales;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace HC_Odontologicas.Controllers
 {
@@ -145,7 +146,7 @@ namespace HC_Odontologicas.Controllers
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create(Odontograma odontograma , svg742)
+		public async Task<IActionResult> Create(Odontograma odontograma , IFormFile svg742, string hola)
 		{
 			if (ModelState.IsValid)
 			{

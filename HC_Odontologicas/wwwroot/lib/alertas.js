@@ -98,3 +98,78 @@ function Guardar(url) {
 		}
 	})
 }
+
+
+//importar datos
+
+function AdvertenciaGuardarImportados(urlIndex, url) {
+	swal({
+		title: "ABAKO",
+		text: "¿Está seguro de guardar los datos?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#DD6B55",
+		confirmButtonText: "Aceptar",
+		cancelButtonText: "Cancelar",
+		closeOnConfirm: true
+	}, function (result) {
+		if (result) {
+			var data = new FormData($('#Importar')[0]);
+			data.append('Documento', $('#Documento')[0].files[0]);
+			var opts = {
+				url: url,
+				data: data,
+				cache: false,
+				contentType: false,
+				processData: false,
+				method: 'POST',
+				type: 'POST',
+				success: function (response) {
+					if (response === "Save") {
+						toastr.options = {
+							closeButton: true,
+							debug: false,
+							progressBar: true,
+							positionClass: 'toast-top-right',
+							onclick: null,
+							timeOut: 500
+						};
+						toastr.options.onHidden = function () { window.location.href = urlIndex; };
+						toastr.success("Datos guardados correctamente", "Tipo Impuesto");
+					}
+					else {
+						toastr.error(response, "Tipo Impuesto");
+						setTimeout(function () {
+							Ladda.stopAll();
+						});
+					}
+
+				}
+			};
+			if (data.fake) {
+				// Make sure no text encoding stuff is done by xhr
+				opts.xhr = function () { var xhr = jQuery.ajaxSettings.xhr(); xhr.send = xhr.sendAsBinary; return xhr; }
+				opts.contentType = "multipart/form-data; boundary=" + data.boundary;
+				opts.data = data.toString();
+			}
+			jQuery.ajax(opts);
+
+		}
+	}
+	);
+}
+
+function AdvertenciaGuardarImportadosError() {
+	swal({
+		title: "ABAKO",
+		text: "Datos con errores",
+		type: "error",
+		confirmButtonColor: "#DD6B55",
+		confirmButtonText: "Aceptar",
+		showCancelButton: false,
+
+		//cancelButtonText: "Cancelar",
+		closeOnConfirm: false
+
+	});
+}

@@ -8,6 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using HC_Odontologicas.Models;
 using System.Security.Claims;
 using HC_Odontologicas.FuncionesGenerales;
+using Microsoft.AspNetCore.Http;
+using System.Data;
+using System.IO;
+using OfficeOpenXml;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Hosting;
 
 namespace HC_Odontologicas.Controllers
 {
@@ -16,6 +22,9 @@ namespace HC_Odontologicas.Controllers
 		private readonly HCOdontologicasContext _context;
 		private ValidacionesController validaciones;
 		private readonly AuditoriaController _auditoria;
+
+		private readonly String pathRootDocumentos = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot") + "\\";
+
 		SelectListItem vacio = new SelectListItem(value: "0", text: "Seleccione...");
 
 		public PacientesController(HCOdontologicasContext context)
@@ -40,7 +49,7 @@ namespace HC_Odontologicas.Controllers
 
 				if (Convert.ToBoolean(permisos[0]))
 				{
-					ViewData["NombreSortParam"] = string.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";					
+					ViewData["NombreSortParam"] = string.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
 
 					//permite mantener la busqueda introducida en el filtro de busqueda
 					if (search != null)
@@ -52,15 +61,15 @@ namespace HC_Odontologicas.Controllers
 					ViewData["CurrentSort"] = sortOrder;
 					var pacientes = from c in _context.Paciente.OrderBy(p => p.NombreCompleto) select c;
 
-					//if (!String.IsNullOrEmpty(search))
+					if (!String.IsNullOrEmpty(search)) //para no mostrar nada al iniciar
 						pacientes = pacientes.Where(s => s.NombreCompleto.Contains(search) || s.Identificacion.Contains(search) || s.NumeroUnico.Contains(search));
 
 					switch (sortOrder)
 					{
 						case "nombre_desc":
 							pacientes = pacientes.OrderByDescending(s => s.NombreCompleto);
-							break;			
-						
+							break;
+
 						default:
 							pacientes = pacientes.OrderBy(s => s.NombreCompleto);
 							break;
@@ -122,7 +131,7 @@ namespace HC_Odontologicas.Controllers
 			List<SelectListItem> Carrera = new SelectList(_context.Carrera.OrderBy(f => f.Nombre).Where(p => p.CodigoFacultad == paciente.CodigoFacultad), "Codigo", "Nombre", paciente.CodigoCarrera).ToList();
 
 			if (i.IsAuthenticated)
-			{				
+			{
 				try
 				{
 					if (ModelState.IsValid)
@@ -147,7 +156,7 @@ namespace HC_Odontologicas.Controllers
 						ViewBag.Message = "Save";
 
 						return View(paciente);
-					}					
+					}
 
 					return View(paciente);
 				}
@@ -156,7 +165,7 @@ namespace HC_Odontologicas.Controllers
 					string mensaje = e.Message;
 					if (e.InnerException != null)
 						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
-										
+
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 
@@ -196,15 +205,15 @@ namespace HC_Odontologicas.Controllers
 						return NotFound();
 
 
-					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(t => t.Nombre), "Codigo", "Nombre",  paciente.CodigoTipoIdentificacion).ToList();
+					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(t => t.Nombre), "Codigo", "Nombre", paciente.CodigoTipoIdentificacion).ToList();
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 
-					List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre), "Codigo", "Nombre" , paciente.CodigoFacultad).ToList();
+					List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre), "Codigo", "Nombre", paciente.CodigoFacultad).ToList();
 					Facultad.Insert(0, vacio);
 					ViewData["CodigoFacultad"] = Facultad;
 
-					List<SelectListItem> Carrera = new SelectList(_context.Carrera.OrderBy(f => f.Nombre), "Codigo", "Nombre" , paciente.CodigoCarrera).ToList();
+					List<SelectListItem> Carrera = new SelectList(_context.Carrera.OrderBy(f => f.Nombre), "Codigo", "Nombre", paciente.CodigoCarrera).ToList();
 					Carrera.Insert(0, vacio);
 					ViewData["CodigoCarrera"] = Carrera;
 
@@ -228,7 +237,7 @@ namespace HC_Odontologicas.Controllers
 			var i = (ClaimsIdentity)User.Identity;
 			List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
 			List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
-			List<SelectListItem> Carrera = new SelectList(_context.Carrera.OrderBy(f => f.Nombre).Where(p => p.CodigoFacultad== paciente.CodigoFacultad), "Codigo", "Nombre").ToList();
+			List<SelectListItem> Carrera = new SelectList(_context.Carrera.OrderBy(f => f.Nombre).Where(p => p.CodigoFacultad == paciente.CodigoFacultad), "Codigo", "Nombre").ToList();
 
 			if (i.IsAuthenticated)
 			{
@@ -321,15 +330,304 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
+		//listar las carreras de acuerdo a la facultad
 		[HttpPost]
 		public async Task<List<SelectListItem>> CargarDatosCarrera(String CodigoFacultad)
-		{			
-			List<SelectListItem> list = new List<SelectListItem>();			
-			var Carrera = await _context.Carrera.OrderBy(f => f.Nombre).Where(p=> p.CodigoFacultad == CodigoFacultad).ToListAsync();
+		{
+			List<SelectListItem> list = new List<SelectListItem>();
+			var Carrera = await _context.Carrera.OrderBy(f => f.Nombre).Where(p => p.CodigoFacultad == CodigoFacultad).ToListAsync();
 			list.Insert(0, new SelectListItem("Seleccione...", "0"));
 			foreach (Carrera item in Carrera.ToList())
-				list.Add(new SelectListItem(item.Nombre, item.Codigo));			
+				list.Add(new SelectListItem(item.Nombre, item.Codigo));
 			return list;
 		}
+
+		//impotar datos
+		//mostrar datos en el model.
+		public String CargarDatosTabla(IFormFile Documento)
+		{
+
+			try
+			{
+				DataTable table = new DataTable();
+				if (Documento != null)
+				{
+					if (GetMimeTypes().SingleOrDefault(p => p.Value == Documento.ContentType && p.Key == "." + Documento.FileName.Split(".")[Documento.FileName.Split(".").Count() - 1]).Value != null)
+					{
+						UploadFile(Documento);
+					}
+					else
+					{
+						Documento = null;
+						ViewData["ExtensionArchivo"] = "Extensión del documento incorrecto";
+					}
+
+				}
+				if ((ViewData["ExtensionArchivo"]) is null)
+				{
+					string fileName = Documento.FileName;
+					FileInfo file = new FileInfo(Path.Combine(pathRootDocumentos, fileName));
+					//llenar la dataTable con el excel
+
+					ExcelPackage package = new ExcelPackage(file);
+					ExcelWorksheet workSheet = package.Workbook.Worksheets.First();
+					foreach (var firstRowCell in workSheet.Cells[1, 1, 1, workSheet.Dimension.End.Column])
+					{
+						int indice = firstRowCell.Text.IndexOf(".");
+						if (indice == firstRowCell.Text.Length - 1)
+						{
+							table.Columns.Add(firstRowCell.Text.Substring(0, indice));
+						}
+						else
+						{
+							table.Columns.Add(firstRowCell.Text);
+						}
+					}
+
+					for (var rowNumber = 2; rowNumber <= workSheet.Dimension.End.Row; rowNumber++)
+					{
+						var row = workSheet.Cells[rowNumber, 1, rowNumber, workSheet.Dimension.End.Column];
+						var newRow = table.NewRow();
+
+						foreach (var cell in row)
+						{
+							if (cell.Start.Column == 1)
+							{
+								newRow[cell.Start.Column - 1] = cell.Text;
+							}
+							else
+							{
+								newRow[cell.Start.Column - 2] = cell.Text;
+							}
+
+						}
+						table.Rows.Add(newRow);
+					}
+
+					//newRow[cell.Start.Column - 1] = cell.Text;
+
+					//añadir la nueva columna de observaciones
+					table.Columns.Add("Observaciones");
+
+					//validar los datos
+					foreach (DataRow dr in table.Rows)
+					{
+						dr["Observaciones"] = "ninguna";// validarDatosCuentaContableString(dr);
+					}
+
+					DeleteFile(Documento.FileName);
+				}
+
+				String tabla = JsonConvert.SerializeObject(table);
+
+				return tabla;
+			}
+
+			catch (Exception ex)
+			{
+				DeleteFile(Documento.FileName);
+				throw new Exception(ex.Message, ex);
+			}
+		}
+
+		//guardar los datos en la base
+		[HttpPost]
+		public string GuardarDatosImportados(IFormFile Documento)
+		{
+			string codigo = null;
+			var j = (ClaimsIdentity)User.Identity;
+			try
+			{
+				string fileName = Documento.FileName;
+				FileInfo file = new FileInfo(Path.Combine(pathRootDocumentos, fileName));
+
+				if (Documento != null)
+				{
+					if (GetMimeTypes().SingleOrDefault(p => p.Value == Documento.ContentType && p.Key == "." + Documento.FileName.Split(".")[Documento.FileName.Split(".").Count() - 1]).Value != null)
+					{
+						UploadFile(Documento);
+					}
+					else
+					{
+						Documento = null;
+						ViewData["ExtensionArchivo"] = "Extensión del documento incorrecto";
+					}
+
+				}
+
+				//if ((ViewData["ExtensionArchivo"]) is null)
+				//{
+
+				ExcelPackage package = new ExcelPackage(file);
+				ExcelWorksheet workSheet = package.Workbook.Worksheets.First();
+				int totalRows = workSheet.Dimension.Rows;
+
+				Int64 maxCodigo = 0;
+				maxCodigo = Convert.ToInt64(_context.Paciente.Max(f => f.Codigo));
+				maxCodigo += 1;
+				codigo = maxCodigo.ToString("D8");
+				DateTime fechaPacienteGuardado = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+
+
+				List<Paciente> listaPacientes = new List<Paciente>();
+				for (int i = 2; i <= totalRows; i++)
+				{
+					Paciente pc = new Paciente();
+					if (workSheet.Cells[i, 1].Value != null)
+					{
+						string nombreCompleto = workSheet.Cells[i, 3].Value.ToString();
+						string[] nombres = nombreCompleto.Split(" ");						
+						pc.Codigo = maxCodigo.ToString("D8");
+						pc.NumeroUnico = workSheet.Cells[i, 2].Value.ToString();
+						pc.Nombres = nombres[2] + " " + nombres[3];
+						pc.Apellidos = nombres[0] + " " + nombres[1];
+						pc.Identificacion = workSheet.Cells[i, 4].Value.ToString();
+						pc.FechaNacimiento = Convert.ToDateTime(workSheet.Cells[i, 5].Value.ToString());
+						pc.Genero = workSheet.Cells[i, 6].Value.ToString();
+						pc.Direccion = workSheet.Cells[i, 7].Value.ToString();
+						pc.Telefono = workSheet.Cells[i, 8].Value.ToString();
+						pc.Celular = workSheet.Cells[i, 9].Value.ToString();
+						pc.MailPersonal = workSheet.Cells[i, 10].Value.ToString();
+						pc.MailEpn = workSheet.Cells[i, 13].Value.ToString();
+						pc.EstadoCivil = null;
+						pc.DependenciaDondeTrabaja = null;
+						pc.Cargo = null;
+						pc.Procedencia = null;
+						pc.TipoPaciente = null;
+						pc.Estado = true;
+						pc.CodigoTipoIdentificacion = null;
+						pc.CodigoFacultad = buscarFacultad(workSheet.Cells[i, 12].Value.ToString());
+						pc.CodigoCarrera = null;//buscarCarrrera(pc.CodigoFacultad, workSheet.Cells[i, 11].Value.ToString());
+						_context.Add(pc);
+						//_auditoria.GuardarLogAuditoria(fechaPacienteGuardado, j.Name, "Paciente", pc.Codigo, "I");
+
+						//listaPacientes.Add(pc);
+						maxCodigo = maxCodigo + 1;
+						//}
+					}
+					else
+					{
+						string nombreCompleto = workSheet.Cells[i, 4].Value.ToString();
+						string[] nombres = nombreCompleto.Split(" ");
+
+						pc.Codigo = maxCodigo.ToString("D8");
+						pc.NumeroUnico = workSheet.Cells[i, 3].Value.ToString();
+						pc.Nombres = nombres[2] + " " + nombres[3];
+						pc.Apellidos = nombres[0] + " " + nombres[1];
+						pc.Identificacion = workSheet.Cells[i, 5].Value.ToString();
+						pc.FechaNacimiento = Convert.ToDateTime(workSheet.Cells[i, 6].Value.ToString());
+						pc.Genero = workSheet.Cells[i, 7].Value.ToString();
+						pc.Direccion = workSheet.Cells[i, 8].Value.ToString();
+						pc.Telefono = workSheet.Cells[i, 9].Value.ToString();
+						pc.Celular = workSheet.Cells[i, 10].Value.ToString();
+						pc.MailPersonal = workSheet.Cells[i, 11].Value.ToString();
+						pc.MailEpn = workSheet.Cells[i, 12].Value.ToString();
+						pc.EstadoCivil = null;
+						pc.DependenciaDondeTrabaja = null;
+						pc.Cargo = null;
+						pc.Procedencia = null;
+						pc.TipoPaciente = null;
+						pc.Estado = true;
+						pc.CodigoTipoIdentificacion = null;
+						pc.CodigoFacultad = buscarFacultad(workSheet.Cells[i, 13].Value.ToString());
+						pc.CodigoCarrera = null;//buscarCarrrera(pc.CodigoFacultad, workSheet.Cells[i, 11].Value.ToString());
+						_context.Add(pc);
+						//_auditoria.GuardarLogAuditoria(fechaPacienteGuardado, j.Name, "Paciente", pc.Codigo, "I");
+
+						//listaPacientes.Add(pc);
+						maxCodigo = maxCodigo + 1;
+						//}
+					}
+
+				}
+				//_context.Paciente.AddRangeAsync(listaPacientes);
+				_context.SaveChanges();
+
+
+				DeleteFile(Documento.FileName);
+
+				return "Save";
+			}
+
+			catch (Exception ex)
+			{
+				DeleteFile(Documento.FileName);
+
+				return ex.InnerException.Message.ToString();
+			}
+		}
+
+		//private string buscarCarrrera(string codigoFacultad, string nombreCarrera)
+		//{
+		//	try
+		//	{
+		//		string h = _context.Carrera.Where(s => s.Codigo == "0002").SingleOrDefault().Nombre.ToUpper();
+		//		var g = h.CompareTo(nombreCarrera);
+
+		//		string codigoCarrera = null;
+		//		var carrera = _context.Carrera.Where(s =>s.CodigoFacultad == codigoFacultad && s.Nombre.ToUpper().Contains(nombreCarrera)).FirstOrDefault();
+		//		if (carrera != null)
+		//			codigoCarrera = carrera.Codigo;
+
+		//		return codigoCarrera;
+		//	}
+		//	catch (Exception e)
+		//	{
+		//		return e.Message;
+		//	}
+		//}
+
+		private string buscarFacultad(string nombreFacultad)
+		{
+			try
+			{
+				string h = _context.Facultad.Where(s => s.Codigo == "0008").SingleOrDefault().Nombre;
+				var g = h.Contains(nombreFacultad);
+
+				string codigoFacultad = null;
+				var facultad = _context.Facultad.Where(s => s.Nombre.Contains(nombreFacultad)).FirstOrDefault();
+				if (facultad != null)
+					codigoFacultad = facultad.Codigo;
+
+				return codigoFacultad;
+			}
+			catch (Exception e)
+			{
+				return e.Message;
+			}
+		}
+
+		public void UploadFile(IFormFile archivo)
+		{
+			var path = "";
+			var nombreArchivo = archivo.FileName;
+
+			if (archivo != null)
+			{
+				path = @"" + pathRootDocumentos + nombreArchivo;
+
+				using (var stream = new FileStream(path, FileMode.Create))
+				{
+					archivo.CopyTo(stream);
+				}
+			}
+
+		}
+
+		private void DeleteFile(String path)
+		{
+			var patDocumento = @"" + pathRootDocumentos + path;
+			if (!String.IsNullOrEmpty(path))
+				System.IO.File.Delete(patDocumento);
+		}
+
+		private Dictionary<string, string> GetMimeTypes()
+		{
+			return new Dictionary<string, string>
+			{
+				 {".xls", "application/vnd.ms-excel"},
+				{".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+			};
+		}
 	}
-} 
+}

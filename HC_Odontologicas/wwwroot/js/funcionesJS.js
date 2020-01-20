@@ -175,3 +175,168 @@ function cambiarColor(enfermedadOdon) {
 	
 
 }
+
+
+//importar datos
+
+function cargarDatosTablaImportar() {
+	var data = new FormData();	
+	data.append('Documento', $('#Documento')[0].files[0]);
+	
+	var opts = {
+		url: '../Pacientes/CargarDatosTabla',
+		data: data,
+		cache: false,
+		contentType: false,
+		processData: false,
+		method: 'POST',
+		type: 'POST',
+		success: function (response) {			
+			console.log(response);
+			var table_data = jQuery.parseJSON(response);			
+			$('#tablaImportarImpuestos').dataTable({
+				data: table_data,
+				bSort: false,
+				processing: true, // for show progress bar  
+				serverSide: false, // for process server side  
+				filter: false, // this is for disable filter (search box) 
+				columns: [
+					{ "data": "Nro", "name": "Nro", "autoWidth": true },
+					{ "data": "Código", "name": "Código", "autoWidth": true },
+					{ "data": "Nombre", "name": "Nombre", "autoWidth": true },
+					{ "data": "Cédula", "name": "Cédula", "autoWidth": true },
+					{ "data": "FechaNac", "name": "FechaNac", "autoWidth": true },
+					{ "data": "Genero", "name": "Genero", "autoWidth": true },
+					{ "data": "Dirección.", "name": "Dirección.", "autoWidth": true },
+					{ "data": "Teléfono", "name": "Teléfono", "autoWidth": true },
+					{ "data": "Celular", "name": "Celular", "autoWidth": true },
+					{ "data": "Email", "name": "Email", "autoWidth": true },
+					{ "data": "Carrera", "name": "Carrera", "autoWidth": true },
+					{ "data": "Facultad", "name": "Facultad", "autoWidth": true },
+					{ "data": "EmailEPN.", "name": "EmailEPN.", "autoWidth": true },
+					{ "data": "Graduado", "name": "Graduado", "autoWidth": true },
+					{ "data": "Titulacion", "name": "Titulacion", "autoWidth": true },
+					{ "data": "Etnia", "name": "Etnia", "autoWidth": true },				
+
+				]
+			});
+		}
+	};
+
+	if (data.fake) {
+		// Make sure no text encoding stuff is done by xhr
+		opts.xhr = function () { var xhr = jQuery.ajaxSettings.xhr(); xhr.send = xhr.sendAsBinary; return xhr; }
+		opts.contentType = "multipart/form-data; boundary=" + data.boundary;
+		opts.data = data.toString();
+	}
+	jQuery.ajax(opts);
+
+}
+
+
+function GuardarDatosImportardos() {
+	var data = new FormData();	
+	data.append('Documento', $('#Documento')[0].files[0]);
+	
+	var opts = {
+		url: '../Pacientes/GuardarDatosImportados',
+		data: data,
+		cache: false,
+		contentType: false,
+		processData: false,
+		method: 'POST',
+		type: 'POST',
+		success: function (response) {
+			var numero = 0;
+			var contadorError = 0;
+			console.log(response);	
+			if (response === "Save") {
+				$('#modalOdontograma').modal('hide');
+				limpiarDatos();
+				SuccessAlert("Guardados", "/../Pacientes");
+
+				//SuccessAlert("Guardados", "/../Pacientes");
+				//window.location.href = "../Pacientes/Index";
+			}
+			else {
+				ErrorAlert(response);
+			}
+		}
+	};
+
+	if (data.fake) {
+		// Make sure no text encoding stuff is done by xhr
+		opts.xhr = function () { var xhr = jQuery.ajaxSettings.xhr(); xhr.send = xhr.sendAsBinary; return xhr; }
+		opts.contentType = "multipart/form-data; boundary=" + data.boundary;
+		opts.data = data.toString();
+	}
+	jQuery.ajax(opts);
+
+}
+
+
+
+
+
+
+//function GuardarDatosImportardos(UrlControllerIndex, UrlControllerImportar) {
+//	var cont = 0;
+//	//for (j = 0; j < $('#tablaImportarImpuestos tbody tr').length; j++) {
+//	//	var tr = $('#tablaImportarImpuestos tbody tr')[j];
+//	//	var td = $(tr).find('td');
+//	//	var inputs = $(td).find('input');
+//	//	for (i = 0; i < inputs.length; i++) {
+//	//		var nombre = $(inputs[i]).attr("name");
+//	//		var validacion = "ListaTipoImpuestos[" + j + "].validacionImportar";
+//	//		if (nombre.trim() === validacion) {
+//	//			if ($(inputs[i]).val() !== "") {
+//	//				cont = cont + 1;
+//	//			}
+//	//		}
+//	//	}
+//	//}
+//	if (cont === 0) {
+//		//$('#btnGuardar').removeAttr('disabled');
+//		AdvertenciaGuardarImportados(UrlControllerIndex, UrlControllerImportar);
+//	}
+//	else {
+
+//		AdvertenciaGuardarImportadosError();
+//	}
+
+//}
+
+var tiposAdjunto = ["application/excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
+
+function validarTamanioArchivo(response) {
+
+	$("#tablaImportarImpuestos > tbody").empty();
+	//$('#btnGuardar').attr("disabled", true);
+
+	if (tiposAdjunto.includes($(response)[0].files[0].type)) {
+		var tamanoBytes = $(response)[0].files[0].size;
+		var tamanoMB = parseFloat(tamanoBytes) / parseFloat(Math.pow(1024, 2));
+		var tamanoAdjunto = $("#TamanoAdjunto").val();
+		if (parseFloat(tamanoMB) >= parseFloat(tamanoAdjunto)) {
+			$("#DocumentoMensaje").text('El archivo excede el tamaño permitido (' + tamanoAdjunto + ' MB)');
+			$("#Documento").val("");
+		}
+		else
+			$("#DocumentoMensaje").text("");
+	} else {
+		$("#DocumentoMensaje").text("Extensión de archivo incorrecta.");
+		$("#Documento").val('');
+	}
+
+
+
+}
+
+
+function limpiarDatos() {
+	//$('#btnGuardar').attr("disabled", true);
+	$("#tablaImportarImpuestos > tbody").empty();
+	$("#Documento").val("");	
+	$('.custom-file-label').removeClass("selected").html("");
+
+}

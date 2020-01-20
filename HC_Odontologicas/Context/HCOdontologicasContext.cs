@@ -657,8 +657,7 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(128)
 					.IsUnicode(false);
 
-				entity.Property(e => e.EstadoCivl)
-					.IsRequired()
+				entity.Property(e => e.EstadoCivil)				
 					.HasMaxLength(32)
 					.IsUnicode(false);
 
@@ -702,8 +701,7 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(32)
 					.IsUnicode(false);
 
-				entity.Property(e => e.TipoPaciente)
-					.IsRequired()
+				entity.Property(e => e.TipoPaciente)					
 					.HasMaxLength(1)
 					.IsUnicode(false)
 					.IsFixedLength();

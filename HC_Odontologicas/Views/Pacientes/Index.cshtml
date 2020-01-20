@@ -15,6 +15,13 @@
 {
 	@*<a asp-action="GetExcel" class="btn btn-primary"><i class="fa fa-download"></i> Exportar</a>*@
 }
+
+@*importar datos para hacer directo*@
+@*<a asp-action="ImportCustomer" class="btn btn-primarybtn btn-sm btn-info botones-top" title="@Localizer["ImportarDirecto"]"><i class="fa fa-download"></i> @Localizer["ImportarDirecto"]</a>*@
+
+@*importar datos desde el modal*@
+
+<a data-toggle="modal" class="btn btn-primary" href="#modalImportarDatos">Importar</a>
 <br />
 <br />
 @* Buscar *@
@@ -34,7 +41,7 @@
 			<th>
 				<a asp-action="Index" asp-route-sortOrder="@ViewData["NombreSortParam"]" asp-route-filter="@ViewData["Filter"]">Nombre</a>
 			</th>
-			
+
 			<th>
 				Cédula
 			</th>
@@ -53,13 +60,13 @@
 				</td>
 				<td>
 					@Html.DisplayFor(modelItem => item.NombreCompleto)
-				</td>				
+				</td>
 				<td>
 					@Html.DisplayFor(modelItem => item.Identificacion)
-				</td>				
+				</td>
 				<td>
 					@Html.DisplayFor(modelItem => item.MailEpn)
-				</td>				
+				</td>
 				<td>
 					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-outline-warning" data-toggle="tooltip" title="Editar">Editar</a>
 					<a onclick="eliminar('@item.Codigo','../Pacientes/DeleteConfirmed','/../Pacientes')" class="btn btn-outline-danger" data-toggle="tooltip" title="Eliminar">Eliminar</a>
@@ -69,7 +76,7 @@
 		}
 	</tbody>
 </table>
-<br/>
+<br />
 @* Paginación *@
 @{
 	var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
@@ -93,3 +100,88 @@
 <div class="pull-right">
 	Registros: @Model.TotalR
 </div>
+
+
+
+@* modal para importar los datos*@
+
+<div id="modalImportarDatos" class="modal fade">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="m-t-none m-b">Importar Datos</h3>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="limpiarDatos();">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form role="form" enctype="multipart/form-data" id="Importar" name="Importar" method="post" asp-action="GuardarDatosImportados">
+					<div class="form-group row">
+						<div class="custom-file">
+							<input id="Documento" type="file" class="custom-file-input" onchange="validarTamanioArchivo($(this));" accept="application/excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" /> @*accept="application/excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" >*@
+							<label for="nombre" id="nombre" class="custom-file-label">Seleccione un archivo...</label>
+							<br />
+						</div>
+						<span id="DocumentoMensaje" name="DocumentoMensaje" class="text-danger"></span>
+					</div>
+					<div class="form-group row">
+						<br />
+						<button class="btn btn-primary btn-sm" type="button" onclick="cargarDatosTablaImportar();">Cargar Datos</button>
+					</div>
+					<div class="form-group row">
+						<div class="table-responsive">
+							<table id="tablaImportarImpuestos" class="table table-stripped table-bordered">
+								<thead>
+									<tr>
+										<th>Nro.</th>
+										<th>Código</th>
+										<th>Nombre</th>
+										<th>Cédula</th>
+										<th>FechaNac</th>
+										<th>Genero</th>
+										<th>Dirección</th>
+										<th>Teléfono</th>
+										<th>Celular</th>
+										<th>Email</th>
+										<th>Carrera</th>
+										<th>Facultad</th>
+										<th>EmailEPN</th>
+										<th>Graduado</th>
+										<th>Titulación</th>
+										<th>Etnia</th>
+										<th>Observaciones</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="form-group row">
+						<button class="btn btn-primary btn-sm" id="btnGuardar" type="button" onclick="GuardarDatosImportardos('@Url.Action("Index", "Pacientes" )','@Url.Action("GuardarDatosImportados", "Pacientes" )');">Guardar</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+</div>
+<div style="display:none;">
+	<input id="TamanoAdjunto" value="@ViewBag.TamanoAdjunto" />
+</div>
+
+
+@section Scripts {
+	
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('.custom-file-input').on('change', function () {
+				let fileName = $('.custom-file-input').val().split('\\').pop();//$(this).val().split('\\').pop();
+				$(this).next('.custom-file-label').addClass("selected").html(fileName);
+			});
+
+		});
+
+		
+	</script>
+}
