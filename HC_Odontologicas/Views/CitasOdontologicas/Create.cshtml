@@ -108,7 +108,7 @@
 
 	<script src="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler.js"></script>
 	<link rel="stylesheet" href="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler_material.css" type="text/css" charset="utf-8">
-	@*<script src="~/lib/dhtmlx/codebase/locale/locale_es.js" charset="utf-8"></script>*@
+	<script src="~/lib/dhtmlx/codebase/locale/locale_es.js" charset="utf-8"></script>
 
 	<script>
 		scheduler.config.multi_day = true;
@@ -118,12 +118,12 @@
 		scheduler.config.details_on_create = true;
 		scheduler.config.details_on_dblclick = true;
 
-		var paciente_opts = cargarDoctores();
-		var doctor_opts = cargarPacientes();
+		var paciente_opts = cargarPacientes();
+		var doctor_opts = cargarDoctores();
 
 		scheduler.config.lightbox.sections = [
-			{ name: "Pacientes", height: 40, map_to: "type", type: "select", options: paciente_opts },
-			{ name: "Doctores", height: 40, map_to: "type", type: "select", options: doctor_opts },
+			{ name: "Pacientes", height: 40, map_to: "Paciente", type: "select", options: paciente_opts },
+			{ name: "Doctores", height: 40, map_to: "Doctor", type: "select", options: doctor_opts },
 			{ name: "Observación", height: 50, map_to: "text", type: "textarea", focus: true },
 			{ name: "Tiempo", height: 72, type: "time", map_to: "auto" },
 
@@ -131,30 +131,80 @@
 
 		scheduler.config.xml_date = "%Y-%m-%d %H:%i";
 
+		//para la etiqueta del evento.
 		scheduler.attachEvent("onEventSave", function (id, ev, is_new) {
-			if (ev.username != '') {
-				ev.text = "";
-				var arr = ev.username.split(',');
+			if (ev.Paciente != '') {
+				ev.text = "P";
+				var arr = ev.Paciente.split(',');
 				for (var i = 0; i < arr.length; i++) {
-					ev.text += (ev.text.length) ? (", " + getLabel(arr[i])) : (getLabel(arr[i]));
+					ev.text += (ev.text.length) ? (": " + getLabelPaciente(arr[i])) : (getLabelPaciente(arr[i]));
 				}
 			}
+
+			if (ev.Doctor != '') {
+				ev.text += "<br>D";
+				var arr = ev.Doctor.split(',');
+				for (var i = 0; i < arr.length; i++) {
+					ev.text += (ev.text.length) ? (": " + getLabelDoctor(arr[i])) : (getLabelDoctor(arr[i]));
+				}
+			}
+
+			ev.color = obtenerColor(ev.Doctor);
 			return true;
 		})
 
-		function getLabel(key) {
-			for (var i = 0; i < users.length; i++) {
-				if (key == users[i].key)
-					return users[i].label;
+		function getLabelPaciente(key) {
+			for (var i = 0; i < paciente_opts.length; i++) {
+				console.log("getLabelPaciente label:",paciente_opts[i].label);
+				if (key == paciente_opts[i].key) { //ce ti laura
+					var nombre = paciente_opts[i].label.split(" ");
+					console.log(nombre);
+					return nombre[0] + " " +nombre[2];
+				}
 			}
 		}
 
+		function getLabelDoctor(key) {
+			for (var i = 0; i < doctor_opts.length; i++) {
+				if (key == doctor_opts[i].key)
+					return doctor_opts[i].label;
+			}
+		}
+
+
+		function obtenerColor(key) {
+			//llenar arreglo de colores.
+			var colores = [
+				{ key: 0, label: '#835134'},
+				{ key: 1, label: '#338A28' },
+				{ key: 2, label: '#BC61DA' },
+				{ key: 3, label: '#F3C13C' },
+				{ key: 4, label: '#98948B' },
+				{ key: 5, label: '#3AE7AB' }
+			]
+
+			var coloresDoctor = [];
+			for (var i = 0; i < doctor_opts.length; i++) {
+				coloresDoctor.push({ key: doctor_opts[i].key, label: colores[i].label });
+			}
+
+			for (var i = 0; i < doctor_opts.length; i++) {
+				if (key == coloresDoctor[i].key)
+					return coloresDoctor[i].label;
+			}
+		}
+
+		//iniciar el calendario en la fecha de hoy.
 		var d = new Date();
 		scheduler.init('scheduler_here', new Date(d.getFullYear(), d.getMonth(), d.getDate()), "week");
 
+
 		//scheduler.parse(small_events_list, "json");
 
-		//scheduler.load("/api/events", "json");
+		scheduler.load("/api/events", "json");
+
+
+
 		// connect backend to scheduler
 		var dp = new dataProcessor("/api/events");
 		dp.init(scheduler);
