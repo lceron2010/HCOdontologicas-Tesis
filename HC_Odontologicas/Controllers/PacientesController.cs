@@ -629,5 +629,17 @@ namespace HC_Odontologicas.Controllers
 				{".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
 			};
 		}
+
+		[HttpGet]
+		public async Task<List<SelectListItem>> CargarPacientes()
+		{
+			List<SelectListItem> list = new List<SelectListItem>();
+			var Pacientes = await _context.Paciente.OrderBy(f => f.NombreCompleto).Where(p => p.Estado == true).ToListAsync();
+			list.Insert(0, new SelectListItem("Seleccione...", "0"));
+			foreach (Paciente item in Pacientes.ToList())
+				list.Add(new SelectListItem(item.NombreCompleto, item.Codigo));
+			return list;
+		}
+
 	}
 }

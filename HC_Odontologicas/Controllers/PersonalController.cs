@@ -304,6 +304,18 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-		
+
+		[HttpGet]
+		public async Task<List<SelectListItem>> CargarDoctores()
+		{
+			List<SelectListItem> list = new List<SelectListItem>();
+			var Doctores = await _context.Personal.OrderBy(f => f.NombreCompleto).Where(p => p.Estado == true && p.Cargo.Nombre=="Doctor").ToListAsync();
+			list.Insert(0, new SelectListItem("Seleccione...", "0"));
+			foreach (Personal item in Doctores.ToList())
+				list.Add(new SelectListItem(item.NombreCompleto, item.Codigo));
+			return list;
+		}
+
+
 	}
 }

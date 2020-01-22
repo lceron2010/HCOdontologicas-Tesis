@@ -340,3 +340,49 @@ function limpiarDatos() {
 	$('.custom-file-label').removeClass("selected").html("");
 
 }
+
+
+
+//agenda
+
+function cargarPacientes() {
+	var pacientes_opt = [];
+	$.ajax({
+		type: "GET",
+		url: "/../Pacientes/CargarPacientes",
+		data: {},
+		success: function (response) {
+			console.log(response);
+			
+			$.each(response, function (key, registro) {
+
+				pacientes_opt.push({ key: registro.value, label: registro.text });
+				
+			});
+		}
+	});
+
+	console.log(pacientes_opt);
+	return pacientes_opt;
+}
+
+function cargarDoctores() {
+	var doctores_opt = [];
+	$.ajax({
+		type: "GET",
+		url: "/../Personal/CargarDoctores",
+		data: {},
+		success: function (response) {
+			console.log(response);
+
+			$.each(response, function (key, registro) {
+
+				doctores_opt.push({ key: registro.value, label: registro.text });
+
+			});
+		}
+	});
+
+	console.log(doctores_opt);
+	return doctores_opt;
+}

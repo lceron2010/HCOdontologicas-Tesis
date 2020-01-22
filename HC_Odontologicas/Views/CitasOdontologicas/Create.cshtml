@@ -1,0 +1,168 @@
+﻿@model HC_Odontologicas.Models.CitaOdontologica
+
+@{
+	ViewData["Title"] = "Create";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+	html, body {
+		margin: 0px;
+		padding: 0px;
+	}
+</style>
+
+@*<h1>Create</h1>
+
+	<h4>CitaOdontologica</h4>
+	<hr />
+	<div class="row">
+		<div class="col-md-4">
+			<form asp-action="Create">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div class="form-group">
+					<label asp-for="Codigo" class="control-label"></label>
+					<input asp-for="Codigo" class="form-control" />
+					<span asp-validation-for="Codigo" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="CodigoPaciente" class="control-label"></label>
+					<select asp-for="CodigoPaciente" class ="form-control" asp-items="ViewBag.CodigoPaciente"></select>
+				</div>
+				<div class="form-group">
+					<label asp-for="CodigoPersonal" class="control-label"></label>
+					<select asp-for="CodigoPersonal" class ="form-control" asp-items="ViewBag.CodigoPersonal"></select>
+				</div>
+				<div class="form-group">
+					<label asp-for="FechaCreacion" class="control-label"></label>
+					<input asp-for="FechaCreacion" class="form-control" />
+					<span asp-validation-for="FechaCreacion" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Observaciones" class="control-label"></label>
+					<input asp-for="Observaciones" class="form-control" />
+					<span asp-validation-for="Observaciones" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Estado" class="control-label"></label>
+					<input asp-for="Estado" class="form-control" />
+					<span asp-validation-for="Estado" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="FechaInicio" class="control-label"></label>
+					<input asp-for="FechaInicio" class="form-control" />
+					<span asp-validation-for="FechaInicio" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="FechaFin" class="control-label"></label>
+					<input asp-for="FechaFin" class="form-control" />
+					<span asp-validation-for="FechaFin" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="HoraInicio" class="control-label"></label>
+					<input asp-for="HoraInicio" class="form-control" />
+					<span asp-validation-for="HoraInicio" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="HoraFin" class="control-label"></label>
+					<input asp-for="HoraFin" class="form-control" />
+					<span asp-validation-for="HoraFin" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="UsuarioCreacion" class="control-label"></label>
+					<input asp-for="UsuarioCreacion" class="form-control" />
+					<span asp-validation-for="UsuarioCreacion" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<input type="submit" value="Create" class="btn btn-primary" />
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div>
+		<a asp-action="Index">Back to List</a>
+	</div>*@
+
+
+
+<div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100vh;'>
+	<div class="dhx_cal_navline">
+		<div class="dhx_cal_prev_button">&nbsp;</div>
+		<div class="dhx_cal_next_button">&nbsp;</div>
+		<div class="dhx_cal_today_button"></div>
+		<div class="dhx_cal_date"></div>
+		<div class="dhx_cal_tab" name="day_tab"></div>
+		<div class="dhx_cal_tab" name="week_tab"></div>
+		<div class="dhx_cal_tab" name="month_tab"></div>
+	</div>
+	<div class="dhx_cal_header"></div>
+	<div class="dhx_cal_data"></div>
+</div>
+
+
+
+@section Scripts {
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+	<script src="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler.js"></script>
+	<link rel="stylesheet" href="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler_material.css" type="text/css" charset="utf-8">
+	@*<script src="~/lib/dhtmlx/codebase/locale/locale_es.js" charset="utf-8"></script>*@
+
+	<script>
+		scheduler.config.multi_day = true;
+
+		scheduler.config.event_duration = 30;
+		scheduler.config.auto_end_date = true;
+		scheduler.config.details_on_create = true;
+		scheduler.config.details_on_dblclick = true;
+
+		var paciente_opts = cargarDoctores();
+		var doctor_opts = cargarPacientes();
+
+		scheduler.config.lightbox.sections = [
+			{ name: "Pacientes", height: 40, map_to: "type", type: "select", options: paciente_opts },
+			{ name: "Doctores", height: 40, map_to: "type", type: "select", options: doctor_opts },
+			{ name: "Observación", height: 50, map_to: "text", type: "textarea", focus: true },
+			{ name: "Tiempo", height: 72, type: "time", map_to: "auto" },
+
+		];
+
+		scheduler.config.xml_date = "%Y-%m-%d %H:%i";
+
+		scheduler.attachEvent("onEventSave", function (id, ev, is_new) {
+			if (ev.username != '') {
+				ev.text = "";
+				var arr = ev.username.split(',');
+				for (var i = 0; i < arr.length; i++) {
+					ev.text += (ev.text.length) ? (", " + getLabel(arr[i])) : (getLabel(arr[i]));
+				}
+			}
+			return true;
+		})
+
+		function getLabel(key) {
+			for (var i = 0; i < users.length; i++) {
+				if (key == users[i].key)
+					return users[i].label;
+			}
+		}
+
+		var d = new Date();
+		scheduler.init('scheduler_here', new Date(d.getFullYear(), d.getMonth(), d.getDate()), "week");
+
+		//scheduler.parse(small_events_list, "json");
+
+		//scheduler.load("/api/events", "json");
+		// connect backend to scheduler
+		var dp = new dataProcessor("/api/events");
+		dp.init(scheduler);
+		// set data exchange mode
+		dp.setTransactionMode("REST");
+
+
+
+	</script>
+
+}

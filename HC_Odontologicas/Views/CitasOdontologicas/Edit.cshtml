@@ -1,0 +1,95 @@
+﻿@model HC_Odontologicas.Models.CitaOdontologica
+
+@{
+	ViewData["Title"] = "Edit";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<h1>Edit</h1>
+
+	<h4>CitaOdontologica</h4>
+	<hr />
+	<div class="row">
+		<div class="col-md-4">
+			<form asp-action="Edit">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<input type="hidden" asp-for="Codigo" />
+				<div class="form-group">
+					<label asp-for="CodigoPaciente" class="control-label"></label>
+					<select asp-for="CodigoPaciente" class="form-control" asp-items="ViewBag.CodigoPaciente"></select>
+					<span asp-validation-for="CodigoPaciente" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="CodigoPersonal" class="control-label"></label>
+					<select asp-for="CodigoPersonal" class="form-control" asp-items="ViewBag.CodigoPersonal"></select>
+					<span asp-validation-for="CodigoPersonal" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="FechaCreacion" class="control-label"></label>
+					<input asp-for="FechaCreacion" class="form-control" />
+					<span asp-validation-for="FechaCreacion" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Observaciones" class="control-label"></label>
+					<input asp-for="Observaciones" class="form-control" />
+					<span asp-validation-for="Observaciones" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Estado" class="control-label"></label>
+					<input asp-for="Estado" class="form-control" />
+					<span asp-validation-for="Estado" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="FechaInicio" class="control-label"></label>
+					<input asp-for="FechaInicio" class="form-control" />
+					<span asp-validation-for="FechaInicio" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="FechaFin" class="control-label"></label>
+					<input asp-for="FechaFin" class="form-control" />
+					<span asp-validation-for="FechaFin" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="HoraInicio" class="control-label"></label>
+					<input asp-for="HoraInicio" class="form-control" />
+					<span asp-validation-for="HoraInicio" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="HoraFin" class="control-label"></label>
+					<input asp-for="HoraFin" class="form-control" />
+					<span asp-validation-for="HoraFin" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="UsuarioCreacion" class="control-label"></label>
+					<input asp-for="UsuarioCreacion" class="form-control" />
+					<span asp-validation-for="UsuarioCreacion" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<input type="submit" value="Save" class="btn btn-primary" />
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div>
+		<a asp-action="Index">Back to List</a>
+	</div>*@
+
+<jqx-scheduler appointment-opacity="0.6" source="Model.Appointments" show-legend="true" view="WeekView" resources="Model.Resources" appointment-data-fields="Model.AppointmentDataFields" date="Model.Date" width="850" height="600">
+	<jqx-scheduler-views>
+		<jqx-scheduler-view type="DayView"></jqx-scheduler-view>
+		<jqx-scheduler-view type="WeekView"></jqx-scheduler-view>
+		<jqx-scheduler-view type="MonthView"></jqx-scheduler-view>
+	</jqx-scheduler-views>
+</jqx-scheduler>
+
+
+
+@section Scripts {
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+	
+
+	
+
+}
