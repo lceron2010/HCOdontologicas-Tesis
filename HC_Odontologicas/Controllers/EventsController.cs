@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using HC_Odontologicas.FuncionesGenerales;
 using HC_Odontologicas.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -25,17 +26,17 @@ namespace HC_Odontologicas.Controllers
 		[HttpGet]
 		public IEnumerable<WebAPIEvent> Get()
 		{
-			
-			return _context.CitaOdontologica
-				.ToList()
-				.Select(e => (WebAPIEvent)e);
+
+			var hola = _context.CitaOdontologica.ToList().Select(e => (WebAPIEvent)e);
+			var json = JsonConvert.SerializeObject(hola);
+			return hola;
 		}
 
 		// GET api/<controller>/5
 		[HttpGet("{id}")]
 		public WebAPIEvent Get(string codigo)
 		{
-			
+
 			return (WebAPIEvent)_context
 				.CitaOdontologica
 				.Find(codigo);
@@ -51,10 +52,10 @@ namespace HC_Odontologicas.Controllers
 			maxCodigo = Convert.ToInt64(_context.CitaOdontologica.Max(f => f.Codigo));
 			maxCodigo += 1;
 			newEvent.Codigo = maxCodigo.ToString("D8");
-			newEvent.CodigoPaciente = apiEvent.Paciente;
-			newEvent.CodigoPersonal = apiEvent.Doctor;
+			newEvent.CodigoPaciente = apiEvent.paciente;
+			newEvent.CodigoPersonal = apiEvent.doctor;
 			newEvent.FechaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
-			newEvent.Observaciones = apiEvent.Observaciones;
+			newEvent.Observaciones = apiEvent.observaciones;
 			newEvent.FechaInicio = Convert.ToDateTime(apiEvent.start_date);
 			newEvent.FechaFin = Convert.ToDateTime(apiEvent.end_date);
 			newEvent.HoraInicio = new TimeSpan(newEvent.FechaInicio.Hour, newEvent.FechaInicio.Minute, newEvent.FechaInicio.Second);
@@ -74,19 +75,25 @@ namespace HC_Odontologicas.Controllers
 
 		// PUT api/<controller>/5
 		[HttpPut("{id}")]
-		public ObjectResult Put(string codigo, [FromForm] WebAPIEvent apiEvent)
+		public ObjectResult Put(string id, [FromForm] WebAPIEvent apiEvent)
 		{
+			var i = (ClaimsIdentity)User.Identity;
 			var updatedEvent = (CitaOdontologica)apiEvent;
-			var dbEvent = _context.CitaOdontologica.Find(codigo);
+			var dbEvent = _context.CitaOdontologica.Find(id);
+
+			//dbEvent.CodigoPaciente = updatedEvent.CodigoPaciente;
 			dbEvent.CodigoPaciente = updatedEvent.CodigoPaciente;
 			dbEvent.CodigoPersonal = updatedEvent.CodigoPersonal;
+			dbEvent.FechaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 			dbEvent.Observaciones = updatedEvent.Observaciones;
-			dbEvent.FechaInicio = updatedEvent.FechaInicio;
-			dbEvent.FechaFin = updatedEvent.FechaCreacion;
-			dbEvent.HoraInicio = updatedEvent.HoraInicio;
-			dbEvent.HoraFin = updatedEvent.HoraFin;
-			dbEvent.UsuarioCreacion = updatedEvent.UsuarioCreacion;
-			
+			dbEvent.FechaInicio = Convert.ToDateTime(updatedEvent.FechaInicio);
+			dbEvent.FechaFin = Convert.ToDateTime(updatedEvent.FechaFin);
+			dbEvent.HoraInicio = new TimeSpan(updatedEvent.FechaInicio.Hour, updatedEvent.FechaInicio.Minute, updatedEvent.FechaInicio.Second);
+			dbEvent.HoraFin = new TimeSpan(updatedEvent.FechaFin.Hour, updatedEvent.FechaFin.Minute, updatedEvent.FechaFin.Second);
+			dbEvent.Estado = "M";
+			dbEvent.UsuarioCreacion = i.Name;
+
+
 			_context.SaveChanges();
 
 			return Ok(new
@@ -97,9 +104,9 @@ namespace HC_Odontologicas.Controllers
 
 		// DELETE api/<controller>/5
 		[HttpDelete("{id}")]
-		public ObjectResult DeleteEvent(string codigo)
+		public ObjectResult DeleteEvent(string id)
 		{
-			var e = _context.CitaOdontologica.Find(codigo);
+			var e = _context.CitaOdontologica.Find(id);
 			if (e != null)
 			{
 				_context.CitaOdontologica.Remove(e);
