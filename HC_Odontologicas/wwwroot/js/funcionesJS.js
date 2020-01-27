@@ -170,11 +170,75 @@ function cambiarColor(enfermedadOdon) {
 	console.log("nombe", nombre);
 	$("#" + nombre).attr("style", "fill:red");
 
-	$("#" + nombre).attr("cambioColor", "true");
+	$("#" + nombre).attr("cambiocolor", "true");
 
 	
 
 }
+
+
+function GuardarDatosOdontograma() {
+	//var data = new FormData();
+	//data.append('imagen', $('#svg742')[0].children[3]);
+
+	dato = $('#svg742')[0].children[3].children[4].children[5]
+
+
+	var array = [
+		{ codigo: "1", nombre: "Darwin",descripcion:"hola"},
+		{ codigo: "2", nombre: "Aldo", descripcion: "30ncsnc"}];
+
+	$.ajax({
+		url: '/../Odontogramas/Create',
+		type: 'POST',
+		dataType: 'json',
+		data: { array },
+		success: function (data) {
+			console.log(data);
+		}
+	});
+
+
+
+	//$('#svg742')[0].children[3].children[0].g11
+
+	//var opts = {
+	//	url: '../Odontogramas/Create',
+	//	data: data,
+	//	cache: false,
+	//	contentType: false,
+	//	processData: false,
+	//	method: 'POST',
+	//	type: 'POST',
+	//	success: function (response) {
+	//		var numero = 0;
+	//		var contadorError = 0;
+	//		console.log(response);
+	//		if (response === "Save") {				
+	//			SuccessAlert("Guardados", "/../Pacientes");
+								
+	//		}
+	//		else {
+	//			ErrorAlert(response);
+	//		}
+	//	}
+	//};
+
+	//if (data.fake)
+	//{
+	//	// Make sure no text encoding stuff is done by xhr
+	//	opts.xhr = function () {
+	//		var xhr = jQuery.ajaxSettings.xhr();
+	//		xhr.send = xhr.sendAsBinary;
+	//		return xhr;
+	//	}
+	//	opts.contentType = "multipart/form-data; boundary=" + data.boundary;
+	//	opts.data = data.toString();
+	//}
+	//jQuery.ajax(opts);
+
+}
+
 
 
 //importar datos
@@ -378,3 +442,7 @@ function cargarDoctores() {
 	console.log(doctores_opt);
 	return doctores_opt;
 }
+
+
+
+

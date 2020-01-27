@@ -141,22 +141,51 @@ namespace HC_Odontologicas.Controllers
 
 		}
 
+
+		[HttpPost]      //public async Task<string> Create(Odontograma odontograma , IFormFile svg742, string hola, IFormFile imagen)
+		public async Task<string> GuardarOdontograma(Odontograma odontograma, IFormFile imagen)
+		{
+
+
+			//if (ModelState.IsValid)
+			//{
+			//	//_context.Add(odontograma);
+			await _context.SaveChangesAsync();
+			//	//return RedirectToAction(nameof(Index));
+			//}
+			//ViewData["CodigoCitaOdontologica"] = new SelectList(_context.CitaOdontologica, "Codigo", "Codigo", odontograma.CodigoCitaOdontologica);
+
+			return imagen.ToString();// View(odontograma);
+		}
+
+
 		// POST: Odontogramas/Create
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create(Odontograma odontograma , IFormFile svg742, string hola)
+		[HttpPost]      //public async Task<string> Create(Odontograma odontograma , IFormFile svg742, string hola, IFormFile imagen)
+		public async Task<string> Create(Odontograma odontograma, List<TipoIdentificacion> array)
 		{
-			if (ModelState.IsValid)
-			{
-				_context.Add(odontograma);
+
+
+			//if (ModelState.IsValid)
+			//{
+			//	//_context.Add(odontograma);
 				await _context.SaveChangesAsync();
-				return RedirectToAction(nameof(Index));
-			}
-			ViewData["CodigoCitaOdontologica"] = new SelectList(_context.CitaOdontologica, "Codigo", "Codigo", odontograma.CodigoCitaOdontologica);
-			return View(odontograma);
+			//	//return RedirectToAction(nameof(Index));
+			//}
+			//ViewData["CodigoCitaOdontologica"] = new SelectList(_context.CitaOdontologica, "Codigo", "Codigo", odontograma.CodigoCitaOdontologica);
+			
+		return array.ToString();// View(odontograma);
 		}
+
+
+		[HttpPost]
+		public ActionResult ExportarExcel(Odontograma odontograma, List<TipoIdentificacion> array)
+		{
+			var resultado = array;
+			return View(resultado);
+		}
+
 
 		// GET: Odontogramas/Edit/5
 		public async Task<IActionResult> Edit(string id)
