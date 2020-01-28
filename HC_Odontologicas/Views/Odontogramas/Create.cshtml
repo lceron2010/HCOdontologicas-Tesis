@@ -10,10 +10,10 @@
 <h4>Odontograma</h4>
 <hr />
 <div class="row">
-	<div class="col-md-4">
-		<form  role="form" enctype="multipart/form-data" id="CreateReembolso" name="CreateReembolso" method="post" asp-action="Create">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<form asp-action="Create">
 			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<input asp-for="CodigoCitaOdontologica" hidden />
+			<input asp-for="CodigoCitaOdontologica" name="CodigoCitaOdontologica" hidden />
 			<input asp-for="Codigo" hidden />
 
 			<fieldset>
@@ -22,23 +22,19 @@
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="CodigoPaciente" class="control-label">Paciente*</label>
-							<select asp-for="CodigoPaciente" class="form-control" asp-items="ViewBag.CodigoPaciente"></select>
+							<select asp-for="CodigoPaciente" class="form-control" asp-items="ViewBag.CodigoPaciente" name="CodigoPaciente"></select>
 							<span asp-validation-for="CodigoPaciente" class="text-danger"></span>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="CodigoPersonal" class="control-label">Personal*</label>
-							<select asp-for="CodigoPersonal" class="form-control" asp-items="ViewBag.CodigoPersonal"></select>
+							<select asp-for="CodigoPersonal" class="form-control" asp-items="ViewBag.CodigoPersonal" name="CodigoPersonal"></select>
 							<span asp-validation-for="CodigoPersonal" class="text-danger"></span>
 						</div>
 					</div>
 				</div>
 			</fieldset>
-
-
-
-			<input id="hola" value="holaaaa" name="hola" />
 
 			<svg xmlns:dc="http://purl.org/dc/elements/1.1/"
 				 xmlns:cc="http://creativecommons.org/ns#"
@@ -201,22 +197,12 @@
 					</g>
 				</g>
 			</svg>
-
-
 			<br />
 			<br />
-
-
-			@*<h1>otra forma</h1>
-
-			<object type="image/svg+xml" data="~/img/odontv7.svg" name="imagen"> </object>*@
-
-
-
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="form-group">
-						<a class="btn btn-white" onclick="regresar('../Odontograma/Index','');">Regresar</a>
+						<a class="btn btn-white" onclick="regresar('../Odontogramas/Index','');">Regresar</a>
 						<button type="button" class="btn btn-primary" onclick="GuardarDatosOdontograma();"><i class="fa fa-save"></i> Guardar</button>
 					</div>
 				</div>
@@ -254,8 +240,8 @@
 								<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">Caries</button>
 
 								<div class="dropdown-menu">
-									<a class="dropdown-item" id="CB" href="#" onclick="cambiarColor(this.id);">Bucal</a>
-									<a class="dropdown-item" id="CL" href="#">Lingual</a>
+									<a class="dropdown-item" id="CariesB" href="#" onclick="cambiarColor(this.id);">Bucal</a>
+									<a class="dropdown-item" id="CariesL" href="#">Lingual</a>
 									<a class="dropdown-item" href="#">Distal</a>
 									<a class="dropdown-item" href="#">Mesial</a>
 									<a class="dropdown-item" href="#">Oclusal</a>

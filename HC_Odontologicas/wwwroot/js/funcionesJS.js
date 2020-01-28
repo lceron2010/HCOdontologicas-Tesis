@@ -160,83 +160,94 @@ function cargarPopUp(idGrupo) {
 function cambiarColor(enfermedadOdon) {
 	var idGrupo = $("#idGrupo").val();
 
-	console.log("cambiar color");
+	//console.log("cambiar color");
 	
-	console.log(idGrupo);
+	//console.log(idGrupo);
 
-	console.log(enfermedadOdon);
+	//console.log('enfermedad', enfermedadOdon);
 
-	nombre = enfermedadOdon.substring(1) + "-" + idGrupo.substring(1,3);
-	console.log("nombe", nombre);
+	//nombre = enfermedadOdon.substring(1) + "-" + idGrupo.substring(1,3);
+	nombre = enfermedadOdon.charAt(enfermedadOdon.length - 1) + "-" + idGrupo.substring(1, 3);
+	//console.log("nombe", nombre);
 	$("#" + nombre).attr("style", "fill:red");
-
 	$("#" + nombre).attr("cambiocolor", "true");
+	$("#" + nombre).attr("enfermedad", enfermedadOdon);
 
-	
+	//para prueba
 
+	$("#O-11").attr("cambiocolor", "true");
+	$("#O-11").attr("enfermedad", "ResinaO");
+
+	$('#modalOdontograma').modal('hide'); // cerrar
 }
 
 
 function GuardarDatosOdontograma() {
 	//var data = new FormData();
 	//data.append('imagen', $('#svg742')[0].children[3]);
+	
+	const codigoPaciente = $('#CodigoPaciente')[0].value; 
+	const codigoPersonal = $('#CodigoPersonal')[0].value;
 
-	dato = $('#svg742')[0].children[3].children[4].children[5]
+	//leer los detalles de pieza.
+	var listaOdontogramaDetalle = [];
+	datos = $('#svg742')[0].children[3].children[4];
+	for (var i = 0; i < datos.childElementCount; i++) {
+		dato = $('#svg742')[0].children[3].children[4].children[i]; //ene l [3] hay que recorrer
+		//propiedadColor = dato.attributes.cambiocolor;
+		cambioColor = false;
+		if (dato.attributes.cambiocolor !== undefined) {
+			cambioColor = dato.attributes.cambiocolor.value;
+		}			
+		if (cambioColor) {
+			pieza = dato.id.substring(2, 4);
+			region = dato.id.substring(0, 1);
+			enfermedad = dato.attributes.enfermedad.value.substring(0, dato.attributes.enfermedad.value.length -1);
+			diagnosticoDato = dato.style.fill;
+			diagnostico = "Diagnosticado";
+			if (diagnosticoDato === "red") {
+				diagnostico = "Recomendado";
+			}
 
+			var detalle = { Pieza: pieza, Region: region, Enfermedad: enfermedad, Valor: true, Diagnostico: diagnostico };
 
-	var array = [
-		{ codigo: "1", nombre: "Darwin",descripcion:"hola"},
-		{ codigo: "2", nombre: "Aldo", descripcion: "30ncsnc"}];
+			listaOdontogramaDetalle.push(detalle);
+		}
+	}
+
+	var odontograma = [
+		{
+			CodigoPaciente: codigoPaciente, CodigoPersonal: codigoPersonal,
+			OdontogramaDetalle: listaOdontogramaDetalle				
+		}
+	];
 
 	$.ajax({
 		url: '/../Odontogramas/Create',
 		type: 'POST',
 		dataType: 'json',
-		data: { array },
-		success: function (data) {
-			console.log(data);
+		data: { odontograma },
+		success: function (response) {
+			if (response === "Save") {								
+				SuccessAlert("Guardados", "/../Pacientes");						
+			}
+			else {
+				ErrorAlert(response);
+			}
 		}
 	});
 
+}
 
-
-	//$('#svg742')[0].children[3].children[0].g11
-
-	//var opts = {
-	//	url: '../Odontogramas/Create',
-	//	data: data,
-	//	cache: false,
-	//	contentType: false,
-	//	processData: false,
-	//	method: 'POST',
-	//	type: 'POST',
-	//	success: function (response) {
-	//		var numero = 0;
-	//		var contadorError = 0;
-	//		console.log(response);
-	//		if (response === "Save") {				
-	//			SuccessAlert("Guardados", "/../Pacientes");
-								
-	//		}
-	//		else {
-	//			ErrorAlert(response);
-	//		}
-	//	}
-	//};
-
-	//if (data.fake)
-	//{
-	//	// Make sure no text encoding stuff is done by xhr
-	//	opts.xhr = function () {
-	//		var xhr = jQuery.ajaxSettings.xhr();
-	//		xhr.send = xhr.sendAsBinary;
-	//		return xhr;
-	//	}
-	//	opts.contentType = "multipart/form-data; boundary=" + data.boundary;
-	//	opts.data = data.toString();
-	//}
-	//jQuery.ajax(opts);
-
+function obtenerDatosOdontograma(codigo) {	
+	$.ajax({
+		type: "GET",
+		url: "/../Odontogramas/Edit",
+		data: { codigo },
+		success: function (response) {
+			console.log(response);			
+		}
+	});
 }
 
 
@@ -310,17 +321,11 @@ function GuardarDatosImportardos() {
 		processData: false,
 		method: 'POST',
 		type: 'POST',
-		success: function (response) {
-			var numero = 0;
-			var contadorError = 0;
-			console.log(response);	
+		success: function (response) {			
 			if (response === "Save") {
 				$('#modalOdontograma').modal('hide');
 				limpiarDatos();
-				SuccessAlert("Guardados", "/../Pacientes");
-
-				//SuccessAlert("Guardados", "/../Pacientes");
-				//window.location.href = "../Pacientes/Index";
+				SuccessAlert("Guardados", "/../Pacientes");				
 			}
 			else {
 				ErrorAlert(response);
@@ -337,38 +342,6 @@ function GuardarDatosImportardos() {
 	jQuery.ajax(opts);
 
 }
-
-
-
-
-
-
-//function GuardarDatosImportardos(UrlControllerIndex, UrlControllerImportar) {
-//	var cont = 0;
-//	//for (j = 0; j < $('#tablaImportarImpuestos tbody tr').length; j++) {
-//	//	var tr = $('#tablaImportarImpuestos tbody tr')[j];
-//	//	var td = $(tr).find('td');
-//	//	var inputs = $(td).find('input');
-//	//	for (i = 0; i < inputs.length; i++) {
-//	//		var nombre = $(inputs[i]).attr("name");
-//	//		var validacion = "ListaTipoImpuestos[" + j + "].validacionImportar";
-//	//		if (nombre.trim() === validacion) {
-//	//			if ($(inputs[i]).val() !== "") {
-//	//				cont = cont + 1;
-//	//			}
-//	//		}
-//	//	}
-//	//}
-//	if (cont === 0) {
-//		//$('#btnGuardar').removeAttr('disabled');
-//		AdvertenciaGuardarImportados(UrlControllerIndex, UrlControllerImportar);
-//	}
-//	else {
-
-//		AdvertenciaGuardarImportadosError();
-//	}
-
-//}
 
 var tiposAdjunto = ["application/excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
 
@@ -404,8 +377,6 @@ function limpiarDatos() {
 	$('.custom-file-label').removeClass("selected").html("");
 
 }
-
-
 
 //agenda
 

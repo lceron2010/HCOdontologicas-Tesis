@@ -29,18 +29,15 @@
 	<thead>
 		<tr>
 			<th>
-				FechaActualizacion
+				Paciente
 			</th>
 			<th>
-				Observaciones
+				Doctor
 			</th>
 			<th>
-				Estado
-			</th>
-			<th>
-				CitaOdontologica
-			</th>
-			<th></th>
+				Fecha
+			</th>			
+			<th>Acciones</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -48,21 +45,18 @@
 		{
 			<tr>
 				<td>
+					@Html.DisplayFor(modelItem => item.CitaOdontologica.Paciente.NombreCompleto)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.CitaOdontologica.Personal.NombreCompleto)
+				</td>
+				<td>
 					@Html.DisplayFor(modelItem => item.FechaActualizacion)
-				</td>
+				</td>				
 				<td>
-					@Html.DisplayFor(modelItem => item.Observaciones)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Estado)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.CitaOdontologica.Codigo)
-				</td>
-				<td>
-					<a asp-action="Edit" asp-route-id="@item.Codigo">Edit</a> |
-					<a asp-action="Details" asp-route-id="@item.Codigo">Details</a> |
-					<a asp-action="Delete" asp-route-id="@item.Codigo">Delete</a>
+					@*<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-outline-warning" data-toggle="tooltip" title="Editar">Editar</a>*@
+					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" onclick="obtenerDatosOdontograma('@Encriptacion.Encrypt(item.Codigo)')" class="btn btn-outline-warning" data-toggle="tooltip" title="Editar">Editar</a>
+					<a onclick="eliminar('@item.Codigo','../Odontogramas/DeleteConfirmed','/../Odontogramas')" class="btn btn-outline-danger" data-toggle="tooltip" title="Eliminar">Eliminar</a>
 				</td>
 			</tr>
 		}

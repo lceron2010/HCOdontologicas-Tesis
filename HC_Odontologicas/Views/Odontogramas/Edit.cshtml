@@ -1,50 +1,312 @@
 ﻿@model HC_Odontologicas.Models.Odontograma
 
 @{
-    ViewData["Title"] = "Edit";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Edit";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h1>Edit</h1>
 
 <h4>Odontograma</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Codigo" />
-            <div class="form-group">
-                <label asp-for="CodigoCitaOdontologica" class="control-label"></label>
-                <select asp-for="CodigoCitaOdontologica" class="form-control" asp-items="ViewBag.CodigoCitaOdontologica"></select>
-                <span asp-validation-for="CodigoCitaOdontologica" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FechaActualizacion" class="control-label"></label>
-                <input asp-for="FechaActualizacion" class="form-control" />
-                <span asp-validation-for="FechaActualizacion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Observaciones" class="control-label"></label>
-                <input asp-for="Observaciones" class="form-control" />
-                <span asp-validation-for="Observaciones" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+	<div  class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<form asp-action="Create">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input asp-for="CodigoCitaOdontologica" name="CodigoCitaOdontologica" hidden />
+			<input asp-for="Codigo" hidden />
+
+			<fieldset>
+				<legend class="titulo text-uppercase" style="font-size:inherit">Datos informativos</legend>
+				<div class="row">
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="CodigoPaciente" class="control-label">Paciente*</label>
+							<select asp-for="CodigoPaciente" class="form-control" asp-items="ViewBag.CodigoPaciente" name="CodigoPaciente"></select>
+							<span asp-validation-for="CodigoPaciente" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="CodigoPersonal" class="control-label">Personal*</label>
+							<select asp-for="CodigoPersonal" class="form-control" asp-items="ViewBag.CodigoPersonal" name="CodigoPersonal"></select>
+							<span asp-validation-for="CodigoPersonal" class="text-danger"></span>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+
+			<svg xmlns:dc="http://purl.org/dc/elements/1.1/"
+				 xmlns:cc="http://creativecommons.org/ns#"
+				 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+				 xmlns:svg="http://www.w3.org/2000/svg"
+				 xmlns="http://www.w3.org/2000/svg"
+				 xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+				 xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+				 width="810"
+				 height="400"
+				 version="1.1"
+				 viewBox="0 0 810 400"
+				 id="svg742"
+				 name="svg742"
+				 sodipodi:docname="odontv5.svg"
+				 inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+				<defs id="defs746" />
+
+
+
+				<sodipodi:namedview pagecolor="#ffffff"
+									bordercolor="#666666"
+									borderopacity="1"
+									objecttolerance="10"
+									gridtolerance="10"
+									guidetolerance="10"
+									inkscape:pageopacity="0"
+									inkscape:pageshadow="2"
+									inkscape:window-width="1366"
+									inkscape:window-height="705"
+									id="namedview744"
+									showgrid="false"
+									inkscape:zoom="1.218668"
+									inkscape:cx="351.15051"
+									inkscape:cy="428.05059"
+									inkscape:window-x="-8"
+									inkscape:window-y="-8"
+									inkscape:window-maximized="1"
+									inkscape:current-layer="svg742" />
+
+
+
+				<metadata id="metadata2">
+					<rdf:RDF>
+						<cc:Work rdf:about="">
+							<dc:format>image/svg+xml</dc:format>
+							<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+
+
+
+							<dc:title></dc:title>
+						</cc:Work>
+					</rdf:RDF>
+				</metadata>
+				<g id="g-odontograma"
+				   transform="matrix(0.1554,0,0,0.16435,-113.44,-104.76)"
+				   style="stroke-width:3.39280009">
+					<path d="M 729.98,1854.3 V 637.4 h 5212.4 V 3071.2 H 729.98 Z"
+						  id="path4"
+						  inkscape:connector-curvature="0" />
+
+
+
+					<path d="M 3344.2,2458.4 V 1858.58 H 738 v 1199.6 h 2606.2 z"
+						  id="path6"
+						  inkscape:connector-curvature="0"
+						  style="fill:#ffffff" />
+
+
+
+					<path d="m 866.03,2721.7 v -146.72 h 178.73 v 293.44 H 866.03 Z"
+						  id="path8"
+						  inkscape:connector-curvature="0" />
+
+
+
+					<g id="g12">
+						<path inkscape:connector-curvature="0"
+							  id="T-12"
+							  d="M 2645.3,991.24 V 844.52 h 178.72 v 293.44 H 2645.3 Z" />
+
+
+
+						<path d="m 2771.8,1084.2 -21.1,-32.163 -22.748,-0.2019 -22.737,-0.2023 -19.875,32.365 -19.876,32.364 h 127.44 z"
+							  id="L-12"
+							  inkscape:connector-curvature="0"
+							  style="fill:#ffffff" />
+
+
+
+						<path d="M 2810.7,998.88 V 885.69 l -24.001,38.658 -24.012,38.658 v 79.297 l 23.346,34.841 c 12.833,19.162 23.636,34.858 24.002,34.88 0.3661,0.023 0.6656,-50.894 0.6656,-113.15 z"
+							  id="D-12"
+							  inkscape:connector-curvature="0"
+							  style="fill:#ffffff" />
+
+
+
+						<path d="m 2698.7,999.42 v -33.037 l -20.008,-42.166 -20.009,-42.166 v 214.7 l 40.017,-64.297 z"
+							  id="M-12"
+							  inkscape:connector-curvature="0"
+							  style="fill:#ffffff" />
+
+
+
+						<path d="m 2749.3,999.87 v -30.207 h -37.344 v 60.414 h 37.344 z"
+							  id="O-12"
+							  inkscape:connector-curvature="0"
+							  style="fill:#ffffff" />
+
+
+
+						<path d="m 2778.7,907.09 25.238,-40.995 h -67.461 c -53.24,0 -67.047,1.137 -65.495,5.3941 1.0931,2.9668 9.6593,21.415 19.056,40.995 l 17.078,35.601 h 46.346 z"
+							  id="B-12"
+							  inkscape:connector-curvature="0"
+							  style="fill:#ffffff" />
+
+
+
+					</g>
+					<g id="g11" onclick="cargarPopUp(this.id);">
+						<path inkscape:connector-curvature="0"
+							  id="T-11"
+							  d="M 2968.1,991.24 V 844.52 h 178.74 v 293.44 H 2968.1 Z" />
+
+
+
+						<path d="m 3094.6,1084.2 -21.1,-32.163 -22.748,-0.2019 -22.738,-0.2023 -19.875,32.365 -19.876,32.364 h 127.44 z"
+							  id="L-11"
+							  inkscape:connector-curvature="0"
+							  style="fill:#ffffff" />
+
+
+
+						<path d="M 3133.5,998.88 V 885.69 l -24.001,38.658 -24.013,38.658 v 79.297 l 23.336,34.841 c 12.844,19.162 23.646,34.858 24.013,34.88 0.3658,0.023 0.6652,-50.894 0.6652,-113.15 z"
+							  id="D-11"
+							  inkscape:connector-curvature="0"
+							  style="fill:#ffffff" />
+
+
+
+						<path d="m 3021.4,999.42 v -33.037 l -40.017,-84.333 v 214.7 l 40.017,-64.297 z"
+							  id="M-11"
+							  inkscape:connector-curvature="0"
+							  style="fill:#ffffff" />
+
+
+
+						<path d="m 3072.1,999.87 v -30.207 h -37.344 v 60.414 h 37.344 z"
+							  id="O-11"
+							  inkscape:connector-curvature="0"
+							  style="fill:#ffffff" />
+
+
+
+						<path d="m 3101.5,907.09 25.238,-40.995 h -67.462 c -53.24,0 -67.047,1.137 -65.494,5.3941 1.0929,2.9668 9.6589,21.415 19.056,40.995 l 17.077,35.601 h 46.346 z"
+							  id="B-11"
+							  inkscape:connector-curvature="0"
+							  style="fill:#ffffff" cambiocolor="false" />
+
+					</g>
+				</g>
+			</svg>
+			<br />
+			<br />
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="form-group">
+						<a class="btn btn-white" onclick="regresar('../Odontogramas/Index','');">Regresar</a>
+						<button type="button" class="btn btn-primary" onclick="GuardarDatosOdontograma();"><i class="fa fa-save"></i> Guardar</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+
+
+
+
+
+
+@*modal*@
+
+<div id="modalImportarDatos" class="modal fade">
+	<input hidden id="idGrupo" value="hola" />
+
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="m-t-none m-b">Importar Datos</h3>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="limpiarDatos();">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="container">
+					<h2>Vertical Nav</h2>
+					<p>Use the .flex-column class to create a vertical nav:</p>
+					<ul class="nav flex-column">
+						<li class="nav-item">
+							<div class="dropdown dropright">
+								<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">Caries</button>
+
+								<div class="dropdown-menu">
+									<a class="dropdown-item" id="CariesB" href="#" onclick="cambiarColor(this.id);">Bucal</a>
+									<a class="dropdown-item" id="CariesL" href="#">Lingual</a>
+									<a class="dropdown-item" href="#">Distal</a>
+									<a class="dropdown-item" href="#">Mesial</a>
+									<a class="dropdown-item" href="#">Oclusal</a>
+								</div>
+							</div>
+						</li>
+						<li class="nav-item">
+							<div class="dropdown dropright">
+								<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"> Recina</button>
+
+								<div class="dropdown-menu">
+									<a class="dropdown-item" href="#">Bucal</a>
+									<a class="dropdown-item" href="#">Lingual</a>
+									<a class="dropdown-item" href="#">Distal</a>
+									<a class="dropdown-item" href="#">Mesial</a>
+									<a class="dropdown-item" href="#">Oclusal</a>
+								</div>
+							</div>
+						</li>
+						<li class="nav-item">
+							<div class="dropdown dropright">
+								<button class="btn btn-primary  dropdown-toggle" data-toggle="dropdown" href="#">Amalgama</button>
+								<div class="dropdown-menu">
+									<a class="dropdown-item" href="#">Bucal</a>
+									<a class="dropdown-item" href="#">Lingual</a>
+									<a class="dropdown-item" href="#">Distal</a>
+									<a class="dropdown-item" href="#">Mesial</a>
+									<a class="dropdown-item" href="#">Oclusal</a>
+								</div>
+							</div>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#">Sellante</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#">Extraccion</a>
+						</li>
+					</ul>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
 </div>
+
+
+
+@if (ViewBag.Message != null)
+{
+	<script type="text/javascript">
+        window.onload = function () {
+            if ("@ViewBag.Message" === "Save") {
+                SuccessAlert("Guardados","/../Odontogramas");
+            }
+            else {
+                ErrorAlert("@ViewBag.Message");
+            }
+        };
+	</script>
+}
+
+
+
+
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

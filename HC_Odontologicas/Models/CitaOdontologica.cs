@@ -10,8 +10,7 @@ namespace HC_Odontologicas.Models
             Anamnesis = new HashSet<Anamnesis>();
             ConsentimientoInformado = new HashSet<ConsentimientoInformado>();
             Diagnostico = new HashSet<Diagnostico>();
-            Odontograma = new HashSet<Odontograma>();
-            OdontogramaDetalle = new HashSet<OdontogramaDetalle>();
+            Odontograma = new HashSet<Odontograma>();            
             RecetaMedica = new HashSet<RecetaMedica>();
         }
 
@@ -32,8 +31,7 @@ namespace HC_Odontologicas.Models
         public virtual ICollection<Anamnesis> Anamnesis { get; set; }
         public virtual ICollection<ConsentimientoInformado> ConsentimientoInformado { get; set; }
         public virtual ICollection<Diagnostico> Diagnostico { get; set; }
-        public virtual ICollection<Odontograma> Odontograma { get; set; }
-        public virtual ICollection<OdontogramaDetalle> OdontogramaDetalle { get; set; }
+        public virtual ICollection<Odontograma> Odontograma { get; set; }        
         public virtual ICollection<RecetaMedica> RecetaMedica { get; set; }
     }
 }

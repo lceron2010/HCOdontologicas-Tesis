@@ -9,6 +9,7 @@ using HC_Odontologicas.Models;
 using HC_Odontologicas.FuncionesGenerales;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace HC_Odontologicas.Controllers
 {
@@ -128,7 +129,7 @@ namespace HC_Odontologicas.Controllers
 					ViewData["CodigoPersonal"] = Personal;
 					ViewData["CodigoPaciente"] = Paciente;
 
-					
+
 					return View();
 				}
 				else
@@ -142,126 +143,262 @@ namespace HC_Odontologicas.Controllers
 		}
 
 
-		[HttpPost]      //public async Task<string> Create(Odontograma odontograma , IFormFile svg742, string hola, IFormFile imagen)
-		public async Task<string> GuardarOdontograma(Odontograma odontograma, IFormFile imagen)
-		{
 
-
-			//if (ModelState.IsValid)
-			//{
-			//	//_context.Add(odontograma);
-			await _context.SaveChangesAsync();
-			//	//return RedirectToAction(nameof(Index));
-			//}
-			//ViewData["CodigoCitaOdontologica"] = new SelectList(_context.CitaOdontologica, "Codigo", "Codigo", odontograma.CodigoCitaOdontologica);
-
-			return imagen.ToString();// View(odontograma);
-		}
 
 
 		// POST: Odontogramas/Create
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]      //public async Task<string> Create(Odontograma odontograma , IFormFile svg742, string hola, IFormFile imagen)
-		public async Task<string> Create(Odontograma odontograma, List<TipoIdentificacion> array)
+		public async Task<string> Create(List<Odontograma> odontograma)
 		{
+			var i = (ClaimsIdentity)User.Identity;
+
+			if (i.IsAuthenticated)
+			{
+				try
+				{
+					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
+					Personal.Insert(0, vacio);
+					ViewData["CodigoPersonal"] = Personal;
+
+					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
+					Paciente.Insert(0, vacio);
+					ViewData["CodigoPaciente"] = Paciente;
+
+					if (ModelState.IsValid)
+					{
+
+						//cita odontologica						
+						CitaOdontologica citaOdontologica = _context.CitaOdontologica.Where(ci => ci.Codigo == odontograma[0].CodigoCitaOdontologica).SingleOrDefault();
+						DateTime FechaCitaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+						var transaction = _context.Database.BeginTransaction();
+						if (citaOdontologica == null)
+						{
+							CitaOdontologica cita = new CitaOdontologica();
+							Int64 maxCodigoHC = 0;
+							maxCodigoHC = Convert.ToInt64(_context.CitaOdontologica.Max(f => f.Codigo));
+							maxCodigoHC += 1;
+							cita.Codigo = maxCodigoHC.ToString("D8");
+							cita.CodigoPaciente = odontograma[0].CodigoPaciente;
+							cita.CodigoPersonal = odontograma[0].CodigoPersonal;
+							cita.FechaCreacion = FechaCitaCreacion;
+							cita.Observaciones = null;
+							cita.Estado = "N";
+							cita.FechaInicio = FechaCitaCreacion;
+							cita.FechaFin = FechaCitaCreacion;
+							cita.HoraInicio = new TimeSpan(FechaCitaCreacion.Hour, FechaCitaCreacion.Minute, 00);
+							cita.HoraFin = new TimeSpan(FechaCitaCreacion.Hour, FechaCitaCreacion.Minute, 00);
+							cita.UsuarioCreacion = i.Name;
+							_context.Add(cita);
+							await _context.SaveChangesAsync();
+							await _auditoria.GuardarLogAuditoria(cita.FechaCreacion, i.Name, "CitaOdontologica", cita.Codigo, "I");
+							odontograma[0].CodigoCitaOdontologica = cita.Codigo;
+						}
+						else
+						{
+							odontograma[0].CodigoCitaOdontologica = citaOdontologica.Codigo;
+						}
 
 
-			//if (ModelState.IsValid)
-			//{
-			//	//_context.Add(odontograma);
-				await _context.SaveChangesAsync();
-			//	//return RedirectToAction(nameof(Index));
-			//}
-			//ViewData["CodigoCitaOdontologica"] = new SelectList(_context.CitaOdontologica, "Codigo", "Codigo", odontograma.CodigoCitaOdontologica);
-			
-		return array.ToString();// View(odontograma);
-		}
 
+						//guardar el odontograma
+						Odontograma odont = new Odontograma();
+						Int64 maxCodigo = 0;
+						maxCodigo = Convert.ToInt64(_context.Odontograma.Max(f => f.Codigo));
+						maxCodigo += 1;
 
-		[HttpPost]
-		public ActionResult ExportarExcel(Odontograma odontograma, List<TipoIdentificacion> array)
-		{
-			var resultado = array;
-			return View(resultado);
+						odont.Codigo = maxCodigo.ToString("D8");
+						odont.CodigoCitaOdontologica = odontograma[0].CodigoCitaOdontologica;
+						odont.FechaActualizacion = fecha;
+						odont.Observaciones = null; //diagnostico.Observacion;
+						odont.Estado = "I";//diagnostico.Firma;
+
+						_context.Odontograma.Add(odont);
+
+						//guardar odontogramaDetalle
+						Int64 maxCodigoOd = 0;
+						maxCodigoOd = Convert.ToInt64(_context.OdontogramaDetalle.Max(f => f.Codigo));
+						foreach (var detalle in odontograma[0].OdontogramaDetalle)
+						{
+
+							OdontogramaDetalle odontDetalle = new OdontogramaDetalle();
+							maxCodigoOd += 1;
+							odontDetalle.Codigo = maxCodigoOd.ToString("D8");
+							odontDetalle.CodigoOdontograma = odont.Codigo;
+							odontDetalle.Pieza = detalle.Pieza;
+							odontDetalle.Region = detalle.Region;
+							odontDetalle.Enfermedad = detalle.Enfermedad;
+							odontDetalle.Valor = detalle.Valor;
+							odontDetalle.Diagnostico = detalle.Diagnostico;
+							_context.OdontogramaDetalle.Add(odontDetalle);
+
+						}
+
+						await _context.SaveChangesAsync();
+						transaction.Commit();
+						await _auditoria.GuardarLogAuditoria(fecha, i.Name, "Odontograma", odont.Codigo, "I");
+						//ViewBag.Message = "Save";
+						return "Save";
+					}
+					return "No valido";
+				}
+				catch (Exception e)
+				{
+					string mensaje = e.Message;
+					if (e.InnerException != null)
+						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
+
+					ViewBag.Message = mensaje;
+					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
+					Personal.Insert(0, vacio);
+					ViewData["CodigoPersonal"] = Personal;
+
+					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
+					Paciente.Insert(0, vacio);
+					ViewData["CodigoPaciente"] = Paciente;
+					return e.InnerException.ToString();
+				}
+			}
+			else
+			{
+				return "no esta autenticado";//Redirect("../Identity/Account/Login");
+			}
 		}
 
 
 		// GET: Odontogramas/Edit/5
-		public async Task<IActionResult> Edit(string id)
+		public string Edit(string codigo)
 		{
-			if (id == null)
-			{
-				return NotFound();
-			}
+			string codigoD = Encriptacion.Decrypt(codigo);
+			Odontograma odontograma = _context.Odontograma.Include(a => a.OdontogramaDetalle)
+				.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente)
+				.Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal)
+				.SingleOrDefault(f => f.Codigo == codigoD);
 
-			var odontograma = await _context.Odontograma.FindAsync(id);
-			if (odontograma == null)
-			{
-				return NotFound();
-			}
-			ViewData["CodigoCitaOdontologica"] = new SelectList(_context.CitaOdontologica, "Codigo", "Codigo", odontograma.CodigoCitaOdontologica);
-			return View(odontograma);
+
+			return JsonConvert.SerializeObject(odontograma);
+			//return View(odontograma);
+
 		}
 
 		// POST: Odontogramas/Edit/5
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(string id, [Bind("Codigo,CodigoCitaOdontologica,FechaActualizacion,Observaciones,Estado")] Odontograma odontograma)
-		{
-			if (id != odontograma.Codigo)
-			{
-				return NotFound();
-			}
 
-			if (ModelState.IsValid)
+		public async Task<string> Edit(Odontograma odontograma)
+		{
+			var i = (ClaimsIdentity)User.Identity;
+			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", odontograma.CodigoPersonal).ToList();
+			List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", odontograma.CodigoPaciente).ToList();
+
+			if (i.IsAuthenticated)
 			{
 				try
 				{
-					_context.Update(odontograma);
-					await _context.SaveChangesAsync();
+					if (ModelState.IsValid)
+					{
+						try
+						{
+							var transaction = _context.Database.BeginTransaction();
+							//actualizar tipocomprobante
+							odontograma.Codigo = Encriptacion.Decrypt(odontograma.Codigo);
+							Anamnesis anamnesisAntiguo = _context.Anamnesis.SingleOrDefault(p => p.Codigo == odontograma.Codigo);
+							anamnesisAntiguo.Codigo = odontograma.Codigo;
+							anamnesisAntiguo.CodigoCitaOdontologica = odontograma.CodigoCitaOdontologica;
+							//anamnesisAntiguo.MotivoConsulta = odontograma.MotivoConsulta;
+							//anamnesisAntiguo.EnfermedadActual = odontograma.EnfermedadActual;
+							//anamnesisAntiguo.Alerta = odontograma.Alerta;
+							//anamnesisAntiguo.Alergico = odontograma.Alergico;
+							//anamnesisAntiguo.AntecedentesQuirurgicos = odontograma.AntecedentesQuirurgicos;
+							//anamnesisAntiguo.Alergico = odontograma.Alergico;
+							//anamnesisAntiguo.Medicamentos = odontograma.Medicamentos;
+							//anamnesisAntiguo.Habitos = odontograma.Habitos;
+							//anamnesisAntiguo.AntecedentesFamiliares = odontograma.AntecedentesFamiliares;
+							//anamnesisAntiguo.Fuma = odontograma.Fuma;
+							//anamnesisAntiguo.Embarazada = odontograma.Embarazada;
+							//anamnesisAntiguo.GrupoSanguineo = odontograma.GrupoSanguineo;
+							//anamnesisAntiguo.Endocrino = odontograma.Endocrino;
+							//anamnesisAntiguo.Traumatologico = odontograma.Traumatologico;
+							anamnesisAntiguo.Fecha = fecha;
+
+							var tipoComprobantesImpuesto = _context.AnamnesisEnfermedad.Where(a => a.CodigoAnamnesis == odontograma.Codigo).ToList();
+							foreach (var item in tipoComprobantesImpuesto)
+								_context.AnamnesisEnfermedad.Remove(item);
+							_context.SaveChanges();
+
+							//guardar AnamenesisEnefermedad
+							Int64 maxCodigoAe = 0;
+							maxCodigoAe = Convert.ToInt64(_context.AnamnesisEnfermedad.Max(f => f.Codigo));
+							foreach (var enf in odontograma.OdontogramaDetalle)
+							{
+								//if (enf.Seleccionado)
+								//{
+								//	AnamnesisEnfermedad anamnesisEnfermedad = new AnamnesisEnfermedad();
+								//	maxCodigoAe += 1;
+								//	anamnesisEnfermedad.Codigo = maxCodigoAe.ToString("D8");
+								//	//anamnesisEnfermedad.CodigoAnamnesis = null;
+								//	anamnesisEnfermedad.CodigoAnamnesis = odontograma.Codigo;
+								//	anamnesisEnfermedad.CodigoEnfermedad = enf.Enfermedad.Codigo;
+								//	_context.AnamnesisEnfermedad.Add(anamnesisEnfermedad);
+								//}
+							}
+
+							_context.Update(anamnesisAntiguo);
+							_context.SaveChanges();
+							transaction.Commit();
+							await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Anamnesis", odontograma.Codigo, "U");
+							ViewBag.Message = "Save";
+
+							Personal.Insert(0, vacio);
+							ViewData["CodigoPersonal"] = Personal;
+
+							Paciente.Insert(0, vacio);
+							ViewData["CodigoPaciente"] = Paciente;
+
+							return "Save";
+
+						}
+						catch (DbUpdateConcurrencyException)
+						{
+							throw;
+						}
+					}
+
+					Personal.Insert(0, vacio);
+					ViewData["CodigoPersonal"] = Personal;
+
+					Paciente.Insert(0, vacio);
+					ViewData["CodigoPaciente"] = Paciente;
+
+					return "No es valido";
 				}
-				catch (DbUpdateConcurrencyException)
+				catch (Exception e)
 				{
-					if (!OdontogramaExists(odontograma.Codigo))
-					{
-						return NotFound();
-					}
-					else
-					{
-						throw;
-					}
+					string mensaje = e.Message;
+					if (e.InnerException != null)
+						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
+
+					ViewBag.Message = mensaje;
+
+					Personal.Insert(0, vacio);
+					ViewData["CodigoPersonal"] = Personal;
+
+					Paciente.Insert(0, vacio);
+					ViewData["CodigoPaciente"] = Paciente;
+
+					return e.InnerException.Message;
 				}
-				return RedirectToAction(nameof(Index));
 			}
-			ViewData["CodigoCitaOdontologica"] = new SelectList(_context.CitaOdontologica, "Codigo", "Codigo", odontograma.CodigoCitaOdontologica);
-			return View(odontograma);
-		}
-
-		// GET: Odontogramas/Delete/5
-		public async Task<IActionResult> Delete(string id)
-		{
-			if (id == null)
+			else
 			{
-				return NotFound();
+				return "No autenticado";
 			}
-
-			var odontograma = await _context.Odontograma
-				.Include(o => o.CitaOdontologica)
-				.FirstOrDefaultAsync(m => m.Codigo == id);
-			if (odontograma == null)
-			{
-				return NotFound();
-			}
-
-			return View(odontograma);
 		}
 
 		// POST: Odontogramas/Delete/5
 		[HttpPost, ActionName("Delete")]
-		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> DeleteConfirmed(string id)
 		{
 			var odontograma = await _context.Odontograma.FindAsync(id);
@@ -270,9 +407,6 @@ namespace HC_Odontologicas.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
-		private bool OdontogramaExists(string id)
-		{
-			return _context.Odontograma.Any(e => e.Codigo == id);
-		}
+
 	}
 }
