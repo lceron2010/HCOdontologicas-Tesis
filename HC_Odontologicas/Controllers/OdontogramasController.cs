@@ -211,8 +211,8 @@ namespace HC_Odontologicas.Controllers
 						odont.Codigo = maxCodigo.ToString("D8");
 						odont.CodigoCitaOdontologica = odontograma[0].CodigoCitaOdontologica;
 						odont.FechaActualizacion = fecha;
-						odont.Observaciones = null; //diagnostico.Observacion;
-						odont.Estado = "I";//diagnostico.Firma;
+						odont.Observaciones = null; 
+						odont.Estado = "I";
 
 						_context.Odontograma.Add(odont);
 
@@ -266,32 +266,88 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-
-		// GET: Odontogramas/Edit/5
-		public string Edit(string codigo)
+		public string ObtenerDatosOdontogramaDetalle(string codigoOdontograma)
 		{
-			string codigoD = Encriptacion.Decrypt(codigo);
-			Odontograma odontograma = _context.Odontograma.Include(a => a.OdontogramaDetalle)
-				.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente)
-				.Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal)
+			string codigoD = Encriptacion.Decrypt(codigoOdontograma);
+
+			Odontograma odontograma = _context.Odontograma.Include(a => a.OdontogramaDetalle)				
 				.SingleOrDefault(f => f.Codigo == codigoD);
 
+			List<OdontogramaDetalle> listaDetalle = new List<OdontogramaDetalle>();
 
-			return JsonConvert.SerializeObject(odontograma);
+			foreach (var item in odontograma.OdontogramaDetalle)
+			{
+				OdontogramaDetalle detalle = new OdontogramaDetalle();
+				detalle.Codigo = item.Codigo;
+				detalle.CodigoOdontograma = item.CodigoOdontograma;
+				detalle.Pieza = item.Pieza;
+				detalle.Region = item.Region;
+				detalle.Enfermedad = item.Enfermedad;
+				detalle.Valor = item.Valor;
+				detalle.Diagnostico = item.Diagnostico;
+				listaDetalle.Add(detalle);
+			}
+
+
+
+			return JsonConvert.SerializeObject(listaDetalle);
 			//return View(odontograma);
 
 		}
+
+		// GET: Pacientes/Edit/5
+		public async Task<IActionResult> Edit(string codigo)
+		{
+			var i = (ClaimsIdentity)User.Identity;
+			if (i.IsAuthenticated)
+			{
+				var permisos = i.Claims.Where(c => c.Type == "Odontogramas").Select(c => c.Value).SingleOrDefault().Split(";");
+				codigo = Encriptacion.Decrypt(codigo);
+				if (Convert.ToBoolean(permisos[2]))
+				{
+					if (codigo == null)
+						return NotFound();
+
+					var odontograma = await _context.Odontograma.Include(a => a.OdontogramaDetalle)
+						.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente)
+						.Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal)
+
+						.SingleOrDefaultAsync(f => f.Codigo == codigo);
+
+					if (odontograma == null)
+						return NotFound();
+
+
+					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", odontograma.CitaOdontologica.Personal.Codigo).ToList();
+					Personal.Insert(0, vacio);
+					ViewData["CodigoPersonal"] = Personal;
+
+					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", odontograma.CitaOdontologica.Paciente.Codigo).ToList();
+					Paciente.Insert(0, vacio);
+					ViewData["CodigoPaciente"] = Paciente;
+
+					return View(odontograma);
+				}
+				else
+					return Redirect("../Odontogramas");
+			}
+			else
+			{
+				return Redirect("../Identity/Account/Login");
+			}
+		}
+
+
 
 		// POST: Odontogramas/Edit/5
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
-
-		public async Task<string> Edit(Odontograma odontograma)
+		public async Task<string> Edit(List<Odontograma> odontograma)
 		{
 			var i = (ClaimsIdentity)User.Identity;
-			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", odontograma.CodigoPersonal).ToList();
-			List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", odontograma.CodigoPaciente).ToList();
+			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", odontograma[0].CodigoPersonal).ToList();
+			List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", odontograma[0].CodigoPaciente).ToList();
 
 			if (i.IsAuthenticated)
 			{
@@ -302,53 +358,42 @@ namespace HC_Odontologicas.Controllers
 						try
 						{
 							var transaction = _context.Database.BeginTransaction();
-							//actualizar tipocomprobante
-							odontograma.Codigo = Encriptacion.Decrypt(odontograma.Codigo);
-							Anamnesis anamnesisAntiguo = _context.Anamnesis.SingleOrDefault(p => p.Codigo == odontograma.Codigo);
-							anamnesisAntiguo.Codigo = odontograma.Codigo;
-							anamnesisAntiguo.CodigoCitaOdontologica = odontograma.CodigoCitaOdontologica;
-							//anamnesisAntiguo.MotivoConsulta = odontograma.MotivoConsulta;
-							//anamnesisAntiguo.EnfermedadActual = odontograma.EnfermedadActual;
-							//anamnesisAntiguo.Alerta = odontograma.Alerta;
-							//anamnesisAntiguo.Alergico = odontograma.Alergico;
-							//anamnesisAntiguo.AntecedentesQuirurgicos = odontograma.AntecedentesQuirurgicos;
-							//anamnesisAntiguo.Alergico = odontograma.Alergico;
-							//anamnesisAntiguo.Medicamentos = odontograma.Medicamentos;
-							//anamnesisAntiguo.Habitos = odontograma.Habitos;
-							//anamnesisAntiguo.AntecedentesFamiliares = odontograma.AntecedentesFamiliares;
-							//anamnesisAntiguo.Fuma = odontograma.Fuma;
-							//anamnesisAntiguo.Embarazada = odontograma.Embarazada;
-							//anamnesisAntiguo.GrupoSanguineo = odontograma.GrupoSanguineo;
-							//anamnesisAntiguo.Endocrino = odontograma.Endocrino;
-							//anamnesisAntiguo.Traumatologico = odontograma.Traumatologico;
-							anamnesisAntiguo.Fecha = fecha;
+							//actualizar odontograma
+							odontograma[0].Codigo = Encriptacion.Decrypt(odontograma[0].Codigo);
+							Odontograma odontogramaAntiguo = _context.Odontograma.SingleOrDefault(p => p.Codigo == odontograma[0].Codigo);							
+							odontogramaAntiguo.Codigo = odontograma[0].Codigo;
+							odontogramaAntiguo.CodigoCitaOdontologica = odontograma[0].CodigoCitaOdontologica;
+							odontogramaAntiguo.FechaActualizacion = fecha;
+							odontogramaAntiguo.Observaciones = null;
+							odontogramaAntiguo.Estado = "A";
+							
 
-							var tipoComprobantesImpuesto = _context.AnamnesisEnfermedad.Where(a => a.CodigoAnamnesis == odontograma.Codigo).ToList();
+							var tipoComprobantesImpuesto = _context.OdontogramaDetalle.Where(a => a.CodigoOdontograma == odontograma[0].Codigo).ToList();
 							foreach (var item in tipoComprobantesImpuesto)
-								_context.AnamnesisEnfermedad.Remove(item);
+								_context.OdontogramaDetalle.Remove(item);
 							_context.SaveChanges();
 
-							//guardar AnamenesisEnefermedad
-							Int64 maxCodigoAe = 0;
-							maxCodigoAe = Convert.ToInt64(_context.AnamnesisEnfermedad.Max(f => f.Codigo));
-							foreach (var enf in odontograma.OdontogramaDetalle)
+							//guardar odontogramaDetalle
+							Int64 maxCodigoOd = 0;
+							maxCodigoOd = Convert.ToInt64(_context.OdontogramaDetalle.Max(f => f.Codigo));
+							foreach (var detalle in odontograma[0].OdontogramaDetalle)
 							{
-								//if (enf.Seleccionado)
-								//{
-								//	AnamnesisEnfermedad anamnesisEnfermedad = new AnamnesisEnfermedad();
-								//	maxCodigoAe += 1;
-								//	anamnesisEnfermedad.Codigo = maxCodigoAe.ToString("D8");
-								//	//anamnesisEnfermedad.CodigoAnamnesis = null;
-								//	anamnesisEnfermedad.CodigoAnamnesis = odontograma.Codigo;
-								//	anamnesisEnfermedad.CodigoEnfermedad = enf.Enfermedad.Codigo;
-								//	_context.AnamnesisEnfermedad.Add(anamnesisEnfermedad);
-								//}
+								OdontogramaDetalle odontDetalle = new OdontogramaDetalle();
+								maxCodigoOd += 1;
+								odontDetalle.Codigo = maxCodigoOd.ToString("D8");
+								odontDetalle.CodigoOdontograma = odontograma[0].Codigo;
+								odontDetalle.Pieza = detalle.Pieza;
+								odontDetalle.Region = detalle.Region;
+								odontDetalle.Enfermedad = detalle.Enfermedad;
+								odontDetalle.Valor = detalle.Valor;
+								odontDetalle.Diagnostico = detalle.Diagnostico;
+								_context.OdontogramaDetalle.Add(odontDetalle);
 							}
 
-							_context.Update(anamnesisAntiguo);
+							_context.Update(odontogramaAntiguo);
 							_context.SaveChanges();
 							transaction.Commit();
-							await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Anamnesis", odontograma.Codigo, "U");
+							await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Odontograma", odontograma[0].Codigo, "U");
 							ViewBag.Message = "Save";
 
 							Personal.Insert(0, vacio);

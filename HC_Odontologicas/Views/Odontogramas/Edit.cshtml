@@ -8,7 +8,7 @@
 <h4>Odontograma</h4>
 <hr />
 <div class="row">
-	<div  class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 		<form asp-action="Create">
 			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 			<input asp-for="CodigoCitaOdontologica" name="CodigoCitaOdontologica" hidden />
@@ -209,17 +209,10 @@
 	</div>
 </div>
 
-
-
-
-
-
-
 @*modal*@
 
 <div id="modalImportarDatos" class="modal fade">
 	<input hidden id="idGrupo" value="hola" />
-
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -292,7 +285,7 @@
 @if (ViewBag.Message != null)
 {
 	<script type="text/javascript">
-        window.onload = function () {
+		window.onload = function () {
             if ("@ViewBag.Message" === "Save") {
                 SuccessAlert("Guardados","/../Odontogramas");
             }
@@ -302,10 +295,21 @@
         };
 	</script>
 }
+else
+{
+<script type="text/javascript">
+	window.onload = function () {
+		var codigoOdontograma = $("#Codigo")[0].value
 
-
-
-
+		obtenerDatosOdontograma(codigoOdontograma);
+		//console.log("cargo onload fuera de la condicion viewbag message vacio");
+		//console.log("codigo", cod);
+		//$("#B-11").attr("style", "fill:red");
+		//$("#B-11").attr("cambiocolor", "true");
+		//$("#B-11").attr("enfermedad", "CariesB");
+	}
+</script>
+}
 
 @section Scripts {
 	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

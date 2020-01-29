@@ -54,8 +54,8 @@
 					@Html.DisplayFor(modelItem => item.FechaActualizacion)
 				</td>				
 				<td>
-					@*<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-outline-warning" data-toggle="tooltip" title="Editar">Editar</a>*@
-					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" onclick="obtenerDatosOdontograma('@Encriptacion.Encrypt(item.Codigo)')" class="btn btn-outline-warning" data-toggle="tooltip" title="Editar">Editar</a>
+					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-outline-warning" data-toggle="tooltip" title="Editar">Editar</a>
+					@*<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" onclick="obtenerDatosOdontograma('@Encriptacion.Encrypt(item.Codigo)')" class="btn btn-outline-warning" data-toggle="tooltip" title="Editar">Editar</a>*@
 					<a onclick="eliminar('@item.Codigo','../Odontogramas/DeleteConfirmed','/../Odontogramas')" class="btn btn-outline-danger" data-toggle="tooltip" title="Eliminar">Eliminar</a>
 				</td>
 			</tr>

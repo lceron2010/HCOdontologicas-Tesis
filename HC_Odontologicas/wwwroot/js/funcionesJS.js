@@ -182,7 +182,7 @@ function cambiarColor(enfermedadOdon) {
 }
 
 
-function GuardarDatosOdontograma() {
+function GuardarDatosOdontograma(accion) {
 	//var data = new FormData();
 	//data.append('imagen', $('#svg742')[0].children[3]);
 	
@@ -221,15 +221,22 @@ function GuardarDatosOdontograma() {
 			OdontogramaDetalle: listaOdontogramaDetalle				
 		}
 	];
+	let url = "";
+	if (accion === "crear") {
+		url = '/../Odontogramas/Create';
+	}
+	else {
+		url = '/../Odontogramas/Edit';
+	}
 
 	$.ajax({
-		url: '/../Odontogramas/Create',
+		url: url,//'/../Odontogramas/Create',
 		type: 'POST',
 		dataType: 'json',
 		data: { odontograma },
 		success: function (response) {
 			if (response === "Save") {								
-				SuccessAlert("Guardados", "/../Pacientes");						
+				SuccessAlert("Guardados", "/../Odontogramas");						
 			}
 			else {
 				ErrorAlert(response);
@@ -239,16 +246,44 @@ function GuardarDatosOdontograma() {
 
 }
 
-function obtenerDatosOdontograma(codigo) {	
+function obtenerDatosOdontograma(codigoOdontograma) {	
 	$.ajax({
 		type: "GET",
-		url: "/../Odontogramas/Edit",
-		data: { codigo },
+		url: "/../Odontogramas/ObtenerDatosOdontogramaDetalle",
+		data: { codigoOdontograma },
 		success: function (response) {
-			console.log(response);			
+			//console.log(response);	
+			cargarColorAlEditar(response);
 		}
 	});
 }
+
+function cargarColorAlEditar(response)
+{
+	console.log(response);
+	var detalle = JSON.parse(response);
+
+	for (let i = 0; i <= detalle.length; i++) {
+		let nombre = detalle[i].Region + "-" +detalle[i].Pieza;		
+		let enfermedad = detalle[i].Enfermedad;
+		let diagnostico = detalle[i].Diagnostico;
+		///ojooooooooooooooooooooooooOJO   OJOJOJOJO
+		//hayq ue revisar cuadno sean los otros tipos de enfermedad como sellenate
+
+		console.log(nombre);
+		if (diagnostico === "Diagnosticado") {
+			$("#" + nombre).attr("style", "fill:blue");
+		}
+		else {
+			$("#" + nombre).attr("style", "fill:red");
+		}
+		
+		$("#" + nombre).attr("cambiocolor", "true");
+		$("#" + nombre).attr("enfermedad", enfermedad);
+
+	}
+}
+
 
 
 
