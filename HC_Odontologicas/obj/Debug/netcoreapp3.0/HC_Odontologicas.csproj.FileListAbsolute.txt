@@ -178,3 +178,10 @@ C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\CitasOdontologicas\Details.cshtml.g.cs
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\CitasOdontologicas\Edit.cshtml.g.cs
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\CitasOdontologicas\Index.cshtml.g.cs
+C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\bin\Debug\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\bin\Debug\netcoreapp3.0\System.Drawing.Common.dll
+C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\bin\Debug\netcoreapp3.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\bin\Debug\netcoreapp3.0\runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\bin\Debug\netcoreapp3.0\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
+C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\bin\Debug\netcoreapp3.0\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
+C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\bin\Debug\netcoreapp3.0\runtimes\win\lib\netcoreapp2.1\System.Security.Cryptography.Pkcs.dll

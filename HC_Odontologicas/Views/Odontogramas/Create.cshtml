@@ -5,45 +5,150 @@
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
+
 <style>
-		/*a {
-		color: black;
-		}*/
+	#menu {
+		padding: 0;
+		margin: 0;
+		border: 0;
+	}
 
-		/*.context-menu-list {
-		border: 1px solid #000;
-		background: #000000a6;
-		border-radius: 5px;
-		color: #fff;
-		font-weight: bold;
-		text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-	}*/
-
-		.span_menu {
-			display: inline-block;
-			height: 20px;
-			width: 20px;
-			border-radius: 7px;
-			border: solid thin #000;
-			background: #fff;
-		}
-
-		ul.enfermedades  {
+		#menu ul, li {
 			list-style: none;
-			background-color: gray;
+			margin: 0;
+			padding: 0;
 		}
 
-		a {
-			color: #ffffff;				
+		#menu ul {
+			position: relative;
+			z-index: 597;
+			float: left;
 		}
 
-		a:hover.hover {
-					color: #ffffff;
-					text-decoration: none;
+			#menu ul li {
+				float: left;
+				min-height: 1px;
+				line-height: 1em;
+				vertical-align: middle;
+			}
+
+				#menu ul li.hover,
+				#menu ul li:hover {
+					position: relative;
+					z-index: 599;
+					cursor: default;
+				}
+
+			#menu ul ul {
+				visibility: hidden;
+				position: absolute;
+				top: 100%;
+				left: 0;
+				z-index: 598;
+				width: 100%;
+			}
+
+				#menu ul ul li {
+					float: none;
+				}
+
+			#menu ul li:hover > ul {
+				visibility: visible;
+			}
+
+			#menu ul ul {
+				top: 0;
+				left: 100%;
+			}
+
+			#menu ul li {
+				float: none;
+			}
+
+	#menu {
+		width: 180px;
+	}
+
+		#menu span, #menu a {
+			display: inline-block;
+			font-family: Arial, Helvetica, sans-serif;
+			font-size: 12px;
+			text-decoration: none;
 		}
+
+		#menu:after, #menu ul:after {
+			content: '';
+			display: block;
+			clear: both;
+		}
+
+		#menu ul, #menu li {
+			width: 100%;
+		}
+
+		#menu li {
+			background: #000000a6;
+		}
+
+			#menu li:hover {
+				background: blue;
+			}
+
+		#menu a {
+			color: white;
+			padding: 10px 10px 3px 10px;
+		}
+
+		#menu ul ul li {
+			background: #000000a6;
+		}
+
+			#menu ul ul li:hover {
+				background: blue;
+			}
+
+				#menu ul ul li:hover a {
+					color: #666666;
+				}
+
+			#menu ul ul li ul li {
+				background: #dddddd;
+			}
+
+				#menu ul ul li ul li:hover {
+					background: #b7b7b7;
+				}
+
+		#menu .has-sub {
+			position: relative;
+		}
+
+			#menu .has-sub:after, #menu .has-sub > ul > .has-sub:hover:after {
+				content: '';
+				display: block;
+				width: 10px;
+				height: 9px;
+				position: absolute;
+				right: 5px;
+				top: 50%;
+				margin-top: -5px;
+			}
+
+		#menu .fa-angle-right {
+			float: right;
+		}
+
+
+	.span_menu {
+		display: inline-block;
+		height: 20px;
+		width: 20px;
+		border-radius: 7px;
+		border: solid thin #000;
+		background: #fff;
+	}
 </style>
-<h1>Create</h1>
-
 <h4>Odontograma</h4>
 <hr />
 <div class="row">
@@ -74,8 +179,6 @@
 			</fieldset>
 
 			<div style="position: relative;">
-
-
 				<svg xmlns:dc="http://purl.org/dc/elements/1.1/"
 					 xmlns:cc="http://creativecommons.org/ns#"
 					 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -88,7 +191,7 @@
 					 version="1.1"
 					 viewBox="0 0 810 400"
 					 id="svg742"
-					 sodipodi:docname="odontTesOndo.svg"
+					 sodipodi:docname="odontv8LK.svg"
 					 inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
 					<defs id="defs746" />
 					<sodipodi:namedview pagecolor="#ffffff"
@@ -104,7 +207,7 @@
 										id="namedview744"
 										showgrid="false"
 										inkscape:zoom="1.218668"
-										inkscape:cx="212.49247"
+										inkscape:cx="581.9369"
 										inkscape:cy="203.23671"
 										inkscape:window-x="-8"
 										inkscape:window-y="-8"
@@ -116,7 +219,7 @@
 							<cc:Work rdf:about="">
 								<dc:format>image/svg+xml</dc:format>
 								<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-								<dc:title></dc:title>
+								<dc:title />
 							</cc:Work>
 						</rdf:RDF>
 					</metadata>
@@ -131,7 +234,6 @@
 							  inkscape:connector-curvature="0"
 							  style="fill:#ffffff;stroke-width:0.54221141" />
 						<g id="g48"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g48">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -165,7 +267,6 @@
 								  inkscape:label="B-48" />
 						</g>
 						<g id="g47"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g47">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -199,7 +300,6 @@
 								  inkscape:label="B-47" />
 						</g>
 						<g id="g46"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g46">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -233,7 +333,6 @@
 								  inkscape:label="B-46" />
 						</g>
 						<g id="g45"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g45">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -267,7 +366,6 @@
 								  inkscape:label="B-45" />
 						</g>
 						<g id="g44"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g44">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -301,7 +399,6 @@
 								  inkscape:label="B-44" />
 						</g>
 						<g id="g43"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g43">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -335,7 +432,6 @@
 								  inkscape:label="B-43" />
 						</g>
 						<g id="g42"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g42">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -369,7 +465,6 @@
 								  inkscape:label="B-42" />
 						</g>
 						<g id="g41"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g41">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -415,7 +510,6 @@
 							  inkscape:connector-curvature="0"
 							  style="fill:#ffffff;stroke-width:0.54221141" />
 						<g id="g85"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g85">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -449,7 +543,6 @@
 								  inkscape:label="B-85" />
 						</g>
 						<g id="g84"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g84">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -483,7 +576,6 @@
 								  inkscape:label="B-84" />
 						</g>
 						<g id="g83"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g83">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -517,7 +609,6 @@
 								  inkscape:label="B-83" />
 						</g>
 						<g id="g82"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g82">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -551,7 +642,6 @@
 								  inkscape:label="B-82" />
 						</g>
 						<g id="g81"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g81">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -585,7 +675,6 @@
 								  inkscape:label="B-81" />
 						</g>
 						<g id="g38"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g38">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -619,7 +708,6 @@
 								  inkscape:label="B-38" />
 						</g>
 						<g id="g37"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g37">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -653,7 +741,6 @@
 								  inkscape:label="B-37" />
 						</g>
 						<g id="g36"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g36">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -687,7 +774,6 @@
 								  inkscape:label="B-36" />
 						</g>
 						<g id="g35"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g35">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -721,7 +807,6 @@
 								  inkscape:label="B-35" />
 						</g>
 						<g id="g34"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g34">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -755,7 +840,6 @@
 								  inkscape:label="B-34" />
 						</g>
 						<g id="g33"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g33">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -789,7 +873,6 @@
 								  inkscape:label="B-33" />
 						</g>
 						<g id="g32"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g32">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -823,7 +906,6 @@
 								  inkscape:label="B-32" />
 						</g>
 						<g id="g31"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g31">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -857,7 +939,6 @@
 								  inkscape:label="B-31" />
 						</g>
 						<g id="g75"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g75">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -891,7 +972,6 @@
 								  inkscape:label="B-75" />
 						</g>
 						<g id="g74"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g74">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -925,7 +1005,6 @@
 								  inkscape:label="B-74" />
 						</g>
 						<g id="g73"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g73">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -959,7 +1038,6 @@
 								  inkscape:label="B-73" />
 						</g>
 						<g id="g72"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g72">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -993,7 +1071,6 @@
 								  inkscape:label="B-72" />
 						</g>
 						<g id="g71"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g71">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -1027,7 +1104,6 @@
 								  inkscape:label="B-71" />
 						</g>
 						<g id="g65"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g65">
 							<path style="fill:#000000;stroke-width:0.28925774"
 								  d="m 704.60414,169.88054 c -7.27992,-2.99244 -12.14474,-14.87866 -12.14178,-29.66592 0,-6.43728 0.60097,-10.77188 2.23983,-16.19007 1.01047,-3.34072 0.85814,-2.97764 2.508,-5.9771 1.57069,-2.85548 3.63058,-5.24205 5.68718,-6.58918 1.49536,-0.97949 1.72571,-1.03335 4.41998,-1.03335 2.69915,0 2.92259,0.0526 4.43382,1.04212 2.16379,1.41688 4.33967,4.02444 6.10707,7.31869 0.81108,1.51174 1.47468,2.8897 1.47468,3.0621 0,0.17244 0.24395,1.00454 0.5421,1.84914 0.29813,0.84458 0.89457,3.23092 1.32542,5.30293 0.69683,3.35126 0.79695,4.42882 0.90645,9.75761 0.13105,6.3766 -0.15337,9.65788 -1.24892,14.40916 -0.58573,2.54032 -2.67431,8.30781 -3.45837,9.55016 -1.47112,2.33096 -4.07749,5.2176 -5.58375,6.18418 -1.47625,0.94735 -1.92269,1.07265 -4.11089,1.15385 -1.35015,0.0501 -2.7455,-0.0284 -3.10082,-0.17432 z"
@@ -1061,7 +1137,6 @@
 								  inkscape:label="B-65" />
 						</g>
 						<g id="g64"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g64">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -1095,7 +1170,6 @@
 								  inkscape:label="B-64" />
 						</g>
 						<g id="g63"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g63">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -1129,7 +1203,6 @@
 								  inkscape:label="B-63" />
 						</g>
 						<g id="g62"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g62">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -1163,7 +1236,6 @@
 								  inkscape:label="B-62" />
 						</g>
 						<g id="g61"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g61">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -1197,7 +1269,6 @@
 								  inkscape:label="B-61" />
 						</g>
 						<g id="g28"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g28">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -1231,7 +1302,6 @@
 								  inkscape:label="B-28" />
 						</g>
 						<g id="g27"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g27">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -1265,7 +1335,6 @@
 								  inkscape:label="B-27" />
 						</g>
 						<g id="g26"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g26">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -1299,7 +1368,6 @@
 								  inkscape:label="B-26" />
 						</g>
 						<g id="g25"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g25">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -1333,7 +1401,6 @@
 								  inkscape:label="B-25" />
 						</g>
 						<g id="g24"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g24">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -1367,7 +1434,6 @@
 								  inkscape:label="B-24" />
 						</g>
 						<g id="g23"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g23">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -1401,7 +1467,6 @@
 								  inkscape:label="B-23" />
 						</g>
 						<g id="g22"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g22">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -1435,7 +1500,6 @@
 								  inkscape:label="B-22" />
 						</g>
 						<g id="g21"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g21">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -1469,7 +1533,6 @@
 								  inkscape:label="B-21" />
 						</g>
 						<g id="g55"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g55">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -1503,7 +1566,6 @@
 								  inkscape:label="B-55" />
 						</g>
 						<g id="g54"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g54">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -1537,7 +1599,6 @@
 								  inkscape:label="B-54" />
 						</g>
 						<g id="g53"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g53">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -1571,7 +1632,6 @@
 								  inkscape:label="B-53" />
 						</g>
 						<g id="g52"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g52">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -1605,7 +1665,6 @@
 								  inkscape:label="B-52" />
 						</g>
 						<g id="g51"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g51">
 							<path inkscape:connector-curvature="0"
 								  style="fill:#000000;stroke-width:0.28925774"
@@ -1637,26 +1696,9 @@
 								  d="m 291.71412,131.79967 c 1.40229,-1.00454 3.4064,-1.08969 4.86486,-0.2067 l 1.0021,0.60671 2.76831,-5.20616 2.76833,-5.20617 -0.6161,-1.45532 c -0.85953,-2.03029 -3.7259,-5.56522 -5.27011,-6.49938 -0.91361,-0.55266 -1.87361,-0.82029 -3.27788,-0.91374 -1.7292,-0.11509 -2.17772,-0.0221 -3.47035,0.71946 -2.04277,1.17192 -3.51784,2.76936 -5.00108,5.41599 l -1.25859,2.24576 3.12553,5.65257 c 1.71907,3.10891 3.1514,5.65258 3.183,5.65258 0.0316,0 0.56348,-0.36253 1.18198,-0.8056 z"
 								  id="B-51"
 								  inkscape:label="B-51" />
-							<path inkscape:connector-curvature="0"
-								  id="path535-2"
-								  d="m 279.37278,162.96311 c 0,-0.87415 14.72701,-59.32335 14.99273,-59.50378 0.14144,-0.096 0.57041,1.156 0.95325,2.78233 0.38284,1.62634 3.70161,14.94403 7.37505,29.59488 3.67343,14.65085 6.67897,26.85834 6.67897,27.12776 0,0.27599 -6.54855,0.48985 -15,0.48985 -8.479,0 -15,-0.21347 -15,-0.49104 z m 25.4717,-5.43048 c 0,-0.19627 -1.82626,-7.65548 -4.05835,-16.57604 -2.23209,-8.92055 -4.55638,-18.27099 -5.16509,-20.77876 -0.60871,-2.50776 -1.17776,-4.56412 -1.26455,-4.5697 -0.0868,-0.006 -0.38704,1.01147 -0.66722,2.2601 -0.28018,1.24862 -2.59715,10.60985 -5.14881,20.80272 -2.55166,10.19288 -4.63938,18.68686 -4.63938,18.87552 0,0.18865 4.71227,0.34301 10.4717,0.34301 5.75943,0 10.4717,-0.16058 10.4717,-0.35685 z"
-								  style="fill:#0000ff;stroke-width:0.39685088" />
 						</g>
-
-
 						<g id="g18"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g18">
-							<path inkscape:connector-curvature="0"
-								  id="Extraccion"
-								  d="m 20.743144,76.652667 -3.37953,-6.85737 4.19822,-8.14263 4.19822,-8.142631 -4.19822,-8.14263 -4.19822,-8.14263 3.37953,-6.85737 3.37953,-6.85737 4.12356,8.33395 4.12355,8.33396 4.10955,-8.33251 4.10954,-8.3325 3.38737,6.8046 3.38737,6.80461 -4.19489,8.19394 -4.19489,8.19395 4.19489,8.193951 4.19489,8.19394 -3.38737,6.80461 -3.38737,6.8046 -4.10954,-8.3325 -4.10955,-8.33251 -4.12355,8.33396 -4.12356,8.33395 z"
-								  style="fill:#ffffff;fill-opacity:1;stroke-width:0.39045626"
-								  inkscape:label="Extraccion" />
-							<path inkscape:connector-curvature="0"
-								  id="Endodoncia"
-								  d="m 18.186977,84.144542 c 0,-0.87415 14.72701,-59.32335 14.99273,-59.50378 0.14144,-0.096 0.57041,1.156 0.95325,2.78233 0.38284,1.62634 3.70161,14.94403 7.37505,29.59488 3.67343,14.65085 6.67897,26.85834 6.67897,27.12776 0,0.27599 -6.54855,0.48985 -15,0.48985 -8.479,0 -15,-0.21347 -15,-0.49104 z m 25.4717,-5.43048 c 0,-0.19627 -1.82626,-7.65548 -4.05835,-16.57604 -2.23209,-8.92055 -4.55638,-18.27099 -5.16509,-20.77876 -0.60871,-2.50776 -1.17776,-4.56412 -1.26455,-4.5697 -0.0868,-0.006 -0.38704,1.01147 -0.66722,2.2601 -0.28018,1.24862 -2.59715,10.60985 -5.14881,20.80272 -2.55166,10.19288 -4.63938,18.68686 -4.63938,18.87552 0,0.18865 4.71227,0.34301 10.4717,0.34301 5.75943,0 10.4717,-0.16058 10.4717,-0.35685 z"
-								  style="fill:#ffffff;stroke-width:0.39685088"
-								  inkscape:label="Endodoncia" />
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
 								  id="T-18"
@@ -1688,9 +1730,7 @@
 								  inkscape:connector-curvature="0"
 								  inkscape:label="B-18" />
 						</g>
-
 						<g id="g17"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g17">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -1724,7 +1764,6 @@
 								  inkscape:label="B-17" />
 						</g>
 						<g id="g16"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g16">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -1758,7 +1797,6 @@
 								  inkscape:label="B-16" />
 						</g>
 						<g id="g15"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g15">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -1792,7 +1830,6 @@
 								  inkscape:label="B-15" />
 						</g>
 						<g id="g14"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g14">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -1826,7 +1863,6 @@
 								  inkscape:label="B-14" />
 						</g>
 						<g id="g13"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g13">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -1860,8 +1896,7 @@
 								  inkscape:label="B-13" />
 						</g>
 						<g id="g12"
-						   inkscape:label="g12"
-						   onclick="cargarPopUp(this.id);">
+						   inkscape:label="g12">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
 								  id="T-12"
@@ -1894,7 +1929,6 @@
 								  inkscape:label="B-12" />
 						</g>
 						<g id="g11"
-						   onclick="cargarPopUp(this.id);"
 						   inkscape:label="g11">
 							<path style="stroke-width:0.54221141"
 								  inkscape:connector-curvature="0"
@@ -1920,12 +1954,8 @@
 								  d="m 368.5331,44.320241 3.92199,-6.737528 h -10.4836 c -8.2735,0 -10.4191,0.186866 -10.17777,0.886521 0.16984,0.487593 1.501,3.519555 2.96131,6.737528 l 2.65376,5.851024 h 7.20217 z"
 								  id="B-11"
 								  inkscape:connector-curvature="0" />
-							<path inkscape:connector-curvature="0"
-								  id="path535"
-								  d="m 346.10724,83.694206 c 0,-0.87415 14.72701,-59.32335 14.99273,-59.50378 0.14144,-0.096 0.57041,1.156 0.95325,2.78233 0.38284,1.62634 3.70161,14.94403 7.37505,29.59488 3.67343,14.65085 6.67897,26.85834 6.67897,27.12776 0,0.27599 -6.54855,0.48985 -15,0.48985 -8.479,0 -15,-0.21347 -15,-0.49104 z m 25.4717,-5.43048 c 0,-0.19627 -1.82626,-7.65548 -4.05835,-16.57604 -2.23209,-8.92055 -4.55638,-18.27099 -5.16509,-20.77876 -0.60871,-2.50776 -1.17776,-4.56412 -1.26455,-4.5697 -0.0868,-0.006 -0.38704,1.01147 -0.66722,2.2601 -0.28018,1.24862 -2.59715,10.60985 -5.14881,20.80272 -2.55166,10.19288 -4.63938,18.68686 -4.63938,18.87552 0,0.18865 4.71227,0.34301 10.4717,0.34301 5.75943,0 10.4717,-0.16058 10.4717,-0.35685 z"
-								  style="fill:#0000ff;stroke-width:0.39685088" />
 						</g>
-						<g id="g-texto"
+						<g id="texto"
 						   inkscape:label="gtexto">
 							<g id="g2969">
 								<text xml:space="preserve"
@@ -2064,7 +2094,7 @@
 									  id="text2257-10-0"><tspan sodipodi:role="line"
 											  id="tspan2613"
 											  x="769.93732"
-											  y="27.718">38</tspan></text>
+											  y="27.718">28</tspan></text>
 							</g>
 							<g id="g2933">
 								<text xml:space="preserve"
@@ -2503,133 +2533,124 @@
 										 y="191.01117">P</tspan></text>
 							</g>
 						</g>
-
-						<g id="gEnfermedades"
-						   inkscape:label="gEnfermedades">
-							<path inkscape:transform-center-y="-107.76793"
-								  inkscape:transform-center-x="44.420052"
-								  inkscape:label="Sellante"
-								  style="fill:#ffffff;stroke-width:0.46805626"
-								  d="m 42.089157,252.27809 c -1.062079,-0.2393 -2.854329,-0.75867 -3.982786,-1.15376 l -2.051738,-0.71834 v -3.13904 c 0,-1.7265 0.186753,-3.13909 0.414936,-3.13909 0.22824,0 1.694613,0.61372 3.258641,1.36381 3.531804,1.69378 6.94483,2.31177 10.360695,1.87604 3.729541,-0.47574 5.554991,-1.61499 6.232512,-3.88966 1.048695,-3.52088 -0.931614,-5.6751 -7.526683,-8.18761 -10.275743,-3.91479 -12.637415,-6.33723 -12.164901,-12.47779 0.389082,-5.05625 4.229504,-8.4713 11.024058,-9.803 4.049248,-0.79363 9.322154,-0.39803 12.967947,0.97339 l 1.984668,0.74646 v 2.90044 c 0,1.5952 -0.117278,2.90039 -0.260608,2.90039 -0.143324,0 -1.07843,-0.39199 -2.077984,-0.87151 -2.436993,-1.16866 -7.458364,-1.98264 -9.911635,-1.60669 -2.297486,0.3521 -4.927391,1.72964 -5.618055,2.94273 -0.6119,1.07476 -0.615745,4.34263 -0.0065,5.41295 0.58443,1.02653 2.763673,2.24015 6.529763,3.63642 4.751831,1.76179 7.405611,3.1293 9.462436,4.87602 2.673242,2.27024 3.330743,3.67014 3.330743,7.09171 0,2.54019 -0.204505,3.20858 -1.568976,5.12777 -1.221334,1.71787 -2.299549,2.55155 -4.866258,3.76271 -3.051282,1.43978 -3.681578,1.56535 -8.448324,1.68347 -2.833085,0.0701 -6.020018,-0.0685 -7.082086,-0.30778 z"
-								  id="SellanteGeneral"
-								  inkscape:connector-curvature="0" />
-						</g>
-
-
-
 					</g>
 				</svg>
 
+				
+				<input style="display:none" id="idPiezaClick" />
 
+				<div id="menu" style="display:none">
+					<ul>
+						<li class="has-sub">
+							<span class="span_menu" style="background:#0000FF;"></span>
+							<a>Caries</a>
+							<ul>
+								<li>
+									<a id="CariesB" onclick="cambiarColor(this.id);">Bucal</a>
+								</li>
+								<li>
+									<a id="CariesL" onclick="cambiarColor(this.id);">Lingual</a>
+								</li>
+								<li>
+									<a id="CariesD" onclick="cambiarColor(this.id);">Distal</a>
+								</li>
+								<li>
+									<a id="CariesM" onclick="cambiarColor(this.id);">Mesial</a>
+								</li>
+								<li>
+									<a id="CariesO" onclick="cambiarColor(this.id);">Oclusal</a>
+								</li>
+							</ul>
 
+						</li>
+						<li class="has-sub">
+							<span class="span_menu" style="background:#FF0800"></span>
+							<a> Recina</a>
+							<ul>
+								<li>
+									<a id="RecinaB" onclick="cambiarColor(this.id);">Bucal</a>
+								</li>
+								<li>
+									<a id="RecinaL" onclick="cambiarColor(this.id);">Lingual</a>
+								</li>
+								<li>
+									<a id="RecinaD" onclick="cambiarColor(this.id);">Distal</a>
+								</li>
+								<li>
+									<a id="RecinaM" onclick="cambiarColor(this.id);">Mesial</a>
+								</li>
+								<li>
+									<a id="RecinaO" onclick="cambiarColor(this.id);">Oclusal</a>
+								</li>
+							</ul>
 
-
-
-				@*<div id="lista" style="display:none">
-						<ul>
-							<li>
-								laura
-							</li>
-							<li>
-								sebitas
-							</li>
-							<li>
-								bibi
-							</li>
-						</ul>
-					</div>*@
-
-
-
-
-				<div id="lista" style="display:none">
-					<ul class="enfermedades">
-						<li class="nav-item">
-							<div class="dropdown dropright">
-								<span class="span_menu" style="background:#0000FF;"></span>
-								<a class="dropdown-toggle opciones hover" data-toggle="dropdown" href="#">Caries</a>
-								<div class="dropdown-menu">
-									<a class="dropdown-item" id="CariesB" onclick="cambiarColor(this.id);">Bucal</a>
-									<a class="dropdown-item" id="CariesL" onclick="cambiarColor(this.id);">Lingual</a>
-									<a class="dropdown-item" id="CariesD" onclick="cambiarColor(this.id);">Distal</a>
-									<a class="dropdown-item" id="CariesM" onclick="cambiarColor(this.id);">Mesial</a>
-									<a class="dropdown-item" id="CariesO" onclick="cambiarColor(this.id);">Oclusal</a>
-								</div>
-							</div>
 						</li>
-						<li class="nav-item">
-							<div class="dropdown dropright">
-								<span class="span_menu" style="background:#FF0800"></span>
-								<a class="dropdown-toggle opciones hover" data-toggle="dropdown" href="#"> Recina</a>
-								<div class="dropdown-menu">
-									<a class="dropdown-item" id="RecinaB" onclick="cambiarColor(this.id);">Bucal</a>
-									<a class="dropdown-item" id="RecinaL" onclick="cambiarColor(this.id);">Lingual</a>
-									<a class="dropdown-item" id="RecinaD" onclick="cambiarColor(this.id);">Distal</a>
-									<a class="dropdown-item" id="RecinaM" onclick="cambiarColor(this.id);">Mesial</a>
-									<a class="dropdown-item" id="RecinaO" onclick="cambiarColor(this.id);">Oclusal</a>
-								</div>
-							</div>
+						<li class="has-sub">
+							<span class="span_menu" style="background:#000000"></span>
+							<a>Amalgama</a>
+							<ul>
+								<li><a id="AmalgamaB" onclick="cambiarColor(this.id);" href="#">Bucal</a></li>
+								<li><a id="AmalgamaL" onclick="cambiarColor(this.id);">Lingual</a></li>
+								<li><a id="AmalgamaD" onclick="cambiarColor(this.id);">Distal</a></li>
+								<li><a id="AmalgamaM" onclick="cambiarColor(this.id);">Mesial</a></li>
+								<li><a id="AmalgamaO" onclick="cambiarColor(this.id);">Oclusal</a></li>
+							</ul>
 						</li>
-						<li class="nav-item">
-							<div class="dropdown dropright">
-								<span class="span_menu" style="background:#000"></span>
-								<a class="dropdown-toggle opciones hover" data-toggle="dropdown" href="#">Amalgama</a>
-								<div class="dropdown-menu">
-									<a class="dropdown-item" id="AmalgamaB" onclick="cambiarColor(this.id);">Bucal</a>
-									<a class="dropdown-item" id="AmalgamaL" onclick="cambiarColor(this.id);">Lingual</a>
-									<a class="dropdown-item" id="AmalgamaD" onclick="cambiarColor(this.id);">Distal</a>
-									<a class="dropdown-item" id="AmalgamaM" onclick="cambiarColor(this.id);">Mesial</a>
-									<a class="dropdown-item" id="AmalgamaO" onclick="cambiarColor(this.id);">Oclusal</a>
-								</div>
-							</div>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/sellante.png" />
+							<a id="Sellante" onclick="cambiarColorPrueba(this.id);">Sellante</a>
 						</li>
-						<li class="nav-item">
-							<img class="span_menu" src="~/img/sellante.png" />
-							<a class="opciones hover" id="Sellante" onclick="cambiarColorPrueba(this.id);" href="#">Sellante</a>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/sellanteIndicado.png" />
+							<a id="Sellante Indicado" onclick="cambiarColor(this.id);">Sellante Indicado</a>
 						</li>
-						<li class="nav-item">
-							<a class="opciones hover" id="Sellante Indicado" onclick="cambiarColor(this.id);" href="#">Sellante Indicado</a>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/extraccionIndicada.png" />
+							<a id="Extraccion Indicada" onclick="cambiarColor(this.id);">Extraccioón Indicada</a>
 						</li>
-						<li class="nav-item">
-							<a class="opciones hover" id="Extraccion Indicada" onclick="cambiarColor(this.id);" href="#">Extraccioón Indicada</a>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/conEndodoncia.png" />
+							<a id="Con Endodoncia" onclick="cambiarColor(this.id);">Con Endodoncia</a>
 						</li>
-						<li class="nav-item">
-							<a class="opciones hover" id="Con Endodoncia" onclick="cambiarColor(this.id);" href="#">Con Endodoncia</a>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/protesis.png" />
+							<a id="Protesis" onclick="cambiarColor(this.id);">Prótesis</a>
 						</li>
-						<li class="nav-item">
-							<a class="opciones hover" id="Protesis" onclick="cambiarColor(this.id);" href="#">Prótesis</a>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/necrosisPulpar.png" />
+							<a id="Necrosis Pulpar" onclick="cambiarColor(this.id);">Necrosis Pulpar</a>
 						</li>
-						<li class="nav-item">
-							<a class="opciones hover" id="Necrosis Pulpar" onclick="cambiarColor(this.id);" href="#">Necrosis Pulpar</a>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/protesisIndicada.png" />
+							<a id="Protesis Indicada" onclick="cambiarColor(this.id);">Prótesis Indicada</a>
 						</li>
-						<li class="nav-item">
-							<a class="opciones hover" id="Protesis Indicada" onclick="cambiarColor(this.id);" href="#">Prótesis Indicada</a>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/clinicamenteAusenteV2.png">
+							<a id="Clinicamente Ausente" onclick="cambiarColor(this.id);">Clinicamente Ausente</a>
 						</li>
-						<li class="nav-item">
-							<a class="opciones hover" id="Clinicamente Ausente" onclick="cambiarColor(this.id);" href="#">Clinicamente Ausente</a>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/coronaDesadaptada.png" />
+							<a id="CoronaDesadaptada" onclick="cambiarColor(this.id);">Corona Desadaptada</a>
 						</li>
-						<li class="nav-item">
-							<a class="opciones hover" id="CoronaDesadaptada" onclick="cambiarColor(this.id);" href="#">Corona Desadaptada</a>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/recesionGingival.png" />
+							<a id="RecesionGingival" onclick="cambiarColor(this.id);">Recesión Gingival</a>
 						</li>
-						<li class="nav-item">
-							<a class="opciones hover" id="RecesionGingival" onclick="cambiarColor(this.id);" href="#">Recesión Gingival</a>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/sano.png" />
+							<a class="opciones hover" id="Sano" onclick="cambiarColor(this.id);">Sano</a>
 						</li>
-						<li class="nav-item">
-							<a class="opciones hover" id="Sano" onclick="cambiarColor(this.id);" href="#">Sano</a>
-						</li>
-						<li class="nav-item">
-							<a class="opciones hover" id="Limpio" onclick="cambiarColor(this.id);" href="#">Limpio</a>
+						<li class="has-sub">
+							<img class="span_menu" style="background:#ffffff" />
+							<a id="Limpio" onclick="cambiarColor(this.id);">Limpio</a>
 						</li>
 					</ul>
 				</div>
 
-
-
-
-				<img id="sellanteImg" src="~/img/sellante.png" style="display:none" />
-				<img id="conEndodonciaImg" src="~/img/conEndodoncia.png" style="display:none" />
-
 			</div>
+
+
+
 
 			<br />
 			<br />
@@ -2647,99 +2668,18 @@
 
 
 
-		<button onclick="cargarPopUp();">Prueba Pop Up DISEÑO</button>
+		@*<button onclick="cargarPopUp();">Prueba Pop Up DISEÑO</button>
 
-		<button onclick="ponerEndodoncia();">Endodoncia</button>
+			<button onclick="ponerEndodoncia();">Endodoncia</button>
 
-		<button onclick="conFuncionSVG();">CON FUNCION SVG</button>
+			<button onclick="conFuncionSVG();">CON FUNCION SVG</button>
 
-		<button onclick="triangulo();">encimaImagen</button>
+			<button onclick="triangulo();">encimaImagen</button>*@
 
 	</div>
 </div>
 
 
-
-
-
-
-<div style="position: relative;">
-	<div style="position: absolute; left: 10px; top: 25px; z-index: 1;"> CUADRO 1 </div>
-	<div style="position: absolute; left: 30px; top: 80px; z-index: 3;"> CUADRO 2 </div>
-	<div style="position: absolute; left: 50px; top: 120px; z-index: 2;"> CUADRO 3 </div>
-</div>
-
-
-
-@*modal*@
-
-<div id="modalImportarDatos" class="modal fade">
-	<input hidden id="idGrupo" value="hola" />
-
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h3 class="m-t-none m-b">Importar Datos</h3>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="limpiarDatos();">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<div class="container">
-					<h2>Vertical Nav</h2>
-					<p>Use the .flex-column class to create a vertical nav:</p>
-					<ul class="nav flex-column">
-						<li class="nav-item">
-							<div class="dropdown dropright">
-								<a class="dropdown-toggle" data-toggle="dropdown" href="#">Caries</a>
-								<div class="dropdown-menu">
-									<a class="dropdown-item" id="CariesB" href="#" onclick="cambiarColor(this.id);">Bucal</a>
-									<a class="dropdown-item" id="CariesL" href="#">Lingual</a>
-									<a class="dropdown-item" href="#">Distal</a>
-									<a class="dropdown-item" href="#">Mesial</a>
-									<a class="dropdown-item" href="#">Oclusal</a>
-								</div>
-							</div>
-						</li>
-						<li class="nav-item">
-							<div class="dropdown dropright">
-								<a class="dropdown-toggle" data-toggle="dropdown" href="#"> Recina</a>
-								<div class="dropdown-menu">
-									<a class="dropdown-item" href="#">Bucal</a>
-									<a class="dropdown-item" href="#">Lingual</a>
-									<a class="dropdown-item" href="#">Distal</a>
-									<a class="dropdown-item" href="#">Mesial</a>
-									<a class="dropdown-item" href="#">Oclusal</a>
-								</div>
-							</div>
-						</li>
-						<li class="nav-item">
-							<div class="dropdown dropright">
-								<a class="btn btn-primary  dropdown-toggle" data-toggle="dropdown" href="#">Amalgama</a>
-								<div class="dropdown-menu">
-									<a class="dropdown-item" href="#">Bucal</a>
-									<a class="dropdown-item" href="#">Lingual</a>
-									<a class="dropdown-item" href="#">Distal</a>
-									<a class="dropdown-item" href="#">Mesial</a>
-									<a class="dropdown-item" href="#">Oclusal</a>
-								</div>
-							</div>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="#">Sellante</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="#">Extraccion</a>
-						</li>
-					</ul>
-				</div>
-
-			</div>
-		</div>
-	</div>
-
-
-</div>
 
 
 
@@ -2756,6 +2696,9 @@
         };
 	</script>
 }
+
+
+
 @section Scripts {
 	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
