@@ -212,7 +212,7 @@
 										inkscape:window-x="-8"
 										inkscape:window-y="-8"
 										inkscape:window-maximized="1"
-										inkscape:current-layer="g-odontograma"
+										inkscape:current-layer="odontograma"
 										showguides="false" />
 					<metadata id="metadata2">
 						<rdf:RDF>
@@ -223,8 +223,8 @@
 							</cc:Work>
 						</rdf:RDF>
 					</metadata>
-					<g id="g-odontograma"
-					   inkscape:label="g-odontograma">
+					<g id="odontograma"
+					   inkscape:label="odontograma">
 						<path d="M -0.001108,199.99421 V -0.00331 H 810.00585 V 399.99172 H -0.001108 Z"
 							  id="path4"
 							  inkscape:connector-curvature="0"
@@ -2542,7 +2542,7 @@
 				<div id="menu" style="display:none">
 					<ul>
 						<li class="has-sub">
-							<span class="span_menu" style="background:#0000FF;"></span>
+							<span class="span_menu" style="background:#ff0000;"></span>
 							<a>Caries</a>
 							<ul>
 								<li>
@@ -2564,23 +2564,23 @@
 
 						</li>
 						<li class="has-sub">
-							<span class="span_menu" style="background:#FF0800"></span>
-							<a> Recina</a>
+							<span class="span_menu" style="background:blue"></span>
+							<a> Resina</a>
 							<ul>
 								<li>
-									<a id="RecinaB" onclick="cambiarColor(this.id);">Bucal</a>
+									<a id="ResinaB" onclick="cambiarColor(this.id);">Bucal</a>
 								</li>
 								<li>
-									<a id="RecinaL" onclick="cambiarColor(this.id);">Lingual</a>
+									<a id="ResinaL" onclick="cambiarColor(this.id);">Lingual</a>
 								</li>
 								<li>
-									<a id="RecinaD" onclick="cambiarColor(this.id);">Distal</a>
+									<a id="ResinaD" onclick="cambiarColor(this.id);">Distal</a>
 								</li>
 								<li>
-									<a id="RecinaM" onclick="cambiarColor(this.id);">Mesial</a>
+									<a id="ResinaM" onclick="cambiarColor(this.id);">Mesial</a>
 								</li>
 								<li>
-									<a id="RecinaO" onclick="cambiarColor(this.id);">Oclusal</a>
+									<a id="ResinaO" onclick="cambiarColor(this.id);">Oclusal</a>
 								</li>
 							</ul>
 
@@ -2589,7 +2589,7 @@
 							<span class="span_menu" style="background:#000000"></span>
 							<a>Amalgama</a>
 							<ul>
-								<li><a id="AmalgamaB" onclick="cambiarColor(this.id);" href="#">Bucal</a></li>
+								<li><a id="AmalgamaB" onclick="cambiarColor(this.id);">Bucal</a></li>
 								<li><a id="AmalgamaL" onclick="cambiarColor(this.id);">Lingual</a></li>
 								<li><a id="AmalgamaD" onclick="cambiarColor(this.id);">Distal</a></li>
 								<li><a id="AmalgamaM" onclick="cambiarColor(this.id);">Mesial</a></li>
@@ -2598,19 +2598,19 @@
 						</li>
 						<li class="has-sub">
 							<img class="span_menu" src="~/imgen/sellante.png" />
-							<a id="Sellante" onclick="cambiarColorPrueba(this.id);">Sellante</a>
+							<a id="Sellante" onclick="cambiarColor(this.id);">Sellante</a>
 						</li>
 						<li class="has-sub">
 							<img class="span_menu" src="~/imgen/sellanteIndicado.png" />
-							<a id="Sellante Indicado" onclick="cambiarColor(this.id);">Sellante Indicado</a>
+							<a id="SellanteIndicado" onclick="cambiarColor(this.id);">Sellante Indicado</a>
 						</li>
 						<li class="has-sub">
 							<img class="span_menu" src="~/imgen/extraccionIndicada.png" />
-							<a id="Extraccion Indicada" onclick="cambiarColor(this.id);">Extraccioón Indicada</a>
+							<a id="ExtraccionIndicada" onclick="cambiarColor(this.id);">Extraccioón Indicada</a>
 						</li>
 						<li class="has-sub">
 							<img class="span_menu" src="~/imgen/conEndodoncia.png" />
-							<a id="Con Endodoncia" onclick="cambiarColor(this.id);">Con Endodoncia</a>
+							<a id="ConEndodoncia" onclick="cambiarColor(this.id);">Con Endodoncia</a>
 						</li>
 						<li class="has-sub">
 							<img class="span_menu" src="~/imgen/protesis.png" />
@@ -2618,15 +2618,15 @@
 						</li>
 						<li class="has-sub">
 							<img class="span_menu" src="~/imgen/necrosisPulpar.png" />
-							<a id="Necrosis Pulpar" onclick="cambiarColor(this.id);">Necrosis Pulpar</a>
+							<a id="NecrosisPulpar" onclick="cambiarColor(this.id);">Necrosis Pulpar</a>
 						</li>
 						<li class="has-sub">
 							<img class="span_menu" src="~/imgen/protesisIndicada.png" />
-							<a id="Protesis Indicada" onclick="cambiarColor(this.id);">Prótesis Indicada</a>
+							<a id="ProtesisIndicada" onclick="cambiarColor(this.id);">Prótesis Indicada</a>
 						</li>
 						<li class="has-sub">
 							<img class="span_menu" src="~/imgen/clinicamenteAusenteV2.png">
-							<a id="Clinicamente Ausente" onclick="cambiarColor(this.id);">Clinicamente Ausente</a>
+							<a id="ClinicamenteAusente" onclick="cambiarColor(this.id);">Clinicamente Ausente</a>
 						</li>
 						<li class="has-sub">
 							<img class="span_menu" src="~/imgen/coronaDesadaptada.png" />
@@ -2638,7 +2638,11 @@
 						</li>
 						<li class="has-sub">
 							<img class="span_menu" src="~/imgen/sano.png" />
-							<a class="opciones hover" id="Sano" onclick="cambiarColor(this.id);">Sano</a>
+							<a id="Sano" onclick="cambiarColor(this.id);">Sano</a>
+						</li>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/coronaAdaptada.png" />
+							<a id="CoronaAdaptada" onclick="cambiarColor(this.id);">Corona Adaptada</a>
 						</li>
 						<li class="has-sub">
 							<img class="span_menu" style="background:#ffffff" />
