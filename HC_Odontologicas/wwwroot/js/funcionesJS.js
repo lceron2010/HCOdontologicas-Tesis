@@ -242,18 +242,24 @@ var enfermedadesOdontogramasSVG = [
 
 ];
 
-function cambiarColor(enfermedadOdon, idGrupoDato) {
+function cambiarColor(enfermedadOdon, idGrupoDato, region) {
 	var idGrupo = "";
 	if (idGrupoDato === undefined) {
-		console.log("1");
+		
 		idGrupo = $("#idPiezaClick").val();
 	}
 	else {
-		console.log("2");
+		
 		idGrupo = "g" + idGrupoDato;
 	}	
 	if (enfermedadOdon.includes("Caries") || enfermedadOdon.includes("Resina") || enfermedadOdon.includes("Amalgama")) {
-		nombre = enfermedadOdon.charAt(enfermedadOdon.length - 1) + "-" + idGrupo.substring(1, 3);
+		if (region) {
+			nombre = region + "-" + idGrupo.substring(1, 3);
+			enfermedadOdon = enfermedadOdon + region;
+		}
+		else {
+			nombre = enfermedadOdon.charAt(enfermedadOdon.length - 1) + "-" + idGrupo.substring(1, 3);
+		}
 		if (enfermedadOdon.includes("Caries")) {
 			$("#" + nombre).attr("style", "fill:red");
 		}
@@ -448,7 +454,13 @@ function GuardarDatosOdontograma(accion) {
 
 	const codigoPaciente = $('#CodigoPaciente')[0].value;
 	const codigoPersonal = $('#CodigoPersonal')[0].value;
-
+	let codigoCitaOdontologica = null;
+	let codigo = null;
+	if (accion === "editar") {
+		codigoCitaOdontologica = $('#CodigoCitaOdontologica')[0].value;
+		codigo = $('#Codigo')[0].value;
+	}
+	
 	//leer los detalles de pieza.
 	var listaOdontogramaDetalle = [];
 	const odontogramaDato = $('#svg742')[0].children[3];
@@ -469,8 +481,10 @@ function GuardarDatosOdontograma(accion) {
 					let enfermedad = dato.attributes.enfermedad.value;
 					if (enfermedad.includes("Caries") || enfermedad.includes("Resina") || enfermedad.includes("Amalgama")) {
 						pieza = dato.id.substring(2, 4);
-						region = dato.id.substring(0, 1);
-						enfermedad = dato.attributes.enfermedad.value.substring(0, dato.attributes.enfermedad.value.length - 1);
+						region = dato.id.substring(0, 1);						
+							enfermedad = dato.attributes.enfermedad.value.substring(0, dato.attributes.enfermedad.value.length - 1);
+						
+						
 					}
 					else {
 						pieza = dato.id.split("-")[1];
@@ -506,7 +520,7 @@ function GuardarDatosOdontograma(accion) {
 	console.log(listaOdontogramaDetalle);
 	var odontograma = [
 		{
-			CodigoPaciente: codigoPaciente, CodigoPersonal: codigoPersonal,
+			CodigoPaciente: codigoPaciente, CodigoPersonal: codigoPersonal, CodigoCitaOdontologica: codigoCitaOdontologica, Codigo: codigo,
 			OdontogramaDetalle: listaOdontogramaDetalle
 		}
 	];
@@ -561,15 +575,17 @@ function obtenerDatosOdontograma(codigoOdontograma) {
 	});
 }
 
-function cargarColorAlEditar(response) {
-	console.log(response);
+function cargarColorAlEditar(response) {	
 	var detalle = JSON.parse(response);
-	for (let i = 0; i <= detalle.length; i++) {
+	console.log(detalle);
+	console.log(detalle.length);
+
+	for (let i = 0; i < detalle.length; i++) {
 		let nombre = detalle[i].Region + "-" + detalle[i].Pieza;
 		let enfermedad = detalle[i].Enfermedad;
 		let diagnostico = detalle[i].Diagnostico;
 
-		cambiarColor(enfermedad,pieza);
+		cambiarColor(enfermedad, detalle[i].Pieza, detalle[i].Region );
 
 
 		///ojooooooooooooooooooooooooOJO   OJOJOJOJO

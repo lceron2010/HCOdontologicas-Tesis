@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using HC_Odontologicas.Models;
 using System.Security.Claims;
 using HC_Odontologicas.FuncionesGenerales;
+using Rotativa.AspNetCore;
 
 namespace HC_Odontologicas.Controllers
 {
@@ -80,16 +81,39 @@ namespace HC_Odontologicas.Controllers
             }
         }
 
-        // GET: CertificadosMedicos/Details/5
-        public async Task<IActionResult> Details(int? id)
+
+        //[HttpGet]
+        //public IActionResult DemoViewAsPdf()
+        //{
+        //    return new ViewAsPdf("Details");
+        //}
+
+        //[HttpGet]
+        //public IActionResult DemoViewAsPdfTest()
+        //{
+        //    return new ViewAsPdf("Index");
+        //}
+
+
+        [HttpGet]
+        public IActionResult DemoViewAsPdf()
         {
-            if (id == null)
+            return new ViewAsPdf("DemoViewAsPdf");
+        }
+
+
+        // GET: CertificadosMedicos/Details/5
+        public async Task<IActionResult> Details(string codigo)
+        {
+            if (codigo == null)
             {
                 return NotFound();
             }
 
+            var codigoN = Convert.ToInt32(Encriptacion.Decrypt(codigo));
+
             var plantillaCertificadoMedico = await _context.PlantillaCertificadoMedico
-                .FirstOrDefaultAsync(m => m.Codigo == id);
+                .FirstOrDefaultAsync(m => m.Codigo == codigoN);
             if (plantillaCertificadoMedico == null)
             {
                 return NotFound();

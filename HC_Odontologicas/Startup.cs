@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using HC_Odontologicas.Models;
 using HC_Odontologicas.Controllers;
 using Microsoft.AspNetCore.Authentication;
+using Rotativa.AspNetCore;
 
 namespace HC_Odontologicas
 {
@@ -45,7 +46,7 @@ namespace HC_Odontologicas
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Microsoft.AspNetCore.Hosting.IHostingEnvironment env1)
 		{
 			if (env.IsDevelopment())
 			{
@@ -73,6 +74,8 @@ namespace HC_Odontologicas
 					pattern: "{controller=Home}/{action=Index}/{id?}");
 				endpoints.MapRazorPages();
 			});
+
+			RotativaConfiguration.Setup(env.WebRootPath, "Rotativa");
 		}
 	}
 }

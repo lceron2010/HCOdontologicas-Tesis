@@ -213,3 +213,4 @@ C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\HC_Odontologicas.csproj.CopyComplete
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\HC_Odontologicas.dll
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\HC_Odontologicas.pdb
+C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\CertificadosMedicos\DemoViewAsPdf.cshtml.g.cs

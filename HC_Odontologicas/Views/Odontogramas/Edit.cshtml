@@ -11,8 +11,8 @@
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 		<form asp-action="Create">
 			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<input asp-for="CodigoCitaOdontologica" name="CodigoCitaOdontologica" hidden />
-			<input asp-for="Codigo" hidden />
+			<input asp-for="CodigoCitaOdontologica" name="CodigoCitaOdontologica" type="hidden" id="CodigoCitaOdontologica" />
+			<input asp-for="Codigo" type="hidden" />
 
 			<fieldset>
 				<legend class="titulo text-uppercase" style="font-size:inherit">Datos informativos</legend>
@@ -2503,11 +2503,13 @@
 					</ul>
 				</div>
 			</div>
+			<br />
+			<br />
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="form-group">
 						<a class="btn btn-white" onclick="regresar('../Odontogramas/Index','');">Regresar</a>
-						<button type="button" class="btn btn-primary" onclick="GuardarDatosOdontograma('edit');"><i class="fa fa-save"></i> Guardar</button>
+						<button type="button" class="btn btn-primary" onclick="GuardarDatosOdontograma('editar');"><i class="fa fa-save"></i> Guardar</button>
 					</div>
 				</div>
 			</div>
