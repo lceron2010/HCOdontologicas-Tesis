@@ -153,9 +153,6 @@ namespace HC_Odontologicas.Controllers
 		public async Task<string> Create(List<Odontograma> odontograma)
 		{
 			var i = (ClaimsIdentity)User.Identity;
-
-			if (i.IsAuthenticated)
-			{
 				try
 				{
 					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
@@ -166,8 +163,8 @@ namespace HC_Odontologicas.Controllers
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
-					if (ModelState.IsValid)
-					{
+					//if (ModelState.IsValid)
+					//{
 
 						//cita odontologica						
 						CitaOdontologica citaOdontologica = _context.CitaOdontologica.Where(ci => ci.Codigo == odontograma[0].CodigoCitaOdontologica).SingleOrDefault();
@@ -238,10 +235,10 @@ namespace HC_Odontologicas.Controllers
 						await _context.SaveChangesAsync();
 						transaction.Commit();
 						await _auditoria.GuardarLogAuditoria(fecha, i.Name, "Odontograma", odont.Codigo, "I");
-						//ViewBag.Message = "Save";
-						return "Save";
-					}
-					return "No valido";
+						ViewBag.Message = "Save";
+						
+				return "Save";					
+					
 				}
 				catch (Exception e)
 				{
@@ -250,6 +247,7 @@ namespace HC_Odontologicas.Controllers
 						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
 
 					ViewBag.Message = mensaje;
+
 					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
 					Personal.Insert(0, vacio);
 					ViewData["CodigoPersonal"] = Personal;
@@ -257,13 +255,10 @@ namespace HC_Odontologicas.Controllers
 					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
-					return e.InnerException.ToString();
+
+					return mensaje;//e.InnerException.ToString();
 				}
-			}
-			else
-			{
-				return "no esta autenticado";//Redirect("../Identity/Account/Login");
-			}
+			
 		}
 
 		public string ObtenerDatosOdontogramaDetalle(string codigoOdontograma)
@@ -336,8 +331,6 @@ namespace HC_Odontologicas.Controllers
 				return Redirect("../Identity/Account/Login");
 			}
 		}
-
-
 
 		// POST: Odontogramas/Edit/5
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -443,13 +436,26 @@ namespace HC_Odontologicas.Controllers
 		}
 
 		// POST: Odontogramas/Delete/5
-		[HttpPost, ActionName("Delete")]
-		public async Task<IActionResult> DeleteConfirmed(string id)
+		[HttpPost]		
+		public async Task<string> DeleteConfirmed(string codigo)
 		{
-			var odontograma = await _context.Odontograma.FindAsync(id);
-			_context.Odontograma.Remove(odontograma);
-			await _context.SaveChangesAsync();
-			return RedirectToAction(nameof(Index));
+			try
+			{
+				var i = (ClaimsIdentity)User.Identity;
+				var odontograma = await _context.Odontograma.SingleOrDefaultAsync(f => f.Codigo == codigo);
+				_context.Odontograma.Remove(odontograma);
+				await _context.SaveChangesAsync();
+				await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Odontograma", odontograma.Codigo, "D");
+				return "Delete";
+
+			}
+			catch (Exception e)
+			{
+				string mensaje = e.Message;
+				if (e.InnerException != null)
+					mensaje = MensajesError.ForeignKey(e.InnerException.Message);
+				return mensaje;
+			}
 		}
 
 

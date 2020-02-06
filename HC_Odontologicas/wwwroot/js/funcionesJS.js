@@ -242,11 +242,16 @@ var enfermedadesOdontogramasSVG = [
 
 ];
 
-function cambiarColor(enfermedadOdon) {
-	var idGrupo = $("#idPiezaClick").val();
-	console.log("cambiar color");
-	console.log("id grupo", idGrupo);
-	console.log('enfermedad: ', enfermedadOdon);
+function cambiarColor(enfermedadOdon, idGrupoDato) {
+	var idGrupo = "";
+	if (idGrupoDato === undefined) {
+		console.log("1");
+		idGrupo = $("#idPiezaClick").val();
+	}
+	else {
+		console.log("2");
+		idGrupo = "g" + idGrupoDato;
+	}	
 	if (enfermedadOdon.includes("Caries") || enfermedadOdon.includes("Resina") || enfermedadOdon.includes("Amalgama")) {
 		nombre = enfermedadOdon.charAt(enfermedadOdon.length - 1) + "-" + idGrupo.substring(1, 3);
 		if (enfermedadOdon.includes("Caries")) {
@@ -282,8 +287,8 @@ function agregarPath(idPath, idGrupo, enfermedad) {
 	const xm = obtenerMedida(idGrupo, "x", enfermedad);//"246.36398"; //obtenerMedida(idGrupo,"x");//"347.80274"; //"209.64356";//"247.13928"; x de T
 	const ym = obtenerMedida(idGrupo, "y", enfermedad);// "329.36161";//obtenerMedida(idGrupo, "y");//"83.69396"; y de Lingual
 
-	console.log('mx', xm);
-	console.log('my', ym);
+	//console.log('mx', xm);
+	//console.log('my', ym);
 	const medida = xm + ', ' + ym;
 	const d1 = "m " + medida + " " + d;
 
@@ -317,8 +322,8 @@ function agregarPath(idPath, idGrupo, enfermedad) {
 }
 
 function obtenerMedida(idGrupo, tipoMedida, enfermedad) {
-	console.log("idgr: tmed");
-	console.log(idGrupo, tipoMedida);
+	//console.log("idgr: tmed");
+	//console.log(idGrupo, tipoMedida);
 	let numero = idGrupo.substring(1, 3);
 	let tipo = "";
 	if (tipoMedida === "x") {
@@ -335,9 +340,9 @@ function obtenerMedida(idGrupo, tipoMedida, enfermedad) {
 
 	let nombreObtener = tipo + "-" + numero;
 
-	console.log("nombre a obtener: ", nombreObtener);
+	//console.log("nombre a obtener: ", nombreObtener);
 	let dato = $('#svg742')[0].children[3].children[idGrupo].children[nombreObtener].attributes.d.value;
-	console.log("dato atributo d:", dato);
+	//console.log("dato atributo d:", dato);
 	let division = dato.substring(2, 20).split(",");
 	let medidaX = division[0];
 	let medidaY = division[1];
@@ -431,15 +436,11 @@ function obtenerMedida(idGrupo, tipoMedida, enfermedad) {
 			}
 		}
 	}
-	console.log("medida q regresa: ", medidaGeneral);
+	//console.log("medida q regresa: ", medidaGeneral);
 	return medidaGeneral.toString();
 }
 
 //guardar Datos.
-
-
-
-///////////////////////////////////////////////////////////PRUEBAS////////////////////77
 
 function GuardarDatosOdontograma(accion) {
 	//var data = new FormData();
@@ -450,30 +451,59 @@ function GuardarDatosOdontograma(accion) {
 
 	//leer los detalles de pieza.
 	var listaOdontogramaDetalle = [];
-	datos = $('#svg742')[0].children[3].children[4];
-	for (var i = 0; i < datos.childElementCount; i++) {
-		dato = $('#svg742')[0].children[3].children[4].children[i]; //ene l [3] hay que recorrer
-		//propiedadColor = dato.attributes.cambiocolor;
-		cambioColor = false;
-		if (dato.attributes.cambiocolor !== undefined) {
-			cambioColor = dato.attributes.cambiocolor.value;
-		}
-		if (cambioColor) {
-			pieza = dato.id.substring(2, 4);
-			region = dato.id.substring(0, 1);
-			enfermedad = dato.attributes.enfermedad.value.substring(0, dato.attributes.enfermedad.value.length - 1);
-			diagnosticoDato = dato.style.fill;
-			diagnostico = "Diagnosticado";
-			if (diagnosticoDato === "red") {
-				diagnostico = "Recomendado";
+	const odontogramaDato = $('#svg742')[0].children[3];
+	for (var j = 0; j < odontogramaDato.childElementCount; j++) {
+
+		if (odontogramaDato.children[j].id.charAt(0) === "g") {
+			datos = odontogramaDato.children[j]; 
+			for (var i = 0; i < datos.childElementCount; i++) {				
+				
+				dato = odontogramaDato.children[j].children[i];
+				cambioColor = false;
+				if (dato.attributes.cambiocolor !== undefined) {
+					cambioColor = dato.attributes.cambiocolor.value;
+				}
+				if (cambioColor) {
+					let pieza = dato.id.substring(2, 4);
+					let region = "";
+					let enfermedad = dato.attributes.enfermedad.value;
+					if (enfermedad.includes("Caries") || enfermedad.includes("Resina") || enfermedad.includes("Amalgama")) {
+						pieza = dato.id.substring(2, 4);
+						region = dato.id.substring(0, 1);
+						enfermedad = dato.attributes.enfermedad.value.substring(0, dato.attributes.enfermedad.value.length - 1);
+					}
+					else {
+						pieza = dato.id.split("-")[1];
+						region = "T";
+						
+					}
+					diagnosticoDato = dato.style.fill;
+					diagnostico = "";
+					if (diagnosticoDato === "red") {
+						diagnostico = "Recomendado";
+					}
+					else if (diagnosticoDato === "blue") {
+						diagnostico = "Diagnosticado";
+					}
+					else if (diagnosticoDato === "green") {
+						diagnostico = "Sano";
+					}
+					
+					else {
+						diagnostico = enfermedad;
+					}
+
+					var detalle = { Pieza: pieza, Region: region, Enfermedad: enfermedad, Valor: true, Diagnostico: diagnostico };
+
+					listaOdontogramaDetalle.push(detalle);
+				}
 			}
 
-			var detalle = { Pieza: pieza, Region: region, Enfermedad: enfermedad, Valor: true, Diagnostico: diagnostico };
-
-			listaOdontogramaDetalle.push(detalle);
 		}
+
 	}
 
+	console.log(listaOdontogramaDetalle);
 	var odontograma = [
 		{
 			CodigoPaciente: codigoPaciente, CodigoPersonal: codigoPersonal,
@@ -487,23 +517,37 @@ function GuardarDatosOdontograma(accion) {
 	else {
 		url = '/../Odontogramas/Edit';
 	}
+	console.log(odontograma);
+	guardarOdontogramaController(url, odontograma);
+
+}
+
+//dataType: 'json',
+function guardarOdontogramaController(url, odontograma) {
 
 	$.ajax({
-		url: url,//'/../Odontogramas/Create',
 		type: 'POST',
-		dataType: 'json',
+		url: url,		
 		data: { odontograma },
-		success: function (response) {
-			if (response === "Save") {
-				SuccessAlert("Guardados", "/../Odontogramas");
-			}
-			else {
-				ErrorAlert(response);
-			}
+		success: function (c) {
+			console.log("response: ", c);
+			respuesta(c);
 		}
 	});
 
 }
+
+function respuesta(c) {
+	if (c === "Save") {
+		SuccessAlert("Guardados", "/../Odontogramas");
+	}
+	else {
+		ErrorAlert(c);
+	}
+}
+
+///////////////////////////////////////////////////////////PRUEBAS////////////////////77
+
 
 function obtenerDatosOdontograma(codigoOdontograma) {
 	$.ajax({
@@ -520,24 +564,40 @@ function obtenerDatosOdontograma(codigoOdontograma) {
 function cargarColorAlEditar(response) {
 	console.log(response);
 	var detalle = JSON.parse(response);
-
 	for (let i = 0; i <= detalle.length; i++) {
 		let nombre = detalle[i].Region + "-" + detalle[i].Pieza;
 		let enfermedad = detalle[i].Enfermedad;
 		let diagnostico = detalle[i].Diagnostico;
+
+		cambiarColor(enfermedad,pieza);
+
+
 		///ojooooooooooooooooooooooooOJO   OJOJOJOJO
 		//hayq ue revisar cuadno sean los otros tipos de enfermedad como sellenate
+		//console.log(nombre);
+		//if (enfermedad.includes("Caries") || enfermedad.includes("Resina") || RecesionGingival.includes("Amalgama")) {
+		//	if (diagnostico === "Diagnosticado") {
+		//		$("#" + nombre).attr("style", "fill:blue");
+		//	}
+		//	else if (diagnostico === "Recomendado") {
+		//		$("#" + nombre).attr("style", "fill:red");
+		//	}
+		//	else if (diagnostico === "Amalgama") {
+		//		$("#" + nombre).attr("style", "fill:black");
+		//	}
+		//}
+		//else {
 
-		console.log(nombre);
-		if (diagnostico === "Diagnosticado") {
-			$("#" + nombre).attr("style", "fill:blue");
-		}
-		else {
-			$("#" + nombre).attr("style", "fill:red");
-		}
+		//if (diagnostico === "Sano") {
+		//		$("#" + nombre).attr("style", "fill:green");
+		//	}
 
-		$("#" + nombre).attr("cambiocolor", "true");
-		$("#" + nombre).attr("enfermedad", enfermedad);
+		//	else if (diagnostico === "RecesionGingival") {
+		//		$("#" + nombre).attr("style", "fill:#ff0080");
+		//	}
+		//}
+		//$("#" + nombre).attr("cambiocolor", "true");
+		//$("#" + nombre).attr("enfermedad", enfermedad);
 
 	}
 }

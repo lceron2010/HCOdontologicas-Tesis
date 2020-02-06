@@ -867,7 +867,7 @@ namespace HC_Odontologicas.Models
 			{
 				entity.HasKey(e => e.Codigo);
 
-				entity.Property(e => e.Contenido)
+				entity.Property(e => e.Descripcion)
 					.IsRequired()
 					.IsUnicode(false);
 

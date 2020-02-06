@@ -7,7 +7,7 @@ namespace HC_Odontologicas.Models
     {
         public int Codigo { get; set; }
         public string Nombre { get; set; }
-        public string Contenido { get; set; }
+        public string Descripcion { get; set; }
         
     }
 }
