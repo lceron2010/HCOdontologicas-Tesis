@@ -94,7 +94,7 @@ namespace HC_Odontologicas.Controllers
 				{
 					//lista de enfermedades
 					List<DiagnosticoCie10> diagnosticoC = new List<DiagnosticoCie10>();
-					var enfermedad = _context.Cie10.OrderBy(f => f.Nombre).Where(f => f.Codigo.StartsWith("")).ToList(); //QUITAR LUEGO					
+					var enfermedad = _context.Cie10.OrderBy(f => f.Nombre).Where(f => f.Nombre.StartsWith("C")).ToList(); //QUITAR LUEGO					
 					//agregar los cie10 a la lista de diagnosticoCIE10
 					foreach (Cie10 item in enfermedad)
 					{

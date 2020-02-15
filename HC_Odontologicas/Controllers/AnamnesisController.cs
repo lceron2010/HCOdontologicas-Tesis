@@ -83,8 +83,12 @@ namespace HC_Odontologicas.Controllers
 		}
 
 		// GET: Anamnesis/Create
-		public IActionResult Create()
+		public IActionResult Create(string codigo)
 		{
+
+			TempData["CodigoCitaAlAtender"] = codigo;
+
+
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
@@ -270,10 +274,11 @@ namespace HC_Odontologicas.Controllers
 				return Redirect("../Identity/Account/Login");
 			}
 		}
-
+		
 		// GET: Anamnesis/Edit/5
 		public async Task<IActionResult> Edit(string codigo)
-		{
+		{			
+
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{

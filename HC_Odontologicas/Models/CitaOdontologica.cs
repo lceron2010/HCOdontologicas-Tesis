@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HC_Odontologicas.Models
 {
@@ -25,8 +27,9 @@ namespace HC_Odontologicas.Models
 		public TimeSpan HoraInicio { get; set; }
 		public TimeSpan HoraFin { get; set; }
 		public string UsuarioCreacion { get; set; }
+       
 
-		public virtual Paciente Paciente { get; set; }
+        public virtual Paciente Paciente { get; set; }
         public virtual Personal Personal { get; set; }
         public virtual ICollection<Anamnesis> Anamnesis { get; set; }
         public virtual ICollection<ConsentimientoInformado> ConsentimientoInformado { get; set; }

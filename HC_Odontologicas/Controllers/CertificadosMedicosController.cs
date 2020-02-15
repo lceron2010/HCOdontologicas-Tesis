@@ -98,28 +98,96 @@ namespace HC_Odontologicas.Controllers
         [HttpGet]
         public IActionResult DemoViewAsPdf()
         {
-            return new ViewAsPdf("DemoViewAsPdf");
+            return new ViewAsPdf("Details");
         }
 
 
-        // GET: CertificadosMedicos/Details/5
+        //GET: CertificadosMedicos/Details/5
         public async Task<IActionResult> Details(string codigo)
         {
+
+            codigo = "00000016";
+
             if (codigo == null)
             {
                 return NotFound();
-            }
+            }                     
 
-            var codigoN = Convert.ToInt32(Encriptacion.Decrypt(codigo));
+            var citaOdontologica = await _context.CitaOdontologica.Include(p =>p.Paciente).Include(p=>p.Personal)
+                .FirstOrDefaultAsync(m => m.Codigo == codigo);
 
-            var plantillaCertificadoMedico = await _context.PlantillaCertificadoMedico
-                .FirstOrDefaultAsync(m => m.Codigo == codigoN);
-            if (plantillaCertificadoMedico == null)
+
+            List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", citaOdontologica.CodigoPersonal).ToList();
+            List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", citaOdontologica.CodigoPaciente).ToList();
+            
+
+            ViewData["CodigoPersonal"] = Personal;
+            ViewData["CodigoPaciente"] = Paciente;
+            ViewData["CedulaPaciente"] = citaOdontologica.Paciente.Identificacion;
+            
+            var diagnostico = await _context.Diagnostico.Where(d => d.CodigoCitaOdontologica == codigo)
+                .Include(d =>d.DiagnosticoCie10)
+                .ThenInclude(dc => dc.Cie10)
+                .SingleOrDefaultAsync();
+
+
+            List<SelectListItem> Cie10 = new SelectList(_context.Cie10.OrderBy(c => c.Nombre), "Codigo", "Nombre", diagnostico.DiagnosticoCie10[0].Cie10.Nombre).ToList();
+            ViewData["Cie10"] = Cie10;
+            ViewData["CodigoCie10"] = diagnostico.DiagnosticoCie10[0].Cie10.CodigoInterno;
+            ViewData["Pieza"] = diagnostico.Pieza;
+            ViewData["NombreDoctor"] = citaOdontologica.Personal.NombreCompleto;
+            ViewData["CorreoDoctor"] = citaOdontologica.Personal.CorreoElectronico;
+
+            var plantillaCertificadoMedico = await _context.PlantillaCertificadoMedico.Where(c => c.Nombre == "Reposo-Recomendación").SingleOrDefaultAsync();
+
+            var contenido = plantillaCertificadoMedico.Descripcion;
+
+            if (citaOdontologica == null)
             {
                 return NotFound();
             }
 
-            return View(plantillaCertificadoMedico);
+            //return View(plantillaCertificadoMedico);
+
+            CertificadoMedicoImprimir cmi = new CertificadoMedicoImprimir();
+            
+            cmi.Fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+            cmi.NombrePaciente = citaOdontologica.Paciente.NombreCompleto;
+            cmi.CedulaPaciente = citaOdontologica.Paciente.Identificacion;
+            cmi.CIE10Nombre = diagnostico.DiagnosticoCie10[0].Cie10.Nombre;
+            cmi.CIE10Codigo = diagnostico.DiagnosticoCie10[0].Cie10.CodigoInterno;
+            cmi.Pieza = diagnostico.Pieza.ToString();
+            cmi.Observacion = diagnostico.Observacion;
+            cmi.Recomendacion = diagnostico.Recomendacion;
+            //var onservacionDiagnostico = diagnostico.Observacion;
+
+
+            //Certifico que[@Paciente] con N[@Cedula] 
+            // presenta[@EnfermedadNombre] CIE10[@EnfermedadCodigo] en el la pieza bucal 
+            //# [@NumeroPieza] Por lo cual equiere reposo de  [@tiempoReposo] del dia [@FechaEnNombre], 
+            //ademas se le recomendó [@Recomendacion]. Es todo cuanto puedo certificar en honor a la verdad 
+            //y el interesado puede hacer uso del presente. 
+            //Saludo Cordial, [@NombreMedico] Odontólogo Institucional de la Escuela Politécnica Nacional.
+            //[@DoctorCorreo]
+            var contenidoRemplazado = contenido.Replace("\r\n", "<br />")
+                .Replace("\r\n\r\n\r\n\r\n", "<br /><br /><br /><br />").
+                Replace("\r\n\r\n\r\n", "<br /><br /><br />");
+            var final= contenidoRemplazado.Replace("[@Fecha]",cmi.Fecha.ToString("dd/MM/yyyy"))
+                .Replace("[@Paciente]",cmi.NombrePaciente)
+                .Replace("[@Cedula]",cmi.CedulaPaciente)
+                .Replace("[@EnfermedadNombre]",cmi.CIE10Nombre)
+                .Replace("[@EnfermedadCodigo]",cmi.CIE10Codigo)
+                .Replace("[@NumeroPieza]", cmi.Pieza)
+                .Replace("[@Observacion]", cmi.Observacion)
+                .Replace("[@Recomendacion]", cmi.Recomendacion)
+                .Replace("[@NombreMedico]", cmi.NombreMedico)
+                .Replace("[@DoctorCorreo]",cmi.CorreoMedico);
+
+            cmi.CuerpoCertificado = final.ToString();
+
+            ViewData["Contenido"] = final;
+
+            return View(cmi);
         }
 
         // GET: CertificadosMedicos/Create

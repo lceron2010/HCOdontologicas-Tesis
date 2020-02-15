@@ -351,6 +351,10 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(512)
 					.IsUnicode(false);
 
+				entity.Property(e => e.Recomendacion)
+					.HasMaxLength(512)
+					.IsUnicode(false);
+
 				entity.HasOne(d => d.CitaOdontologica)
 					.WithMany(p => p.Diagnostico)
 					.HasForeignKey(d => d.CodigoCitaOdontologica)

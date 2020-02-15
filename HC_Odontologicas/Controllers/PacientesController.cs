@@ -521,7 +521,7 @@ namespace HC_Odontologicas.Controllers
 						pc.Telefono = workSheet.Cells[i, 9].Value.ToString();
 						pc.Celular = workSheet.Cells[i, 10].Value.ToString();
 						pc.MailPersonal = workSheet.Cells[i, 11].Value.ToString();
-						pc.MailEpn = workSheet.Cells[i, 12].Value.ToString();
+						pc.MailEpn = workSheet.Cells[i, 14].Value.ToString();
 						pc.EstadoCivil = null;
 						pc.DependenciaDondeTrabaja = null;
 						pc.Cargo = null;
@@ -529,7 +529,7 @@ namespace HC_Odontologicas.Controllers
 						pc.TipoPaciente = null;
 						pc.Estado = true;
 						pc.CodigoTipoIdentificacion = null;
-						pc.CodigoFacultad = buscarFacultad(workSheet.Cells[i, 13].Value.ToString());
+						pc.CodigoFacultad = null; buscarFacultad(workSheet.Cells[i, 13].Value.ToString());
 						pc.CodigoCarrera = null;//buscarCarrrera(pc.CodigoFacultad, workSheet.Cells[i, 11].Value.ToString());
 						_context.Add(pc);
 						//_auditoria.GuardarLogAuditoria(fechaPacienteGuardado, j.Name, "Paciente", pc.Codigo, "I");

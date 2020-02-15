@@ -8,20 +8,20 @@
 <h1>Plantillas Certificados Médicos</h1>
 
 <br />
-@*@if ((bool)ViewData["Crear"])
+@if ((bool)ViewData["Crear"])
 {
     <a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> Nuevo</a>
 }
 @if ((bool)ViewData["Exportar"])
 {
     <a asp-action="DemoViewAsPdfTest" class="btn btn-primary"><i class="fa fa-download"></i> pdf prueba 2</a>
-}*@
+}
 
 <a asp-action="DemoViewAsPdfTest" class="btn btn-primary"><i class="fa fa-download"></i> pdf prueba 2</a>
 <br />
 <br />
-@* Buscar *@
-@*<form asp-action="Index" method="get">
+ Buscar 
+<form asp-action="Index" method="get">
     <div class="input-group col-lg-3 col-md-4 col-sm-6 col-xs-10 pull-right">
         <input class="form-control" type="search" name="search" placeholder="Buscar..." value="@ViewData["Filter"]" />
         <div class="input-group-btn">
@@ -30,7 +30,7 @@
         </div>
     </div>
 </form>
-<br />*@
+<br />
 
 <table class="table">
     <thead>
@@ -42,18 +42,9 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
-        <tr>
+    <tbody>     
 
-            <td>
-               hola
-            </td>
-            <td>
-               chao
-            </td>
-        </tr>
-
-        @*@foreach (var item in Model)
+        @foreach (var item in Model)
         {
             <tr>
 
@@ -66,12 +57,12 @@
                     <a asp-action="DemoViewAsPdf" asp-route-Codigo="@item.Codigo" class="btn btn-primary"><i class="fa fa-download"></i> pdf</a>
                 </td>
             </tr>
-        }*@
+        }
     </tbody>
 </table>
 <br />
-@* Paginación *@
-@*@{
+ Paginación 
+@{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
@@ -92,4 +83,4 @@
 
 <div class="pull-right">
     Registros: @Model.TotalR
-</div>*@
+</div>

@@ -217,9 +217,11 @@ document.addEventListener("click", function (e) {
 	//obtiendo informacion del DOM para  
 	var clic = e.target;
 	//console.log('clic diferente del div:', clic);
-	if (div.style.display === "block" && clic !== div) {
-		div.style.display = "none";
-		$("#idPiezaClick").val("");
+	if (div !== null) {
+		if (div.style.display === "block" && clic !== div) {
+			div.style.display = "none";
+			$("#idPiezaClick").val("");
+		}
 	}
 }, false);
 
@@ -641,6 +643,9 @@ function cargarDatosTablaImportar() {
 				processing: true, // for show progress bar  
 				serverSide: false, // for process server side  
 				filter: false, // this is for disable filter (search box) 
+				paging: false,
+				ordering: false,
+				pagingType: false,
 				columns: [
 					{ "data": "Nro", "name": "Nro", "autoWidth": true },
 					{ "data": "Código", "name": "Código", "autoWidth": true },
