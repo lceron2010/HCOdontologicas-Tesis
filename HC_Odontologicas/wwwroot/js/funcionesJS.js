@@ -142,6 +142,33 @@ function cargarDatosCarrera(Facultad) {
 }
 
 
+
+
+
+//$(document).ready(function () {
+
+
+
+
+//	$('.collapse-link').on('click', function (e) {
+//		e.preventDefault();
+//		var ibox = $(this).closest('div.ibox');
+//		var button = $(this).find('i');
+//		var content = ibox.children('.ibox-content');
+//		content.slideToggle(200);
+//		button.toggleClass('fa-chevron-up').toggleClass('fa-chevron-down');
+//		ibox.toggleClass('').toggleClass('border-bottom');
+//		setTimeout(function () {
+//			ibox.resize();
+//			ibox.find('[id^=map-]').resize();
+//		}, 50);
+//	});
+
+
+
+//});
+
+
 //odontograma
 
 //mostrar y ocultar la lista de opciones
@@ -744,6 +771,41 @@ function limpiarDatos() {
 	$("#tablaImportarImpuestos > tbody").empty();
 	$("#Documento").val("");
 	$('.custom-file-label').removeClass("selected").html("");
+
+}
+
+function mostrarCamposSegunSeleccionado(response) {
+	var sure = $(response).find("option:selected").val();
+	//var sure = $('#tipoPaciente')[0].selectedOptions[0].value;
+	console.log(sure);
+	if (sure === "0") {
+		$('#datosLaborales').hide();
+		$('#datosEstudiantiles').hide();
+	}
+	if (sure === "E") {
+		$('#datosLaborales').hide();
+		$('#datosEstudiantiles').show();
+	}
+	if (sure === "EB") {
+		$('#datosLaborales').hide();
+		$('#datosEstudiantiles').show();
+	}
+	if (sure === "EC") {
+		$('#datosLaborales').hide();
+		$('#datosEstudiantiles').show();
+	}
+	if (sure === "EN") {
+		$('#datosLaborales').hide();
+		$('#datosEstudiantiles').show();
+	}
+	if (sure === "D") {
+		$('#datosLaborales').show();
+		$('#datosEstudiantiles').hide();
+	}
+	if (sure === "PA") {
+		$('#datosLaborales').show();
+		$('#datosEstudiantiles').hide();
+	}
 
 }
 

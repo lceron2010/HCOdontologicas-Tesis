@@ -5,7 +5,7 @@
 	ViewData["Title"] = "Index";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h1>Pacientes</h1>
+<h3>Pacientes</h3>
 <br />
 @if ((bool)ViewData["Crear"])
 {
@@ -21,7 +21,7 @@
 
 @*importar datos desde el modal*@
 
-<a data-toggle="modal" class="btn btn-primary" href="#modalImportarDatos">Importar</a>
+<a data-toggle="modal" class="btn btn-primary" href="#modalImportarDatos"><i class="fa fa-download"></i> Importar</a>
 <br />
 <br />
 @* Buscar *@
@@ -68,8 +68,8 @@
 					@Html.DisplayFor(modelItem => item.MailEpn)
 				</td>
 				<td>
-					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-outline-warning" data-toggle="tooltip" title="Editar">Editar</a>
-					<a onclick="eliminar('@item.Codigo','../Pacientes/DeleteConfirmed','/../Pacientes')" class="btn btn-outline-danger" data-toggle="tooltip" title="Eliminar">Eliminar</a>
+					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-outline-warning" data-toggle="tooltip" title="Editar"><i class="fa fa-edit"></i> Editar</a>
+					<a onclick="eliminar('@item.Codigo','../Pacientes/DeleteConfirmed','/../Pacientes')" class="btn btn-outline-danger" data-toggle="tooltip" title="Eliminar"><i class="fa fa-trash"></i> Eliminar</a>
 
 				</td>
 			</tr>

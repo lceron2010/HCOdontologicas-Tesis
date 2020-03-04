@@ -101,7 +101,7 @@ namespace HC_Odontologicas.Controllers
 				{
 
 					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
-					TipoIdentificacion.Insert(0, vacio);
+					//TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 
 					List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
@@ -144,7 +144,7 @@ namespace HC_Odontologicas.Controllers
 						await _context.SaveChangesAsync();
 						await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Paciente", paciente.Codigo, "I");
 
-						TipoIdentificacion.Insert(0, vacio);
+						//TipoIdentificacion.Insert(0, vacio);
 						ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 
 						Facultad.Insert(0, vacio);
@@ -166,7 +166,7 @@ namespace HC_Odontologicas.Controllers
 					if (e.InnerException != null)
 						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
 
-					TipoIdentificacion.Insert(0, vacio);
+					//TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 
 					Facultad.Insert(0, vacio);
@@ -206,7 +206,7 @@ namespace HC_Odontologicas.Controllers
 
 
 					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(t => t.Nombre), "Codigo", "Nombre", paciente.CodigoTipoIdentificacion).ToList();
-					TipoIdentificacion.Insert(0, vacio);
+					//TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 
 					List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre), "Codigo", "Nombre", paciente.CodigoFacultad).ToList();
@@ -253,7 +253,7 @@ namespace HC_Odontologicas.Controllers
 							await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Paciente", paciente.Codigo, "U");
 							ViewBag.Message = "Save";
 
-							TipoIdentificacion.Insert(0, vacio);
+							//TipoIdentificacion.Insert(0, vacio);
 							ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 
 							Facultad.Insert(0, vacio);
@@ -270,7 +270,7 @@ namespace HC_Odontologicas.Controllers
 						}
 					}
 
-					TipoIdentificacion.Insert(0, vacio);
+					//TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 
 					Facultad.Insert(0, vacio);
@@ -289,7 +289,7 @@ namespace HC_Odontologicas.Controllers
 
 					ViewBag.Message = mensaje;
 
-					TipoIdentificacion.Insert(0, vacio);
+					//TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 
 					Facultad.Insert(0, vacio);

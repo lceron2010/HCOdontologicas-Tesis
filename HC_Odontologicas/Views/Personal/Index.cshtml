@@ -14,7 +14,7 @@
 }
 @if ((bool)ViewData["Exportar"])
 {
-	<a asp-action="GetExcel" class="btn btn-primary"><i class="fa fa-download"></i> Exportar</a>
+	<a asp-action="GetExcel" class="btn btn-primary"><i class="fa fa-upload"></i> Exportar</a>
 }
 <br />
 <br />
@@ -75,8 +75,8 @@
 				@Html.DisplayFor(modelItem => item.Estado)
 			</td>
 			<td>
-				<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white" data-toggle="tooltip" title="Editar">Editar</a>
-				<a onclick="eliminar('@item.Codigo','../Personal/DeleteConfirmed','/../Personal')" class="btn btn-white" data-toggle="tooltip" title="Eliminar">Eliminar</a>
+				<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white" data-toggle="tooltip" title="Editar"><i class="fa fa-edit"></i> Editar</a>
+				<a onclick="eliminar('@item.Codigo','../Personal/DeleteConfirmed','/../Personal')" class="btn btn-white" data-toggle="tooltip" title="Eliminar"><i class="fa fa-trash"></i> Eliminar</a>
 
 			</td>
 		</tr>

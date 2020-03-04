@@ -220,7 +220,7 @@ namespace HC_Odontologicas.Controllers
 						anm.AntecedentesFamiliares = anamnesis.AntecedentesFamiliares;
 						anm.Fuma = anamnesis.Fuma;
 						anm.Embarazada = anamnesis.Embarazada;
-						anm.GrupoSanguineo = anamnesis.GrupoSanguineo;
+						anm.UltimaVisitaOdontologo = anamnesis.UltimaVisitaOdontologo;
 						anm.Endocrino = anamnesis.Endocrino;
 						anm.Traumatologico = anamnesis.Traumatologico;
 						anm.Fecha = fecha;
@@ -383,7 +383,7 @@ namespace HC_Odontologicas.Controllers
 							anamnesisAntiguo.AntecedentesFamiliares = anamnesis.AntecedentesFamiliares;
 							anamnesisAntiguo.Fuma = anamnesis.Fuma;
 							anamnesisAntiguo.Embarazada = anamnesis.Embarazada;
-							anamnesisAntiguo.GrupoSanguineo = anamnesis.GrupoSanguineo;
+							anamnesisAntiguo.UltimaVisitaOdontologo = anamnesis.UltimaVisitaOdontologo;
 							anamnesisAntiguo.Endocrino = anamnesis.Endocrino;
 							anamnesisAntiguo.Traumatologico = anamnesis.Traumatologico;
 							anamnesisAntiguo.Fecha = fecha;

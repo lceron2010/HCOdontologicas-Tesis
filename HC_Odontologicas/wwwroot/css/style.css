@@ -1824,7 +1824,7 @@ input[type=checkbox], input[type=color], input[type=date], input[type=datetime-l
 .btn-white {
 	color: inherit;
 	background: white;
-	border: 1px solid #e7eaec;
+	border: 1px solid #f44336;
 }
 
 	.btn-white:hover,
@@ -9458,3 +9458,83 @@ table.dataTable tfoot th, table.dataTable tfoot td {
 table.dataTable.display tbody tr:first-child td {
 	border-top: 1px solid #eeeeee;
 }
+
+/*otros estilos*/
+
+
+.left {
+	float: left;
+	
+}
+
+.right {
+	float: right;
+	
+}
+
+.ibox {
+	clear: both;
+	margin-bottom: 25px;
+	margin-top: 0;
+	padding: 0;
+}
+
+.ibox-title {
+	background-color: #fff;
+	border-color: #e7eaec;
+	border-image: none;
+	border-style: solid solid none;
+	border-width: 1px;
+	color: inherit;
+	margin-bottom: 0;
+	padding: 15px 90px 8px 15px;
+	min-height: 48px;
+	position: relative;
+	clear: both;
+	-webkit-border-radius: 3px 3px 0 0;
+	-moz-border-radius: 3px 3px 0 0;
+	border-radius: 2px 2px 0 0;
+}
+
+
+.ibox-tools {
+	display: block;
+	float: none;
+	margin-top: 0;
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	padding: 0;
+	text-align: right;
+}
+
+
+.ibox-title h5 {
+	display: inline-block;
+	font-size: 14px;
+	margin: 0 0 7px;
+	padding: 0;
+	text-overflow: ellipsis;
+	float: none;
+}
+
+.ibox-tools a {
+	cursor: pointer;
+	margin-left: 5px;
+	color: #c4c4c4 !important;
+}
+
+
+.border-bottom {
+	border-bottom: 1px solid #e7eaec !important;
+}
+
+
+
+
+
+
+
+
+
+

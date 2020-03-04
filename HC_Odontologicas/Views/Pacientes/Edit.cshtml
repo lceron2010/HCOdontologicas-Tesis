@@ -181,10 +181,10 @@
 				</div>
 				<div class="row">
 					<div class="col-lg-12">
-						<div class="form-group">
+						<div>
 							<b> Activo </b>
 							<label>
-								<input type="checkbox" asp-for="Estado" data-toggle="toggle" data-on="Si" data-off="No" data-size="mini" data-onstyle="success" checked />
+								<input type="checkbox" asp-for="Estado" class="i-checks" checked />
 							</label>
 						</div>
 					</div>
@@ -201,6 +201,14 @@
 		</form>
 	</div>
 </div>
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('.i-checks').iCheck({
+			checkboxClass: 'icheckbox_square-blue',
+			radioClass: 'iradio_square-blue',
+		});
+	});
+</script>
 
 @if (ViewBag.Message != null)
 {

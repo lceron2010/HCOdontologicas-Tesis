@@ -100,9 +100,7 @@ namespace HC_Odontologicas.Models
 
 				entity.Property(e => e.Fecha).HasColumnType("datetime");
 
-				entity.Property(e => e.GrupoSanguineo)
-					.HasMaxLength(128)
-					.IsUnicode(false);
+				entity.Property(e => e.UltimaVisitaOdontologo).HasColumnType("datetime");
 
 				entity.Property(e => e.Habitos)
 					.HasMaxLength(512)
