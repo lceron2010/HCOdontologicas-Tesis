@@ -112,6 +112,11 @@ namespace HC_Odontologicas.Controllers
 					Anamnesis anamnesis = new Anamnesis();
 					anamnesis.AnamnesisEnfermedad = ae;
 
+					List<SelectListItem> Enfermedades = null;
+					Enfermedades = new SelectList(_context.Enfermedad.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
+
+					ViewData["AnamnesisEnfermedad"] = Enfermedades;
+
 					//llenar combos de paciente y doctor select * from citaodontologica where HoraInicio >= '9:00' and HoraFin <= '10:30'
 
 					//TimeSpan intInicial = new TimeSpan(fecha.Hour, fecha.Minute, 00);
@@ -161,7 +166,7 @@ namespace HC_Odontologicas.Controllers
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
-		public async Task<IActionResult> Create(Anamnesis anamnesis)
+		public async Task<IActionResult> Create(Anamnesis anamnesis, List<string> enfermedades)
 		{
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
@@ -229,20 +234,31 @@ namespace HC_Odontologicas.Controllers
 
 						//guardar AnamenesisEnefermedad
 						Int64 maxCodigoAe = 0;
-						maxCodigoAe = Convert.ToInt64(_context.AnamnesisEnfermedad.Max(f => f.Codigo));						
-						foreach (var enf in anamnesis.AnamnesisEnfermedad)
-						{
-							if (enf.Seleccionado)
-							{
+						maxCodigoAe = Convert.ToInt64(_context.AnamnesisEnfermedad.Max(f => f.Codigo));
+
+						foreach (var enf in enfermedades)
+						{							
 								AnamnesisEnfermedad anamnesisEnfermedad = new AnamnesisEnfermedad();
 								maxCodigoAe += 1;
-								anamnesisEnfermedad.Codigo = maxCodigoAe.ToString("D8");
-								//anamnesisEnfermedad.CodigoAnamnesis = anamnesis.Codigo;
+								anamnesisEnfermedad.Codigo = maxCodigoAe.ToString("D8");								
 								anamnesisEnfermedad.CodigoAnamnesis = anm.Codigo;
-								anamnesisEnfermedad.CodigoEnfermedad = enf.Enfermedad.Codigo;
-								_context.AnamnesisEnfermedad.Add(anamnesisEnfermedad);
-							}
+								anamnesisEnfermedad.CodigoEnfermedad = enf;
+								_context.AnamnesisEnfermedad.Add(anamnesisEnfermedad);							
 						}
+
+						//foreach (var enf in anamnesis.AnamnesisEnfermedad)
+						//{
+						//	if (enf.Seleccionado)
+						//	{
+						//		AnamnesisEnfermedad anamnesisEnfermedad = new AnamnesisEnfermedad();
+						//		maxCodigoAe += 1;
+						//		anamnesisEnfermedad.Codigo = maxCodigoAe.ToString("D8");
+						//		//anamnesisEnfermedad.CodigoAnamnesis = anamnesis.Codigo;
+						//		anamnesisEnfermedad.CodigoAnamnesis = anm.Codigo;
+						//		anamnesisEnfermedad.CodigoEnfermedad = enf.Enfermedad.Codigo;
+						//		_context.AnamnesisEnfermedad.Add(anamnesisEnfermedad);
+						//	}
+						//}
 
 						await _context.SaveChangesAsync();
 						transaction.Commit();
@@ -300,8 +316,8 @@ namespace HC_Odontologicas.Controllers
 						return NotFound();
 
 					//lista de enfermedades
-					var listaImpuestos = _context.Enfermedad.OrderBy(f => f.Nombre).ToList();
-					listaImpuestos = listaImpuestos.FindAll(f => f.Estado == true);
+					var listaEnfermedades = _context.Enfermedad.OrderBy(f => f.Nombre).ToList();
+					listaEnfermedades = listaEnfermedades.FindAll(f => f.Estado == true);
 
 					List<AnamnesisEnfermedad> tci = new List<AnamnesisEnfermedad>();
 					tci = anamnesis.AnamnesisEnfermedad;
@@ -311,12 +327,16 @@ namespace HC_Odontologicas.Controllers
 					}
 					//enfermedades que estan en anamnesisenfermedad
 					List<Enfermedad> listaImpuestosTCI = new List<Enfermedad>();
+					List<string> listaE = new List<string>();
+					string listaEE = "";
 					foreach (var item in tci)
 					{
 						listaImpuestosTCI.Add(item.Enfermedad);
+						listaE.Add(item.Codigo);
+						listaEE = listaEE  + item.Codigo + ",";
 					}
 					//enfermedad que faltan en anamnesisEnfermedad
-					var listaImpuestosAgregar = (from t in listaImpuestos where !listaImpuestosTCI.Any(x => x.Codigo == t.Codigo) select t).ToList();
+					var listaImpuestosAgregar = (from t in listaEnfermedades where !listaImpuestosTCI.Any(x => x.Codigo == t.Codigo) select t).ToList();
 
 					//agregar a la lista de anamnesisEnfermedad
 					foreach (var l in listaImpuestosAgregar)
@@ -328,7 +348,20 @@ namespace HC_Odontologicas.Controllers
 					}
 
 					anamnesis.AnamnesisEnfermedad.OrderBy(p => p.Enfermedad.Nombre);
-					
+
+					ViewData["AnamnesisEnfermedadSeleccionadas"] = listaEE;//listaE.ToString();
+
+					List <SelectListItem> Enfermedades = null;
+					Enfermedades = new SelectList(_context.Enfermedad.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
+					//SelectListItem test = new SelectListItem(value: "9", text: "test", selected: true );
+					//Enfermedades.Insert(8, test);
+
+					ViewData["AnamnesisEnfermedad"] = Enfermedades;
+
+
+					//ViewData["AnamnesisEnfermedad"] = anamnesis.AnamnesisEnfermedad;
+
+
 					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", anamnesis.CitaOdontologica.Personal.Codigo).ToList();
 					Personal.Insert(0, vacio);
 					ViewData["CodigoPersonal"] = Personal;
@@ -352,7 +385,7 @@ namespace HC_Odontologicas.Controllers
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
-		public async Task<IActionResult> Edit(Anamnesis anamnesis)
+		public async Task<IActionResult> Edit(Anamnesis anamnesis, List<string> enfermedades)
 		{
 			var i = (ClaimsIdentity)User.Identity;				
 			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", anamnesis.CodigoPersonal).ToList();
@@ -396,19 +429,30 @@ namespace HC_Odontologicas.Controllers
 							//guardar AnamenesisEnefermedad
 							Int64 maxCodigoAe = 0;
 							maxCodigoAe = Convert.ToInt64(_context.AnamnesisEnfermedad.Max(f => f.Codigo));
-							foreach (var enf in anamnesis.AnamnesisEnfermedad)
+
+							foreach (var enf in enfermedades)
 							{
-								if (enf.Seleccionado)
-								{
-									AnamnesisEnfermedad anamnesisEnfermedad = new AnamnesisEnfermedad();
-									maxCodigoAe += 1;
-									anamnesisEnfermedad.Codigo = maxCodigoAe.ToString("D8");
-									//anamnesisEnfermedad.CodigoAnamnesis = null;
-									anamnesisEnfermedad.CodigoAnamnesis = anamnesis.Codigo;
-									anamnesisEnfermedad.CodigoEnfermedad = enf.Enfermedad.Codigo;
-									_context.AnamnesisEnfermedad.Add(anamnesisEnfermedad);
-								}
+								AnamnesisEnfermedad anamnesisEnfermedad = new AnamnesisEnfermedad();
+								maxCodigoAe += 1;
+								anamnesisEnfermedad.Codigo = maxCodigoAe.ToString("D8");
+								anamnesisEnfermedad.CodigoAnamnesis = anamnesis.Codigo;
+								anamnesisEnfermedad.CodigoEnfermedad = enf;
+								_context.AnamnesisEnfermedad.Add(anamnesisEnfermedad);
 							}
+
+							//foreach (var enf in anamnesis.AnamnesisEnfermedad)
+							//{
+							//	if (enf.Seleccionado)
+							//	{
+							//		AnamnesisEnfermedad anamnesisEnfermedad = new AnamnesisEnfermedad();
+							//		maxCodigoAe += 1;
+							//		anamnesisEnfermedad.Codigo = maxCodigoAe.ToString("D8");
+							//		//anamnesisEnfermedad.CodigoAnamnesis = null;
+							//		anamnesisEnfermedad.CodigoAnamnesis = anamnesis.Codigo;
+							//		anamnesisEnfermedad.CodigoEnfermedad = enf.Enfermedad.Codigo;
+							//		_context.AnamnesisEnfermedad.Add(anamnesisEnfermedad);
+							//	}
+							//}
 
 							_context.Update(anamnesisAntiguo);
 							_context.SaveChanges();

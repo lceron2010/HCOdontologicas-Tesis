@@ -26,4 +26,9 @@
     <Folder Include="Context\" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <None Include="wwwroot\lib\bootstrap-datepicker\.github\ISSUE_TEMPLATE.md" />
+  </ItemGroup>
+
 </Project>

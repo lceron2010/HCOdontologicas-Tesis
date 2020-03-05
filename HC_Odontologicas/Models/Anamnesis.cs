@@ -25,7 +25,7 @@ namespace HC_Odontologicas.Models
         public string AntecedentesFamiliares { get; set; }
         public bool Fuma { get; set; }
         public bool Embarazada { get; set; }
-        public DateTime UltimaVisitaOdontologo { get; set; }
+        public DateTime? UltimaVisitaOdontologo { get; set; }
         public string Endocrino { get; set; }
         public string Traumatologico { get; set; }
         public DateTime Fecha { get; set; }
