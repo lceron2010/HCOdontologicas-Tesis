@@ -33,7 +33,8 @@
 					</div>
 				</div>
 			</fieldset>
-			<div style="position: relative;">
+			<div class="row">
+				<div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
 				<svg xmlns:dc="http://purl.org/dc/elements/1.1/"
 					 xmlns:cc="http://creativecommons.org/ns#"
 					 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -2390,6 +2391,75 @@
 						</g>
 					</g>
 				</svg>
+				</div>
+				<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+					<ul>
+						<li class="has-sub">
+							<span class="span_menu" style="background:#ff0000;"></span>
+							<a>Caries</a>
+						</li>
+						<li class="has-sub">
+							<span class="span_menu" style="background:blue"></span>
+							<a> Resina</a>
+						</li>
+						<li class="has-sub">
+							<span class="span_menu" style="background:#000000"></span>
+							<a>Amalgama</a>
+						</li>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/sellante.png" />
+							<a id="Sellante" onclick="cambiarColor(this.id);">Sellante</a>
+						</li>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/sellanteIndicado.png" />
+							<a id="SellanteIndicado" onclick="cambiarColor(this.id);">Sellante Indicado</a>
+						</li>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/extraccionIndicada.png" />
+							<a id="ExtraccionIndicada" onclick="cambiarColor(this.id);">Extraccioón Indicada</a>
+						</li>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/conEndodoncia.png" />
+							<a id="ConEndodoncia" onclick="cambiarColor(this.id);">Con Endodoncia</a>
+						</li>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/protesis.png" />
+							<a id="Protesis" onclick="cambiarColor(this.id);">Prótesis</a>
+						</li>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/necrosisPulpar.png" />
+							<a id="NecrosisPulpar" onclick="cambiarColor(this.id);">Necrosis Pulpar</a>
+						</li>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/protesisIndicada.png" />
+							<a id="ProtesisIndicada" onclick="cambiarColor(this.id);">Prótesis Indicada</a>
+						</li>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/clinicamenteAusenteV2.png">
+							<a id="ClinicamenteAusente" onclick="cambiarColor(this.id);">Clinicamente Ausente</a>
+						</li>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/coronaDesadaptada.png" />
+							<a id="CoronaDesadaptada" onclick="cambiarColor(this.id);">Corona Desadaptada</a>
+						</li>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/recesionGingival.png" />
+							<a id="RecesionGingival" onclick="cambiarColor(this.id);">Recesión Gingival</a>
+						</li>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/sano.png" />
+							<a id="Sano" onclick="cambiarColor(this.id);">Sano</a>
+						</li>
+						<li class="has-sub">
+							<img class="span_menu" src="~/imgen/coronaAdaptada.png" />
+							<a id="CoronaAdaptada" onclick="cambiarColor(this.id);">Corona Adaptada</a>
+						</li>
+						<li class="has-sub">
+							<img class="span_menu" style="background:#ffffff" />
+							<a id="Limpio" onclick="cambiarColor(this.id);">Limpio</a>
+						</li>
+					</ul>
+				</div>
 				<input style="display:none" id="idPiezaClick" />
 				<div id="menu" style="display:none">
 					<ul>
@@ -2508,7 +2578,7 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="form-group">
-						<a class="btn btn-white" onclick="regresar('../Odontogramas/Index','');">Regresar</a>
+						<a class="btn btn-white" style="border: 1px solid #007bff;"  onclick="regresar('../Odontogramas/Index','');">Regresar</a>
 						<button type="button" class="btn btn-primary" onclick="GuardarDatosOdontograma('editar');"><i class="fa fa-save"></i> Guardar</button>
 					</div>
 				</div>

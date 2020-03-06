@@ -142,33 +142,6 @@ function cargarDatosCarrera(Facultad) {
 }
 
 
-
-
-
-//$(document).ready(function () {
-
-
-
-
-//	$('.collapse-link').on('click', function (e) {
-//		e.preventDefault();
-//		var ibox = $(this).closest('div.ibox');
-//		var button = $(this).find('i');
-//		var content = ibox.children('.ibox-content');
-//		content.slideToggle(200);
-//		button.toggleClass('fa-chevron-up').toggleClass('fa-chevron-down');
-//		ibox.toggleClass('').toggleClass('border-bottom');
-//		setTimeout(function () {
-//			ibox.resize();
-//			ibox.find('[id^=map-]').resize();
-//		}, 50);
-//	});
-
-
-
-//});
-
-
 //odontograma
 
 //mostrar y ocultar la lista de opciones
@@ -202,11 +175,9 @@ function showHide(e) {
 			medidasLeft1 = [leftGlobal - 7 * medida, leftGlobal - 6 * medida, leftGlobal - 5 * medida, leftGlobal - 4 * medida, leftGlobal - 3 * medida, leftGlobal - 2 * medida, leftGlobal - medida, leftGlobal];
 		}
 
-
 		//console.log(medidasLeft1);
 		left = medidasLeft1[parseInt(idGrupo.substring(2, 3)) - 1];
 		//console.log('ojooooooooo: ', left);
-
 		//console.log('estilo', div.style.display);
 		if (div.style.display === "none") {
 			//console.log('entro al if de display= none');
@@ -272,6 +243,7 @@ var enfermedadesOdontogramasSVG = [
 ];
 
 function cambiarColor(enfermedadOdon, idGrupoDato, region) {
+	//console.log("enfermedadOdont en cambiar color:", enfermedadOdon);
 	var idGrupo = "";
 	if (idGrupoDato === undefined) {
 		
@@ -303,12 +275,58 @@ function cambiarColor(enfermedadOdon, idGrupoDato, region) {
 	}
 	else if (enfermedadOdon.includes("Limpio")) {
 		console.log('limpio');
+		eliminarPath(idGrupo);
 	}
 	else {
 		idPath = enfermedadOdon + "-" + idGrupo.substring(1, 3);
 		console.log("nombe a poner:", idPath);
 		agregarPath(idPath, idGrupo, enfermedadOdon);
 	}
+}
+
+function eliminarPath(idGrupo) {
+	var contador = $('#svg742')[0].children[3];
+	for (var i = 0; i <= contador.childElementCount; i++) {
+		if ($('#svg742')[0].children[3].children[i] !== undefined) {
+			if ($('#svg742')[0].children[3].children[i].id.charAt(0) === "g") {
+				let grupo = $('#svg742')[0].children[3].children[i].id;
+				//console.log("grupo", grupo);
+				if (grupo === idGrupo ) {
+					console.log("ingreso al if idgrupo");
+					let contadorGrupo = $('#svg742')[0].children[3].children[i].childElementCount;
+					if (contadorGrupo === 6) {
+						for (var l = 1; l < contadorGrupo; l++) {
+							let id = $('#svg742')[0].children[3].children[i].children[l].id;
+							if (id.charAt(0) !== "T") {
+								let estilo = $('#svg742')[0].children[3].children[i].children[l].attributes.style.value;
+								let color = estilo.split(":");
+								if (color[1] !== "#ffffff") {
+									$("#" + id).attr("style", "fill:#ffffff");
+								}
+							}
+							
+
+						}
+					}
+					else if (contadorGrupo > 6) {
+						let elementosAEliminar = [];
+						for (var j = 6; j < contadorGrupo; j++) {
+							elementosAEliminar.push($('#svg742')[0].children[3].children[i].children[j]);
+						}
+						//console.log("elementos a eliminar");
+						//console.log(elementosAEliminar);
+						for (var k = 0; k < elementosAEliminar.length; k++) {
+							$('#svg742')[0].children[3].children[i].removeChild(elementosAEliminar[k]);
+						}
+					}				
+
+				}
+				
+			}
+
+		}
+	}
+
 }
 
 function agregarPath(idPath, idGrupo, enfermedad) {
@@ -334,7 +352,7 @@ function agregarPath(idPath, idGrupo, enfermedad) {
 
 	$('#svg742')[0].children[3].children[idGrupo].appendChild(path);
 
-	if (enfermedad.includes("Indicado") || enfermedad.includes("Indicada") || enfermedad.includes("Necrosis") || enfermedad.includes("Desadaptada")) {
+	if (enfermedad.includes("Indicado") || enfermedad.includes("Indicada") || enfermedad.includes("NecrosisPulpar") || enfermedad.includes("Desadaptada")) {
 		$("#" + idPath).attr("style", "fill:red");
 	}
 	else if (enfermedad.includes("Limpio")) {
@@ -395,6 +413,9 @@ function obtenerMedida(idGrupo, tipoMedida, enfermedad) {
 			else if (enfermedad.includes("ConEndodoncia")) {
 				medidaGeneral = parseFloat(medidaX) - 8;
 			}
+			else if (enfermedad.includes("NecrosisPulpar")) {
+				medidaGeneral = parseFloat(medidaX) - 8;
+			}
 			else if (enfermedad.includes("Corona")) {
 				medidaGeneral = parseFloat(medidaX) - 3;
 			}			
@@ -435,7 +456,7 @@ function obtenerMedida(idGrupo, tipoMedida, enfermedad) {
 
 	}
 	else if (parseInt(numero) <= 48) {
-		console.log("menor48");
+		//console.log("menor48");
 		if (tipoMedida === "x") {
 			if (enfermedad.includes("Sano")) {
 				medidaGeneral = parseFloat(medidaX) + 24;
