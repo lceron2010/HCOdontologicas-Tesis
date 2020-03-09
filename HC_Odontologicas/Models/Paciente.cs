@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HC_Odontologicas.Models
 {
@@ -47,5 +48,14 @@ namespace HC_Odontologicas.Models
 		public virtual Facultad Facultad { get; set; }		
         public virtual ICollection<CitaOdontologica> CitaOdontologica { get; set; }
 		public virtual TipoIdentificacion TipoIdentificacion { get; set; }
+
+		[NotMapped]
+		public string CedulaNombre
+		{
+			get
+			{
+				return Identificacion + "-" + NombreCompleto;
+			}
+		}
 	}
 }

@@ -93,19 +93,19 @@ namespace HC_Odontologicas.Controllers
 				if (Convert.ToBoolean(permisos[1]))
 				{
 					//lista de enfermedades
-					List<DiagnosticoCie10> diagnosticoC = new List<DiagnosticoCie10>();
-					var enfermedad = _context.Cie10.OrderBy(f => f.Nombre).Where(f => f.Nombre.StartsWith("C")).ToList(); //QUITAR LUEGO					
-					//agregar los cie10 a la lista de diagnosticoCIE10
-					foreach (Cie10 item in enfermedad)
-					{
-						DiagnosticoCie10 aenfermedad = new DiagnosticoCie10();
-						aenfermedad.Cie10 = item;
-						aenfermedad.Seleccionado = false;
-						diagnosticoC.Add(aenfermedad);
-					}
+					//List<DiagnosticoCie10> diagnosticoC = new List<DiagnosticoCie10>();
+					//var enfermedad = _context.Cie10.OrderBy(f => f.Nombre).Where(f => f.Nombre.StartsWith("C")).ToList(); //QUITAR LUEGO					
+																														  //agregar los cie10 a la lista de diagnosticoCIE10
+					//foreach (Cie10 item in enfermedad)
+					//{
+					//	DiagnosticoCie10 aenfermedad = new DiagnosticoCie10();
+					//	aenfermedad.Cie10 = item;
+					//	aenfermedad.Seleccionado = false;
+					//	diagnosticoC.Add(aenfermedad);
+					//}
 
 					Diagnostico diagnostico = new Diagnostico();
-					diagnostico.DiagnosticoCie10 = diagnosticoC;
+					//diagnostico.DiagnosticoCie10 = diagnosticoC;
 
 					//llenar combos de paciente y doctor select * from citaodontologica where HoraInicio >= '9:00' and HoraFin <= '10:30'
 
@@ -119,6 +119,11 @@ namespace HC_Odontologicas.Controllers
 					CitaOdontologica cita = ct.FirstOrDefault();
 					//CitaOdontologica cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal).SingleOrDefault();
 					//-- fin ver las condiciones
+
+					List<SelectListItem> Cie10 = new SelectList(_context.Cie10.OrderBy(f => f.CodigoInterno), "Codigo", "CodigoNombre").ToList();//.Where(f => f.Nombre.StartsWith("C")).ToList(); //QUITAR LUEGO					;
+					Cie10.Insert(0, vacio);
+					ViewData["CIE10"] = Cie10;
+
 					List<SelectListItem> Personal = null;
 					List<SelectListItem> Paciente = null;
 					if (cita == null)
@@ -170,6 +175,10 @@ namespace HC_Odontologicas.Controllers
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
+					List<SelectListItem> Cie10 = new SelectList(_context.Cie10.OrderBy(f => f.CodigoInterno), "Codigo", "CodigoNombre").ToList();//.Where(f => f.Nombre.StartsWith("C")).ToList(); //QUITAR LUEGO					;
+					Cie10.Insert(0, vacio);
+					ViewData["CIE10"] = Cie10;
+
 					if (ModelState.IsValid)
 					{
 
@@ -205,7 +214,7 @@ namespace HC_Odontologicas.Controllers
 
 
 						var transaction = _context.Database.BeginTransaction();
-						//guardar el tipoComprobante
+						//guardar el dignostico
 						Diagnostico diag = new Diagnostico();
 						Int64 maxCodigo = 0;
 						maxCodigo = Convert.ToInt64(_context.Diagnostico.Max(f => f.Codigo));
@@ -217,25 +226,36 @@ namespace HC_Odontologicas.Controllers
 						diag.Pieza = diagnostico.Pieza;
 						diag.Observacion = diagnostico.Observacion;
 						diag.Firma = diagnostico.Firma;
-						
+						diag.Recomendacion = diagnostico.Recomendacion;
+
 						_context.Diagnostico.Add(diag);
 
 						//guardar diagnosticoCie10
 						Int64 maxCodigoAe = 0;
 						maxCodigoAe = Convert.ToInt64(_context.DiagnosticoCie10.Max(f => f.Codigo));
-						foreach (var enf in diagnostico.DiagnosticoCie10)
-						{
-							if (enf.Seleccionado)
-							{
-								DiagnosticoCie10 diagnosticoCie10 = new DiagnosticoCie10();
-								maxCodigoAe += 1;
-								diagnosticoCie10.Codigo = maxCodigoAe.ToString("D8");
-								//diagnosticoCie10.CodigoDiagnostico = diagnostico.Codigo;
-								diagnosticoCie10.CodigoDiagnostico = diag.Codigo;
-								diagnosticoCie10.CodigoCie10 = enf.Cie10.Codigo;
-								_context.DiagnosticoCie10.Add(diagnosticoCie10);
-							}
-						}
+						maxCodigoAe += 1;
+						DiagnosticoCie10 diagnosticoCie10 = new DiagnosticoCie10();
+						diagnosticoCie10.Codigo = maxCodigoAe.ToString("D8");
+						diagnosticoCie10.CodigoDiagnostico = diag.Codigo;
+						diagnosticoCie10.CodigoCie10 = diagnostico.CodigoDiagnosticoCie10;
+						_context.DiagnosticoCie10.Add(diagnosticoCie10);
+
+
+						//Int64 maxCodigoAe = 0;
+						//maxCodigoAe = Convert.ToInt64(_context.DiagnosticoCie10.Max(f => f.Codigo));
+						//foreach (var enf in diagnostico.DiagnosticoCie10)
+						//{
+						//	if (enf.Seleccionado)
+						//	{
+						//		DiagnosticoCie10 diagnosticoCie10 = new DiagnosticoCie10();
+						//		maxCodigoAe += 1;
+						//		diagnosticoCie10.Codigo = maxCodigoAe.ToString("D8");
+						//		//diagnosticoCie10.CodigoDiagnostico = diagnostico.Codigo;
+						//		diagnosticoCie10.CodigoDiagnostico = diag.Codigo;
+						//		diagnosticoCie10.CodigoCie10 = enf.Cie10.Codigo;
+						//		_context.DiagnosticoCie10.Add(diagnosticoCie10);
+						//	}
+						//}
 
 						await _context.SaveChangesAsync();
 						transaction.Commit();
@@ -251,6 +271,10 @@ namespace HC_Odontologicas.Controllers
 					if (e.InnerException != null)
 						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
 
+					List<SelectListItem> Cie10 = new SelectList(_context.Cie10.OrderBy(f => f.CodigoInterno), "Codigo", "CodigoNombre").ToList();//.Where(f => f.Nombre.StartsWith("C")).ToList(); //QUITAR LUEGO					;
+					Cie10.Insert(0, vacio);
+					ViewData["CIE10"] = Cie10;
+
 					ViewBag.Message = mensaje;
 					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
 					Personal.Insert(0, vacio);
@@ -259,7 +283,10 @@ namespace HC_Odontologicas.Controllers
 					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
+
+
 					return View(diagnostico);
+
 				}
 			}
 			else
@@ -291,33 +318,39 @@ namespace HC_Odontologicas.Controllers
 						return NotFound();
 
 					//lista de cie10
-					var listaCie10 = _context.Cie10.OrderBy(f => f.Nombre).ToList();
-					
-					List<DiagnosticoCie10> tci = new List<DiagnosticoCie10>();
-					tci = diagnostico.DiagnosticoCie10;
-					for (int l = 0; l < tci.Count(); l++)
-					{
-						tci[l].Seleccionado = true;
-					}
-					//cie10 que estan en diagnosticoCie10
-					List<Cie10> listaImpuestosTCI = new List<Cie10>();
-					foreach (var item in tci)
-					{
-						listaImpuestosTCI.Add(item.Cie10);
-					}
-					//cie10 que faltan en diagnosticoCie10
-					var listaCie10Agregar = (from t in listaCie10 where !listaImpuestosTCI.Any(x => x.Codigo == t.Codigo) select t).ToList();
+					//var listaCie10 = _context.Cie10.OrderBy(f => f.Nombre).ToList();
 
-					//agregar a la lista de diagnosticoCie10
-					foreach (var l in listaCie10Agregar)
-					{
-						DiagnosticoCie10 ti = new DiagnosticoCie10();
-						ti.Cie10 = l;
-						ti.Seleccionado = false;
-						diagnostico.DiagnosticoCie10.Add(ti);
-					}
+					//List<DiagnosticoCie10> tci = new List<DiagnosticoCie10>();
+					//tci = diagnostico.DiagnosticoCie10;
+					//for (int l = 0; l < tci.Count(); l++)
+					//{
+					//	tci[l].Seleccionado = true;
+					//}
+					////cie10 que estan en diagnosticoCie10
+					//List<Cie10> listaImpuestosTCI = new List<Cie10>();
+					//foreach (var item in tci)
+					//{
+					//	listaImpuestosTCI.Add(item.Cie10);
+					//}
+					////cie10 que faltan en diagnosticoCie10
+					//var listaCie10Agregar = (from t in listaCie10 where !listaImpuestosTCI.Any(x => x.Codigo == t.Codigo) select t).ToList();
 
-					diagnostico.DiagnosticoCie10.OrderBy(p => p.Cie10.Nombre);
+					////agregar a la lista de diagnosticoCie10
+					//foreach (var l in listaCie10Agregar)
+					//{
+					//	DiagnosticoCie10 ti = new DiagnosticoCie10();
+					//	ti.Cie10 = l;
+					//	ti.Seleccionado = false;
+					//	diagnostico.DiagnosticoCie10.Add(ti);
+					//}
+
+					//diagnostico.DiagnosticoCie10.OrderBy(p => p.Cie10.Nombre);
+
+					//diagnostico.CodigoDiagnosticoCie10.DiagnosticoCie10;
+
+					List<SelectListItem> Cie10 = new SelectList(_context.Cie10.OrderBy(f => f.CodigoInterno), "Codigo", "CodigoNombre", diagnostico.DiagnosticoCie10[0].CodigoCie10).ToList();//.Where(f => f.Nombre.StartsWith("C")).ToList(); //QUITAR LUEGO					;
+					Cie10.Insert(0, vacio);
+					ViewData["CIE10"] = Cie10;
 
 					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", diagnostico.CitaOdontologica.Personal.Codigo).ToList();
 					Personal.Insert(0, vacio);
@@ -345,6 +378,8 @@ namespace HC_Odontologicas.Controllers
 		public async Task<IActionResult> Edit(Diagnostico diagnostico)
 		{
 			var i = (ClaimsIdentity)User.Identity;
+
+			List<SelectListItem> Cie10 = new SelectList(_context.Cie10.OrderBy(f => f.CodigoInterno), "Codigo", "CodigoNombre", diagnostico.CodigoDiagnosticoCie10).ToList();
 			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", diagnostico.CodigoPersonal).ToList();
 			List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", diagnostico.CodigoPaciente).ToList();
 
@@ -365,7 +400,8 @@ namespace HC_Odontologicas.Controllers
 							diagnosticoAntiguo.Fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 							diagnosticoAntiguo.Pieza = diagnostico.Pieza;
 							diagnosticoAntiguo.Observacion = diagnostico.Observacion;
-							diagnosticoAntiguo.Firma = diagnostico.Firma;													
+							diagnosticoAntiguo.Firma = diagnostico.Firma;
+							diagnosticoAntiguo.Recomendacion = diagnostico.Recomendacion;
 
 							var diagnosticoCie10 = _context.DiagnosticoCie10.Where(a => a.CodigoDiagnostico == diagnostico.Codigo).ToList();
 							foreach (var item in diagnosticoCie10)
@@ -375,25 +411,34 @@ namespace HC_Odontologicas.Controllers
 							//guardar AnamenesisEnefermedad
 							Int64 maxCodigoAe = 0;
 							maxCodigoAe = Convert.ToInt64(_context.DiagnosticoCie10.Max(f => f.Codigo));
-							foreach (var diag in diagnostico.DiagnosticoCie10)
-							{
-								if (diag.Seleccionado)
-								{
-									DiagnosticoCie10 diagCie10 = new DiagnosticoCie10();
-									maxCodigoAe += 1;
-									diagCie10.Codigo = maxCodigoAe.ToString("D8");
-									//diagCie10.CodigoDiagnostico = null;
-									diagCie10.CodigoDiagnostico = diagnostico.Codigo;
-									diagCie10.CodigoCie10 = diag.Cie10.Codigo;
-									_context.DiagnosticoCie10.Add(diagCie10);
-								}
-							}
+							DiagnosticoCie10 diagCie10 = new DiagnosticoCie10();
+							maxCodigoAe += 1;
+							diagCie10.Codigo = maxCodigoAe.ToString("D8");							
+							diagCie10.CodigoDiagnostico = diagnostico.Codigo;
+							diagCie10.CodigoCie10 = diagnostico.CodigoDiagnosticoCie10;
+							_context.DiagnosticoCie10.Add(diagCie10);
+							//foreach (var diag in diagnostico.DiagnosticoCie10)
+							//{
+							//	if (diag.Seleccionado)
+							//	{
+							//		DiagnosticoCie10 diagCie10 = new DiagnosticoCie10();
+							//		maxCodigoAe += 1;
+							//		diagCie10.Codigo = maxCodigoAe.ToString("D8");
+							//		//diagCie10.CodigoDiagnostico = null;
+							//		diagCie10.CodigoDiagnostico = diagnostico.Codigo;
+							//		diagCie10.CodigoCie10 = diag.Cie10.Codigo;
+							//		_context.DiagnosticoCie10.Add(diagCie10);
+							//	}
+							//}
 
 							_context.Update(diagnosticoAntiguo);
 							_context.SaveChanges();
 							transaction.Commit();
 							await _auditoria.GuardarLogAuditoria(diagnosticoAntiguo.Fecha, i.Name, "Diagnostico", diagnostico.Codigo, "U");
 							ViewBag.Message = "Save";
+
+							Cie10.Insert(0, vacio);
+							ViewData["CIE10"] = Cie10;
 
 							Personal.Insert(0, vacio);
 							ViewData["CodigoPersonal"] = Personal;
@@ -410,6 +455,9 @@ namespace HC_Odontologicas.Controllers
 						}
 					}
 
+					Cie10.Insert(0, vacio);
+					ViewData["CIE10"] = Cie10;
+
 					Personal.Insert(0, vacio);
 					ViewData["CodigoPersonal"] = Personal;
 
@@ -425,6 +473,10 @@ namespace HC_Odontologicas.Controllers
 						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
 
 					ViewBag.Message = mensaje;
+
+
+					Cie10.Insert(0, vacio);
+					ViewData["CIE10"] = Cie10;
 
 					Personal.Insert(0, vacio);
 					ViewData["CodigoPersonal"] = Personal;

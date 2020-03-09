@@ -32,11 +32,11 @@
 				Paciente
 			</th>
 			<th>
-				Doctor
+				Odontologo
 			</th>
-			<th>
+			@*<th>
 				Fecha
-			</th>			
+			</th>*@			
 			<th>Acciones</th>
 		</tr>
 	</thead>
@@ -50,9 +50,9 @@
 				<td>
 					@Html.DisplayFor(modelItem => item.CitaOdontologica.Personal.NombreCompleto)
 				</td>
-				<td>
+				@*<td>
 					@Html.DisplayFor(modelItem => item.FechaActualizacion)
-				</td>				
+				</td>*@				
 				<td>
 					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-outline-warning" data-toggle="tooltip" title="Editar">Editar</a>
 					@*<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" onclick="obtenerDatosOdontograma('@Encriptacion.Encrypt(item.Codigo)')" class="btn btn-outline-warning" data-toggle="tooltip" title="Editar">Editar</a>*@

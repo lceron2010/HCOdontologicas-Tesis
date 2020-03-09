@@ -34,12 +34,12 @@
 				Motivo de Consulta
 			</th>		
 			<th>
-				Médico
+				Odontologo
 			</th>
-			<th>
+			@*<th>
 				Fecha
-			</th>
-			<th></th>
+			</th>*@
+		<th>Acciones</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -55,9 +55,9 @@
 				<td>
 					@Html.DisplayFor(modelItem => item.CitaOdontologica.Personal.NombreCompleto)
 				</td>				
-				<td>
+				@*<td>
 					@Html.DisplayFor(modelItem => item.Fecha)
-				</td>				
+				</td>*@				
 				<td>
 					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-outline-warning" data-toggle="tooltip" title="Editar">Editar</a>
 					<a onclick="eliminar('@item.Codigo','../Anamnesis/DeleteConfirmed','/../Anamnesis')" class="btn btn-outline-danger" data-toggle="tooltip" title="Eliminar">Eliminar</a>

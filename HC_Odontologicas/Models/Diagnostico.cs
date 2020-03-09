@@ -8,7 +8,7 @@ namespace HC_Odontologicas.Models
     {
         public Diagnostico()
         {
-			DiagnosticoCie10 = new List<DiagnosticoCie10>();
+            DiagnosticoCie10 = new List<DiagnosticoCie10>();
         }
 
         public string Codigo { get; set; }
@@ -17,13 +17,15 @@ namespace HC_Odontologicas.Models
         public int Pieza { get; set; }
         public string Observacion { get; set; }
         public string Recomendacion { get; set; }
-        public string Firma { get; set; }        
-		[NotMapped]
-		public string CodigoPaciente { get; set; }
-		[NotMapped]
-		public string CodigoPersonal { get; set; }
+        public string Firma { get; set; }
+        [NotMapped]
+        public string CodigoPaciente { get; set; }
+        [NotMapped]
+        public string CodigoPersonal { get; set; }
+        [NotMapped]
+        public string CodigoDiagnosticoCie10 {get;set;}
 
-		public virtual CitaOdontologica CitaOdontologica { get; set; }
+        public virtual CitaOdontologica CitaOdontologica { get; set; }
         public virtual List<DiagnosticoCie10> DiagnosticoCie10 { get; set; }
     }
 }
