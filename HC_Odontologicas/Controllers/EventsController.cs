@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using HC_Odontologicas.FuncionesGenerales;
 using HC_Odontologicas.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -16,8 +17,10 @@ namespace HC_Odontologicas.Controllers
 	public class EventsController : ControllerBase
 	{
 		private readonly HCOdontologicasContext _context;
-		public EventsController(HCOdontologicasContext context)
+		private readonly IEmailSender _emailSender;
+		public EventsController(HCOdontologicasContext context, IEmailSender emailSender)
 		{
+			_emailSender = emailSender;
 			_context = context;
 		}
 
@@ -65,6 +68,18 @@ namespace HC_Odontologicas.Controllers
 
 			_context.CitaOdontologica.Add(newEvent);
 			_context.SaveChanges();
+
+			//enviar el mail
+
+			PlantillaCorreoElectronico correo = new PlantillaCorreoElectronico();
+			correo = _context.PlantillaCorreoElectronico.SingleOrDefault(p => p.Nombre.Contains("Cita"));
+
+			var paciente = _context.Paciente.Where(p => p.Codigo == apiEvent.paciente).FirstOrDefault();
+
+			//cambiar al mail epn 
+			var correoMensaje = FuncionesEmail.EnviarEmail(_emailSender, paciente.MailPersonal, correo.Asunto, FuncionesEmail.AsuntoCitaOdontologica(correo.Cuerpo, 
+				paciente.NombreCompleto, apiEvent.start_date, apiEvent.start_date, apiEvent.doctor));
+
 
 			return Ok(new
 			{
