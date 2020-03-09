@@ -109,13 +109,12 @@ function cargarDatosReceta(PlantillaReceta) {
 		data: { CodigoPlantilla },
 		success: function (response) {
 			console.log(response);
-			if (response !== undefined) {
-				$("#Nombre").val(response.nombre);
+			if (response !== undefined) {				
 				$("#Descripcion").val(response.descripcion);
 			}
-			else {
-				$("#Nombre").val("");
+			else {				
 				$("#Descripcion").val("");
+				$("#Indicaciones").val("");
 			}
 		}
 	});

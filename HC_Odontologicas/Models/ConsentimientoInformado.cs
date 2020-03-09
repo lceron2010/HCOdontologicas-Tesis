@@ -9,12 +9,10 @@ namespace HC_Odontologicas.Models
 		
 
 		public string Codigo { get; set; }
-        public string CodigoCitaOdontologica { get; set; }
-        public string Nombre { get; set; }
+        public string CodigoCitaOdontologica { get; set; }        
         public string Descripcion { get; set; }
         public string Firma { get; set; }
-        public DateTime Fecha { get; set; }        
-		public string CodigoPlantillaConsentimiento { get; set; }
+        public DateTime Fecha { get; set; }        		
 
 		[NotMapped]
 		public string CodigoPaciente { get; set; }
@@ -23,6 +21,6 @@ namespace HC_Odontologicas.Models
 
 
 		public virtual CitaOdontologica CitaOdontologica { get; set; }
-		public virtual PlantillaConsentimientoInformado PlantillaConsentimiento { get; set; }
+		
 	}
 }

@@ -9,10 +9,9 @@ namespace HC_Odontologicas.Models
         public string Codigo { get; set; }
         public string CodigoCitaOdontologica { get; set; }
         public string Descripcion { get; set; }
-        public DateTime Fecha { get; set; }
-        
-		public string Nombre { get; set; }
+        public DateTime Fecha { get; set; }        		
 		public string CodigoPlantillaRecetaMedica { get; set; }
+		public string Indicaciones { get; set; }
 
 		[NotMapped]
 		public string CodigoPaciente { get; set; }

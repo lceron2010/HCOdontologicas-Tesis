@@ -5,28 +5,25 @@
 	ViewData["Title"] = "Index";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h1>Consentimiento Informado</h1>
+<h4>Consentimiento Informado</h4>
 <br />
 @if ((bool)ViewData["Crear"])
 {
 	<a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> Nuevo</a>
 }
-@if ((bool)ViewData["Exportar"])
-{
-	<a asp-action="GetExcel" class="btn btn-primary"><i class="fa fa-download"></i> Exportar</a>
-}
+@*@if ((bool)ViewData["Exportar"])
+	{
+		<a asp-action="GetExcel" class="btn btn-primary"><i class="fa fa-download"></i> Exportar</a>
+	}*@
 <br />
 <br />
 @* Buscar *@
-<form asp-action="Index" method="get">
-	<div class="input-group col-lg-3 col-md-4 col-sm-6 col-xs-10 pull-right">
-		<input class="form-control" type="search" name="search" placeholder="Buscar..." value="@ViewData["Filter"]" />
-		<div class="input-group-btn">
-			<button type="submit" class="btn btn-sm btn-primary" title="Buscar">Buscar</button>
-			<a asp-action="Index" class="btn btn-sm btn-danger" title="Limpiar filtro">Limpiar</a>
-		</div>
-	</div>
+<form class="form-inline" asp-action="Index" method="get">
+	<input class="form-control mr-sm-2" type="search" name="search" placeholder="Buscar..." value="@ViewData["Filter"]">
+	<button class="btn btn-sm btn-primary" type="submit">Buscar</button>
+	<a asp-action="Index" class="btn btn-sm btn-danger" title="Limpiar filtro">Limpiar</a>
 </form>
+
 <br />
 <table class="table">
 	<thead>
@@ -34,37 +31,33 @@
 			<th>
 				Paciente
 			</th>
-			<th>
-				Nombre
-			</th>
-			<th>
-				Fecha
-			</th>
+			@*<th>
+					Nombre
+				</th>*@
 
-			<th></th>
+			<th>Acciones</th>
 		</tr>
 	</thead>
 	<tbody>
 		@foreach (var item in Model)
 		{
-		<tr>
+			<tr>
 
-			<td>
-				@Html.DisplayFor(modelItem => item.CitaOdontologica.Paciente.NombreCompleto)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.Nombre)
-			</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.CitaOdontologica.Paciente.NombreCompleto)
+				</td>
+				@*<td>
+						@Html.DisplayFor(modelItem => item.Nombre)
+					</td>*@
+				@*<td>
+						@Html.DisplayFor(modelItem => item.Fecha)
+					</td>*@
+				<td>
+					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white" data-toggle="tooltip" title="Editar">Editar</a>
+					<a onclick="eliminar('@item.Codigo','../ConsentimientoInformado/DeleteConfirmed','/../ConsentimientoInformado')" class="btn btn-white" data-toggle="tooltip" title="Eliminar">Eliminar</a>
 
-			<td>
-				@Html.DisplayFor(modelItem => item.Fecha)
-			</td>			
-			<td>
-				<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white" data-toggle="tooltip" title="Editar">Editar</a>
-				<a onclick="eliminar('@item.Codigo','../ConsentimientoInformado/DeleteConfirmed','/../ConsentimientoInformado')" class="btn btn-white" data-toggle="tooltip" title="Eliminar">Eliminar</a>
-
-			</td>
-		</tr>
+				</td>
+			</tr>
 		}
 	</tbody>
 </table>

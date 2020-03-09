@@ -637,7 +637,7 @@ namespace HC_Odontologicas.Controllers
 			var Pacientes = await _context.Paciente.OrderBy(f => f.NombreCompleto).Where(p => p.Estado == true).ToListAsync();
 			list.Insert(0, new SelectListItem("Seleccione...", "0"));
 			foreach (Paciente item in Pacientes.ToList())
-				list.Add(new SelectListItem(item.NombreCompleto, item.Codigo));
+				list.Add(new SelectListItem(item.CedulaNombre, item.Codigo));
 			return list;
 		}
 

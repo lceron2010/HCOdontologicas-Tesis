@@ -52,19 +52,19 @@ namespace HC_Odontologicas.Controllers
 					ViewData["Filter"] = search;
 					ViewData["CurrentSort"] = sortOrder;
 					var consentimiento = from c in _context.ConsentimientoInformado.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente).Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal) select c;
-					if (!String.IsNullOrEmpty(search))
-						consentimiento = consentimiento.Where(s => s.Nombre.Contains(search));
+					//if (!String.IsNullOrEmpty(search))
+					//	consentimiento = consentimiento.Where(s => s.Nombre.Contains(search));
 
-					switch (sortOrder)
-					{
-						case "nombre_desc":
-							consentimiento = consentimiento.OrderByDescending(s => s.Nombre);
-							break;
-						default:
-							consentimiento = consentimiento.OrderBy(s => s.Nombre);
-							break;
+					//switch (sortOrder)
+					//{
+					//	case "nombre_desc":
+					//		consentimiento = consentimiento.OrderByDescending(s => s.Nombre);
+					//		break;
+					//	default:
+					//		consentimiento = consentimiento.OrderBy(s => s.Nombre);
+					//		break;
 
-					}
+					//}
 					int pageSize = 10;
 					return View(await Paginacion<ConsentimientoInformado>.CreateAsync(consentimiento, page ?? 1, pageSize)); // page devuelve valor si lo tiene caso contrario devuelve 1
 				}
@@ -124,9 +124,8 @@ namespace HC_Odontologicas.Controllers
 					ViewData["CodigoPersonal"] = Personal;
 					ViewData["CodigoPaciente"] = Paciente;
 
-					List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList(); ;
-					PlantillaCI.Insert(0, vacio);
-					ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
+					var PlantillaCI = _context.PlantillaConsentimientoInformado.SingleOrDefault();					
+					ViewData["Descripcion"] = PlantillaCI.Descripcion;
 
 					return View(consentimientoInformado);
 				}
@@ -158,9 +157,8 @@ namespace HC_Odontologicas.Controllers
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
-					List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList(); ;
-					PlantillaCI.Insert(0, vacio);
-					ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
+					var PlantillaCI = _context.PlantillaConsentimientoInformado.SingleOrDefault();
+					ViewData["Descripcion"] = PlantillaCI.Descripcion;
 
 					if (ModelState.IsValid)
 					{
@@ -200,10 +198,7 @@ namespace HC_Odontologicas.Controllers
 						maxCodigo += 1;
 						consentimientoInformado.Codigo = maxCodigo.ToString("D8");
 						consentimientoInformado.Fecha = FechaCitaCreacion;
-						if (consentimientoInformado.CodigoPlantillaConsentimiento == "0")
-						{
-							consentimientoInformado.CodigoPlantillaConsentimiento = null;
-						}
+						
 						_context.Add(consentimientoInformado);
 						await _context.SaveChangesAsync();
 						transaction.Commit();
@@ -229,9 +224,9 @@ namespace HC_Odontologicas.Controllers
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
-					List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList(); ;
-					PlantillaCI.Insert(0, vacio);
-					ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
+					var PlantillaCI = _context.PlantillaConsentimientoInformado.SingleOrDefault();
+					ViewData["Descripcion"] = PlantillaCI.Descripcion;
+
 
 					return View(consentimientoInformado);
 				}
@@ -270,9 +265,7 @@ namespace HC_Odontologicas.Controllers
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
-					List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre), "Codigo", "Nombre", consentimiento.CodigoPlantillaConsentimiento).ToList(); ;
-					PlantillaCI.Insert(0, vacio);
-					ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
+					ViewData["Descripcion"] = consentimiento.Descripcion;
 
 					return View(consentimiento);
 				}
@@ -294,7 +287,8 @@ namespace HC_Odontologicas.Controllers
 			var i = (ClaimsIdentity)User.Identity;
 			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", consentimientoInformado.CodigoPersonal).ToList();
 			List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", consentimientoInformado.CodigoPaciente).ToList();
-			List<SelectListItem> PlantillaCI = new SelectList(_context.PlantillaConsentimientoInformado.OrderBy(c => c.Nombre), "Codigo", "Nombre", consentimientoInformado.CodigoPlantillaConsentimiento).ToList(); ;
+			var PlantillaCI = _context.PlantillaConsentimientoInformado.SingleOrDefault();
+			ViewData["Descripcion"] = PlantillaCI.Descripcion;
 
 			if (i.IsAuthenticated)
 			{
@@ -306,11 +300,7 @@ namespace HC_Odontologicas.Controllers
 						try
 						{
 							consentimientoInformado.Codigo = Encriptacion.Decrypt(consentimientoInformado.Codigo);
-							consentimientoInformado.Fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
-							if (consentimientoInformado.CodigoPlantillaConsentimiento == "0")
-							{
-								consentimientoInformado.CodigoPlantillaConsentimiento = null;
-							}
+							consentimientoInformado.Fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");							
 							_context.Update(consentimientoInformado);
 							await _context.SaveChangesAsync();
 							await _auditoria.GuardarLogAuditoria(consentimientoInformado.Fecha, i.Name, "ConsentimientoInformado", consentimientoInformado.Codigo, "U");
@@ -322,8 +312,7 @@ namespace HC_Odontologicas.Controllers
 							Paciente.Insert(0, vacio);
 							ViewData["CodigoPaciente"] = Paciente;
 
-							PlantillaCI.Insert(0, vacio);
-							ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
+							ViewData["Descripcion"] = PlantillaCI.Descripcion;
 
 							return View(consentimientoInformado);
 						}
@@ -338,8 +327,7 @@ namespace HC_Odontologicas.Controllers
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
-					PlantillaCI.Insert(0, vacio);
-					ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
+					ViewData["Descripcion"] = PlantillaCI.Descripcion;
 
 					return View(consentimientoInformado);
 				}
@@ -357,8 +345,7 @@ namespace HC_Odontologicas.Controllers
 					Paciente.Insert(0, vacio);
 					ViewData["CodigoPaciente"] = Paciente;
 
-					PlantillaCI.Insert(0, vacio);
-					ViewData["CodigoPlantillaConsentimiento"] = PlantillaCI;
+					ViewData["Descripcion"] = PlantillaCI.Descripcion;
 
 					return View(consentimientoInformado);
 				}

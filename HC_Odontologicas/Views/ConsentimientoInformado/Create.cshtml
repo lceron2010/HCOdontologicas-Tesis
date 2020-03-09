@@ -6,51 +6,62 @@
 <h4>Consentimiento Informado</h4>
 <hr />
 <div class="row">
-	<div class="col-md-4">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 		<form asp-action="Create">
 			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 			<input asp-for="Codigo" class="form-control" type="hidden" />
 			<input asp-for="CodigoCitaOdontologica" hidden />
 			<fieldset>
 				<legend class="titulo text-uppercase" style="font-size:inherit">Datos informativos</legend>
-				<div class="form-group">
-					<label asp-for="CodigoPaciente" class="control-label">Paciente*</label>
-					<select asp-for="CodigoPaciente" class="form-control" asp-items="ViewBag.CodigoPaciente"></select>
-					<span asp-validation-for="CodigoPaciente" class="text-danger"></span>
-				</div>
-				<div class="form-group">
-					<label asp-for="CodigoPersonal" class="control-label">Personal*</label>
-					<select asp-for="CodigoPersonal" class="form-control" asp-items="ViewBag.CodigoPersonal"></select>
-					<span asp-validation-for="CodigoPersonal" class="text-danger"></span>
+				<div class="row">
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="CodigoPaciente" class="control-label">Paciente*</label>
+							<select asp-for="CodigoPaciente" class="form-control" asp-items="ViewBag.CodigoPaciente"></select>
+							<span asp-validation-for="CodigoPaciente" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="CodigoPersonal" class="control-label">Personal*</label>
+							<select asp-for="CodigoPersonal" class="form-control" asp-items="ViewBag.CodigoPersonal"></select>
+							<span asp-validation-for="CodigoPersonal" class="text-danger"></span>
+						</div>
+
+					</div>
 				</div>
 			</fieldset>
 
-			<div class="form-group">
-				<label asp-for="CodigoPlantillaConsentimiento" class="control-label">Plantilla</label>
-				<select asp-for="CodigoPlantillaConsentimiento" class="form-control" asp-items="ViewBag.CodigoPlantillaConsentimiento" onchange="cargarDatosConsentimiento(this);"></select>
-				<span asp-validation-for="CodigoPlantillaConsentimiento" class="text-danger"></span>
-			</div>
-
-			<div class="form-group">
-				<label asp-for="Nombre" class="control-label">Nombre</label>
-				<input asp-for="Nombre" class="form-control" />
-				<span asp-validation-for="Nombre" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="Descripcion" class="control-label">Descripción*</label>
-				<textarea asp-for="Descripcion" class="form-control" width="100%"> </textarea>
-				<span asp-validation-for="Descripcion" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="Firma" class="control-label"></label>
-				<input asp-for="Firma" class="form-control" />
-				<span asp-validation-for="Firma" class="text-danger"></span>
-			</div>
-			
+			<fieldset>
+				<legend class="titulo text-uppercase" style="font-size:inherit">Consentimiento Informado</legend>
+				<input asp-for="Descripcion" value="@ViewBag.Descripcion" hidden/>
+				<div class="row">
+					<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+						<div class="form-group">
+							<div class="form-group">
+								<label asp-for="Descripcion" class="control-label">Descripción*</label>								
+								<label asp-for="Descripcion" style="text-align:justify">@ViewBag.Descripcion</label>
+								<span asp-validation-for="Descripcion" class="text-danger"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+						<div class="form-group">
+							<div class="form-group">
+								<label asp-for="Firma" class="control-label"></label>
+								<textarea asp-for="Firma" class="form-control">hola</textarea>
+								<span asp-validation-for="Firma" class="text-danger"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</fieldset>
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="form-group">
-						<a class="btn btn-white" onclick="regresar('../ConsentimientoInformado/Index','');">Regresar</a>
+						<a class="btn btn-white" style="border: 1px solid #007bff;" onclick="regresar('../ConsentimientoInformado/Index','');">Regresar</a>
 						<button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
 					</div>
 				</div>

@@ -106,8 +106,9 @@
 @section Scripts {
 	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-	<script src="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler.js"></script>
-	<link rel="stylesheet" href="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler_material.css" type="text/css" charset="utf-8">
+
+	<script src="~/lib/dhtmlx/codebase/dhtmlxscheduler.js"></script>
+	<link rel="stylesheet" type="text/css" charset="utf-8" href="~/lib/dhtmlx/codebase/dhtmlxscheduler_material.css" />
 	<script src="~/lib/dhtmlx/codebase/locale/locale_es.js" charset="utf-8"></script>
 
 	<script>
@@ -132,7 +133,7 @@
 
 		scheduler.config.xml_date = "%Y-%m-%d %H:%i";
 		//para la etiqueta del evento despues de guardar.
-		scheduler.attachEvent("onEventSave", function (id,ev, is_new) {
+		scheduler.attachEvent("onEventSave", function (id, ev, is_new) {
 			if (ev.paciente != '') {
 				ev.text = "P";
 				console.log(ev.paciente);
@@ -152,10 +153,10 @@
 
 			ev.color = obtenerColor(ev.doctor);
 			return true;
-		})		
+		})
 
 		function getLabelPaciente(key) {
-			for (var i = 0; i < paciente_opts.length; i++) {				
+			for (var i = 0; i < paciente_opts.length; i++) {
 				if (key == paciente_opts[i].key) {
 					var nombre = paciente_opts[i].label.split(" ");
 					console.log(nombre);
@@ -211,11 +212,11 @@
 				}
 			}
 
-			ev.color = obtenerColor(ev.doctor);	
+			ev.color = obtenerColor(ev.doctor);
 			return true;
 		});
 
-		
+
 		//iniciar el calendario en la fecha de hoy.
 		var d = new Date();
 		scheduler.init('scheduler_here', new Date(d.getFullYear(), d.getMonth(), d.getDate()), "week");
