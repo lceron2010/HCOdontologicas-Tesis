@@ -73,12 +73,17 @@ namespace HC_Odontologicas.Controllers
 
 			PlantillaCorreoElectronico correo = new PlantillaCorreoElectronico();
 			correo = _context.PlantillaCorreoElectronico.SingleOrDefault(p => p.Nombre.Contains("Cita"));
-
 			var paciente = _context.Paciente.Where(p => p.Codigo == apiEvent.paciente).FirstOrDefault();
+			var doctor = _context.Personal.Where(d => d.Codigo == apiEvent.doctor).FirstOrDefault();			
+			var soloFecha = Convert.ToDateTime(newEvent.FechaInicio.ToString("dd/MM/yyyy"));
+			var fechaLarga = soloFecha.ToLongDateString();
+			var hora = newEvent.FechaInicio.ToString("HH:mm"); // newEvent.FechaInicio.TimeOfDay.ToString();//newEvent.FechaInicio.Hour.ToString() + ":" + newEvent.FechaInicio.Minute.ToString();//newEvent.FechaInicio.ToString("hh:mm");
 
-			//cambiar al mail epn 
-			var correoMensaje = FuncionesEmail.EnviarEmail(_emailSender, paciente.MailPersonal, correo.Asunto, FuncionesEmail.AsuntoCitaOdontologica(correo.Cuerpo, 
-				paciente.NombreCompleto, apiEvent.start_date, apiEvent.start_date, apiEvent.doctor));
+			//envio del email
+
+			var correoMensaje = FuncionesEmail.EnviarEmail(_emailSender,paciente.MailEpn, correo.Asunto, 
+				FuncionesEmail.AsuntoCitaOdontologica(correo.Cuerpo, 
+				paciente.NombreCompleto, fechaLarga, hora, doctor.NombreCompleto));
 
 
 			return Ok(new

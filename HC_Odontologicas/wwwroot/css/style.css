@@ -9480,7 +9480,7 @@ table.dataTable.display tbody tr:first-child td {
 }
 
 .ibox-title {
-	background-color: #fff;
+	background-color: #ffffff;
 	border-color: #e7eaec;
 	border-image: none;
 	border-style: solid solid none;
@@ -9496,6 +9496,49 @@ table.dataTable.display tbody tr:first-child td {
 	border-radius: 2px 2px 0 0;
 }
 
+.ibox-content {
+	background-color: #ffffff;
+	color: inherit;
+	padding: 15px 20px 20px 20px;
+	border-color: #e7eaec;
+	border-image: none;
+	border-style: solid;
+	border-width: 1px;
+}
+
+.ibox-footer {
+	color: inherit;
+	border-top: 1px solid #e7eaec;
+	font-size: 90%;
+	background: #ffffff;
+	padding: 10px 15px;
+}
+
+
+
+.ibox-title h5 {
+	margin-top: 5px;
+}
+
+.ibox-title h5 {
+	display: inline-block;
+	font-size: 14px;
+	margin: 0 0 7px;
+	padding: 0;
+	text-overflow: ellipsis;
+	float: none;
+}
+body.rtls .ibox-title h5 {
+	float: right;
+}
+.light-skin .ibox-title h5 {
+	font-size: 12px;
+}
+
+.md-skin .ibox-title h5 {
+	font-size: 16px;
+	font-weight: 400;
+}
 
 .ibox-tools {
 	display: block;
@@ -9508,22 +9551,27 @@ table.dataTable.display tbody tr:first-child td {
 	text-align: right;
 }
 
+	.ibox-tools a {
+		cursor: pointer;
+		margin-left: 5px;
+		color: #c4c4c4 !important;
+	}
 
-.ibox-title h5 {
-	display: inline-block;
-	font-size: 14px;
-	margin: 0 0 7px;
-	padding: 0;
-	text-overflow: ellipsis;
+		.ibox-tools a.btn-primary {
+			color: #fff !important;
+		}
+
+
+
+.ibox-tools {
 	float: none;
+	text-align: right;
+	display: block;
 }
 
-.ibox-tools a {
-	cursor: pointer;
-	margin-left: 5px;
-	color: #c4c4c4 !important;
+.ibox.fullscreen .collapse-link {
+	display: none;
 }
-
 
 .border-bottom {
 	border-bottom: 1px solid #e7eaec !important;

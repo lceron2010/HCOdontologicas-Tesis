@@ -1,45 +1,18 @@
 ﻿@model HC_Odontologicas.Models.CitaOdontologica
 
+
+
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "CitaOdontologica";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<h4>Cita Odontologica</h4>
 
 <div class="row">
     <div class="col-lg-12">
-        <div class="ibox">
-            <div class="ibox-title">
-                <h5>Wizard with Validation</h5>
-                <div class="ibox-tools">
-                    <a class="collapse-link">
-                        <i class="fa fa-chevron-up"></i>
-                    </a>
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-wrench"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li>
-                            <a href="#" class="dropdown-item">Config option 1</a>
-                        </li>
-                        <li>
-                            <a href="#" class="dropdown-item">Config option 2</a>
-                        </li>
-                    </ul>
-                    <a class="close-link">
-                        <i class="fa fa-times"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="ibox-content">
-                <h2>
-                    Validation Wizard Form
-                </h2>
-                <p>
-                    This example show how to use Steps with jQuery Validation plugin.
-                </p>
-
+        <div class="ibox">           
+            <div class="ibox-content">               
                 <form id="form" action="#" class="wizard-big">
                     <h1>Account</h1>
                     <fieldset>
@@ -57,15 +30,12 @@
                                 <div class="form-group">
                                     <label>Confirm Password *</label>
                                     <input id="confirm" name="confirm" type="text" class="form-control required">
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="text-center">
-                                    <div style="margin-top: 20px">
-                                        <i class="fa fa-sign-in" style="font-size: 180px;color: #e5e5e5 "></i>
-                                    </div>
-                                </div>
-                            </div>
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br />
+                                </div>                               
+                            </div>                              
                         </div>
 
                     </fieldset>
@@ -116,16 +86,10 @@
 </div>
 
 
-@section Styles {
-    <environment names="Development,Staging,Production">
-        <link rel="stylesheet" href="~/lib/iCheck/blue.css" />
-        <link rel="stylesheet" href="~/lib/steps/jquery.steps.css" />
-    </environment>
-}
+
 
 @section Scripts {
-    <environment names="Development,Staging,Production">
-        <script src="~/lib/iCheck/icheck.min.js"></script>
+    <environment names="Development,Staging,Production">        
         <script src="~/lib/steps/jquery.steps.min.js"></script>
         <script src="~/lib/validate/jquery.validate.min.js"></script>
     </environment>
@@ -204,4 +168,3 @@
         });
     </script>
 }
-

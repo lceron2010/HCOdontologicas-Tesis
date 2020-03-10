@@ -15,18 +15,7 @@ namespace HC_Odontologicas.FuncionesGenerales
 			try
 			{
 				//enviar mail
-				await emailSender.SendEmailAsync(emailDestino, asunto, mensaje);
-
-				//guardar email
-				//LogEmail logEmail = new LogEmail();
-				//logEmail.CodigoCompania = CodigoCompania;
-				//logEmail.EmailOrigen = "lfvasquez@cavccsa.com";
-				//logEmail.EmailDestino = emailDestino;
-				//logEmail.Fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
-				//logEmail.Asunto = asunto;
-				//logEmail.Mensaje = mensaje;
-				//context.LogEmail.Add(logEmail);
-				//await context.SaveChangesAsync();
+				await emailSender.SendEmailAsync(emailDestino, asunto, mensaje);				
 
 				return "Save";
 			}
@@ -39,7 +28,7 @@ namespace HC_Odontologicas.FuncionesGenerales
 		public static String AsuntoCitaOdontologica(String mensaje, String paciente, String fecha, string hora, string odontologo)
 		{
 			mensaje = mensaje.Replace("\r\n\r\n", "<br/><br/>").Replace("[#strong]", "<strong>").Replace("[#/strong]", "</strong>");
-			mensaje = mensaje.Replace("[@Paciente]", paciente).Replace("[@Fecha]", fecha).Replace("[@HoraInicio]", hora);
+			mensaje = mensaje.Replace("[@Paciente]", paciente).Replace("[@Fecha]", fecha).Replace("[@HoraInicio]", hora).Replace("[@Odontologo]", odontologo); 
 			return mensaje;		
 		}
 

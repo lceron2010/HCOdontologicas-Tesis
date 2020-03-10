@@ -16,6 +16,8 @@ using HC_Odontologicas.Models;
 using HC_Odontologicas.Controllers;
 using Microsoft.AspNetCore.Authentication;
 using Rotativa.AspNetCore;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using HC_Odontologicas.Areas.Services;
 
 namespace HC_Odontologicas
 {
@@ -37,7 +39,18 @@ namespace HC_Odontologicas
 			
 			services.AddDefaultIdentity<UsuarioLogin>()
 				.AddEntityFrameworkStores<HCOdontologicasContext>();
-			
+
+
+			services.AddTransient<IEmailSender, EmailSender>(i =>
+			  new EmailSender(
+				  Configuration["EmailSender:Host"],
+				  Configuration.GetValue<int>("EmailSender:Port"),
+				  Configuration.GetValue<bool>("EmailSender:EnableSSL"),
+				  Configuration["EmailSender:UserName"],
+				  Configuration["EmailSender:Password"]
+				 )
+			  );
+
 			services.AddControllersWithViews();
 			
 			services.AddRazorPages();

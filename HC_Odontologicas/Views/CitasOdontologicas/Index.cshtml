@@ -46,25 +46,33 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Paciente.NombreCompleto)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Personal.NombreCompleto)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FechaInicio)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FechaFin)
-                </td>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Paciente.NombreCompleto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Personal.NombreCompleto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaInicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaFin)
+            </td>
 
-                <td>
-                    @*<a asp-controller="Anamnesis" asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white" data-toggle="tooltip" title="Editar">Editar</a>*@
-                    <a asp-controller="Anamnesis" asp-action="Create" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white" data-toggle="tooltip" title="Editar">Crear</a>
-                </td>
-            </tr>
+            <td>
+                @*<a class="btn btn-white" style="border: 1px solid #007bff;" onclick="regresar('../CitaOdontologica','');">Atender</a>*@
+                @*<a asp-controller="Anamnesis" asp-action="Create" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white" data-toggle="tooltip" title="Editar">Crear</a>*@
+
+            <td>
+                <a asp-action="CitaOdontologica" >Atender</a> |
+                <a asp-action="Details" asp-route-id="@item.Codigo">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Codigo">Delete</a>
+            </td>
+
+
+            </td>
+        </tr>
         }
     </tbody>
 </table>

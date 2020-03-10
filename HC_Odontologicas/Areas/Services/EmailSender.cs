@@ -43,7 +43,7 @@ namespace HC_Odontologicas.Areas.Services
 
 				MailMessage mail = new MailMessage()
 				{
-					From = new MailAddress(userName, "Notificaciones - TravelWell")
+					From = new MailAddress(userName, "Notificaciones - Servicio de Odontología EPN")
 				};
 
 				string[] emails = email.Split(',');
@@ -55,9 +55,9 @@ namespace HC_Odontologicas.Areas.Services
 				mail.Subject = subject;
 				mail.IsBodyHtml = true;
 
-				String html = RecuperarMensajeTest(message);
+				String html = RecuperarMensaje(message);
 				AlternateView altView = AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html);
-				var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "travelswellEmail.png");
+				var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "imagen", "epnEmail.png");
 				LinkedResource res = new LinkedResource(path, MediaTypeNames.Image.Gif);
 				res.ContentId = "logo";
 				altView.LinkedResources.Add(res);
@@ -67,7 +67,7 @@ namespace HC_Odontologicas.Areas.Services
 
 				SmtpClient oSmtp = new SmtpClient();
 				oSmtp.Host = host;
-				oSmtp.EnableSsl = false;
+				oSmtp.EnableSsl = true;
 				oSmtp.Port = port;
 
 				string usuario = userName;
@@ -84,13 +84,13 @@ namespace HC_Odontologicas.Areas.Services
 			}
 		}
 
-		public static string RecuperarMensajeTest(string mensaje)
+		public static string RecuperarMensaje(string mensaje)
 		{
 			StringBuilder str = new StringBuilder();
 			str.AppendLine("<html>");
 			str.AppendLine("<head>");
 			str.AppendLine("<meta name='format-detection' content='telephone=no'>");
-			str.AppendLine("<title>Notificaciones TravelWell</title>");
+			str.AppendLine("<title>Notificaciones Servicio Odontología</title>");
 			str.AppendLine("</head>");
 			str.AppendLine("<body>");
 			str.AppendLine("<table width='100%' border='0' cellspacing='0' cellpadding='0'>");
@@ -99,6 +99,8 @@ namespace HC_Odontologicas.Areas.Services
 			str.AppendLine("<td width='80%' style='padding:10px; border:1px solid LightGrey; font-family: Tahoma, Arial; font-size: 0.8em; text-align:left;' >");
 			str.AppendLine("<div style='text-align: center;'>");
 			str.AppendLine("<img src='cid:logo'>");
+			str.AppendLine("<p>Escuela Politécnica Nacional</p>");
+			str.AppendLine("<p>Servicio de Odontología</p>");
 			str.AppendLine("</div>");
 			str.AppendLine("<hr/>");
 			str.AppendLine(mensaje);

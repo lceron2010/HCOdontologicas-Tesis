@@ -80,18 +80,31 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-		// GET: CitasOdontologicas/Details/5
-		public async Task<IActionResult> Details(string id)
+
+		public async Task<IActionResult> CitaOdontologica()
 		{
-			if (id == null)
-			{
-				return NotFound();
-			}
+			
 
 			var citaOdontologica = await _context.CitaOdontologica
 				.Include(c => c.Paciente)
 				.Include(c => c.Personal)
-				.FirstOrDefaultAsync(m => m.Codigo == id);
+				.FirstOrDefaultAsync();
+			if (citaOdontologica == null)
+			{
+				return NotFound();
+			}
+
+			return View(citaOdontologica);
+		}
+
+		// GET: CitasOdontologicas/Details/5
+		public async Task<IActionResult> Details()
+		{
+			
+			var citaOdontologica = await _context.CitaOdontologica
+				.Include(c => c.Paciente)
+				.Include(c => c.Personal)
+				.FirstOrDefaultAsync();
 			if (citaOdontologica == null)
 			{
 				return NotFound();
