@@ -14,6 +14,7 @@ namespace HC_Odontologicas.Controllers
 	public class CitasOdontologicasController : Controller
 	{
 		private readonly HCOdontologicasContext _context;
+		SelectListItem vacio = new SelectListItem(value: "0", text: "Seleccione...");
 
 		public CitasOdontologicasController(HCOdontologicasContext context)
 		{
@@ -81,20 +82,37 @@ namespace HC_Odontologicas.Controllers
 		}
 
 
-		public async Task<IActionResult> CitaOdontologica()
+		public IActionResult CitaOdontologica()
 		{
-			
+			//paciente
+			List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
+			ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 
-			var citaOdontologica = await _context.CitaOdontologica
-				.Include(c => c.Paciente)
-				.Include(c => c.Personal)
-				.FirstOrDefaultAsync();
-			if (citaOdontologica == null)
-			{
-				return NotFound();
-			}
+			List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
+			Facultad.Insert(0, vacio);
+			ViewData["CodigoFacultad"] = Facultad;
 
-			return View(citaOdontologica);
+			//anamnesis
+
+			List<SelectListItem> Enfermedades = null;
+			Enfermedades = new SelectList(_context.Enfermedad.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
+			ViewData["AnamnesisEnfermedad"] = Enfermedades;
+
+			//diagnostico
+			List<SelectListItem> Cie10 = new SelectList(_context.Cie10.OrderBy(f => f.CodigoInterno), "Codigo", "CodigoNombre").ToList();//.Where(f => f.Nombre.StartsWith("C")).ToList(); //QUITAR LUEGO					;
+			Cie10.Insert(0, vacio);
+			ViewData["CIE10"] = Cie10;
+
+			//concentimiento informado
+			var PlantillaCI = _context.PlantillaConsentimientoInformado.SingleOrDefault();
+			ViewData["Descripcion"] = PlantillaCI.Descripcion;
+
+			//receta medica
+			List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList();
+			PlantillaRM.Insert(0, vacio);
+			ViewData["CodigoPlantillaReceta"] = PlantillaRM;
+
+			return View();
 		}
 
 		// GET: CitasOdontologicas/Details/5
@@ -124,9 +142,8 @@ namespace HC_Odontologicas.Controllers
 		// POST: CitasOdontologicas/Create
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("Codigo,CodigoPaciente,CodigoPersonal,FechaCreacion,Observaciones,Estado,FechaInicio,FechaFin,HoraInicio,HoraFin,UsuarioCreacion")] CitaOdontologica citaOdontologica)
+		[HttpPost]		
+		public async Task<IActionResult> Create(CitaOdontologica citaOdontologica)
 		{
 			if (ModelState.IsValid)
 			{
@@ -155,6 +172,11 @@ namespace HC_Odontologicas.Controllers
 			ViewData["CodigoPaciente"] = new SelectList(_context.Paciente, "Codigo", "Codigo", citaOdontologica.CodigoPaciente);
 			ViewData["CodigoPersonal"] = new SelectList(_context.Personal, "Codigo", "Codigo", citaOdontologica.CodigoPersonal);
 			return View(citaOdontologica);
+
+
+			//Anamnesis anamnesis = new Anamnesis();
+			//return View(anamnesis);
+
 		}
 
 

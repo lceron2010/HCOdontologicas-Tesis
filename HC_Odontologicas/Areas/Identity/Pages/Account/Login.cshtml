@@ -9,45 +9,102 @@
 @if (SignInManager.IsSignedIn(User))
 {
 	<script type="text/javascript">
-        $("#menu").hide();        
-        $("#login").hide();
-        $("#titulo").hide();
+		$("#menu").hide();
+		$("#login").hide();
+		$("#titulo").hide();
 	</script>
 }
 
 @{
 	ViewData["Title"] = "Inicio de Sesión";
 }
+@{
+	Layout = null;
+}
+@*<div class="row">
+		<div class="col-md-4">
+			<section>
+				<form id="acount" method="post">
+					<h4>Inicio de sesión.</h4>
+					<hr />
+					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+					<div class="form-group">
+						<label asp-for="Input.UsuarioLogin">Usuario:</label>
+						<input asp-for="Input.UsuarioLogin" class="form-control" />
+						<span asp-validation-for="Input.UsuarioLogin" class="text-danger"></span>
+					</div>
+					<div class="form-group">
+						<label>Contraseña:</label>
+						<input asp-for="Input.Password" class="form-control" />
+						<span asp-validation-for="Input.Password" class="text-danger"></span>
+					</div>
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary">Iniciar</button>
+					</div>
+					<div class="form-group">
+						<p>
+							<a id="forgot-password" asp-page="./ForgotPassword">Olvido la contraseña?</a>
+						</p>
+					</div>
+				</form>
+			</section>
+		</div>
+	</div>*@
 
-<div class="row">
-	<div class="col-md-4">
-		<section>
-			<form id="acount" method="post">
-				<h4>Inicio de sesión.</h4>
-				<hr />
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - HC-Odontológicas</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<environment names="Development">
+		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+		<link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css" />
+		
+		<link rel="stylesheet" href="~/css/styleFormDesplegable.css" asp-append-version="true" />
+
+	</environment>
+	<environment names="Staging,Production">
+		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
+		
+		<link rel="stylesheet" href="~/css/styleFormDesplegable.css" asp-append-version="true" />
+
+	</environment>
+
+
+</head>
+<body class="gray-bg">
+
+	<div class="middle-box text-center loginscreen  animated fadeInDown">
+		<div>
+			<h3>Inicio de Sesión</h3>
+			<form class="m-t" role="form" id="acount" method="post">
 				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 				<div class="form-group">
-					<label asp-for="Input.UsuarioLogin">Usuario:</label>
-					<input asp-for="Input.UsuarioLogin" class="form-control" />
+					<label>Usuario:</label>
+					<input asp-for="Input.UsuarioLogin" type="email" class="form-control" placeholder="Username" required="">
 					<span asp-validation-for="Input.UsuarioLogin" class="text-danger"></span>
 				</div>
 				<div class="form-group">
 					<label>Contraseña:</label>
-					<input asp-for="Input.Password" class="form-control" />
+					<input asp-for="Input.Password" type="password" class="form-control" placeholder="Password" required="">
 					<span asp-validation-for="Input.Password" class="text-danger"></span>
 				</div>
-				<div class="form-group">
-					<button type="submit" class="btn btn-primary">Iniciar</button>  @**@
-				</div>
-				<div class="form-group">
-					<p>
-						<a id="forgot-password" asp-page="./ForgotPassword">Olvido la contraseña?</a>
-					</p>					
-				</div>
+				<button type="submit" class="btn btn-primary block full-width m-b">Login</button>
+
+				<a href="#"><small>¿Olvido su contraseña?</small></a>
+
 			</form>
-		</section>
+
+		</div>
 	</div>
-</div>
+
+</body>
+</html>
 
 
 

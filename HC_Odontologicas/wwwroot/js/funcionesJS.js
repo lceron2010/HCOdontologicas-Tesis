@@ -78,6 +78,10 @@ function eliminar(Codigo, url, urlRet) {
 	});
 }
 
+//step
+
+
+
 /// cargarDatosConsentimiento
 
 function cargarDatosConsentimiento(PlantillaConsentimiento) {
@@ -111,9 +115,12 @@ function cargarDatosReceta(PlantillaReceta) {
 			console.log(response);
 			if (response !== undefined) {				
 				$("#Descripcion").val(response.descripcion);
+				$("#DescripcionReceta").val(response.descripcion);				
+
 			}
-			else {				
-				$("#Descripcion").val("");
+			else {	
+				$("#Descripcion").val(response.descripcion);
+				$("#DescripcionReceta").val("");
 				$("#Indicaciones").val("");
 			}
 		}

@@ -108,6 +108,8 @@ namespace HC_Odontologicas.Controllers
 					Facultad.Insert(0, vacio);
 					ViewData["CodigoFacultad"] = Facultad;
 
+
+
 					return View();
 				}
 				else
