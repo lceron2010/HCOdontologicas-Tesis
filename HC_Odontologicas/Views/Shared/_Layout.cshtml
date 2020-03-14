@@ -9,32 +9,13 @@
 	<link rel="stylesheet" href="~/css/site.css" />
 	<link rel="stylesheet" href="~/css/styleFormDesplegable.css" />
 	<link rel="stylesheet" href="~/css/styleListaEnfOdon.css" />
-	<script type="text/javascript" src="@Url.Content("~/js/funcionesJS.js")"></script>
-	<script src="~/lib/alertas.js"></script>
-
-	<script type="text/javascript" src="~/lib/jquery/dist/jquery.js"></script>
-	<script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
-	@*<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.css" />
-		<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.js"></script>*@
-
 	<link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
-	<script type="text/javascript" src="~/lib/dataTables/datatables.min.js"></script>
-
-
 	<link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
 	<link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css" />
 	<link rel="stylesheet" href="~/lib/iCheck/blue.css" />
-	<script src="~/lib/iCheck/icheck.min.js"></script>
-
-
-	<script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
-	<script src="~/lib/bootstrap-datepicker/js/locales/bootstrap-datepicker.es.js"></script>
 	<link rel="stylesheet" href="~/lib/bootstrap-datepicker/dist/css/datepicker3.css" />
-
 	<link rel="stylesheet" href="~/lib/select2/dist/css/select2.min.css" />
 	<link rel="stylesheet" href="~/lib/select2/dist/css/select2-bootstrap4.min.css" />
-	<script src="~/lib/select2/dist/js/select2.full.min.js"></script>
-	
 	<link rel="stylesheet" href="~/lib/steps/jquery.steps.css" />
 
 </head>
@@ -59,11 +40,12 @@
 	@*fin de cargar el menu dinamico*@
 
 	<header>
-		<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+		<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-blue border-bottom box-shadow mb-3">
 			<div class="container">
 				@*<a class="navbar-brand" asp-area="" asp-controller="home" asp-action="index" name="titulo" id="titulo">Home</a>*@
 				<div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
 					<partial name="_LoginPartial" />
+					@*<partial name="_Menu.cshtml" />*@
 					<partial name="_Menu.cshtml" />
 				</div>
 			</div>
@@ -85,26 +67,15 @@
 	<script type="text/javascript" src="~/js/funcionesJS.js"></script>
 	<script src="~/lib/alertas.js"></script>
 	<script src="~/lib/sweetalert.min.js"></script>
-	<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.js"></script>
-
-
-	<link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
-	<link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css" />
-
-	<link rel="stylesheet" href="~/lib/iCheck/blue.css" />
+	<script src="~/lib/dataTables/datatables.min.js"></script>
+	<script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>	
 	<script src="~/lib/iCheck/icheck.min.js"></script>
-
 	<script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
 	<script src="~/lib/bootstrap-datepicker/js/locales/bootstrap-datepicker.es.js"></script>
-	<link rel="stylesheet" href="~/lib/bootstrap-datepicker/dist/css/datepicker3.css" />
-
-	<link rel="stylesheet" href="~/lib/select2/dist/css/select2.min.css" />
-	<link rel="stylesheet" href="~/lib/select2/dist/css/select2-bootstrap4.min.css" />
 	<script src="~/lib/select2/dist/js/select2.full.min.js"></script>
-
-	<link rel="stylesheet" href="~/lib/steps/jquery.steps.css" />
-
-	<link rel="stylesheet" href="~/css/styleFormDesplegable.css" />
+	@*menu*@
+	<script src="~/lib/metisMenu/dist/jquery.metisMenu.js"></script>
+	<script src="~/lib/metisMenu/dist/jquery.metisMenu.js"></script>
 
 	@RenderSection("Scripts", required: false)
 </body>

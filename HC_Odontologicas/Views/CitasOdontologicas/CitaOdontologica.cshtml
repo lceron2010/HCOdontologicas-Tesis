@@ -412,7 +412,7 @@
 			<h1>Odontograma</h1>
 			<fieldset>
 				<div class="row">
-					<div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+					<div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
 						<svg xmlns:dc="http://purl.org/dc/elements/1.1/"
 							 xmlns:cc="http://creativecommons.org/ns#"
 							 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -2771,7 +2771,7 @@
 						</svg>
 					</div>
 
-					<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
 						<ul>
 							<li class="has-sub">
 								<span class="span_menu" style="background:#ff0000;"></span>
@@ -3081,7 +3081,41 @@
 
 				bodyTag: "fieldset",
 				onStepChanging: function (event, currentIndex, newIndex) {
-					// Always allow going backward even if the current step contains invalid fields!
+
+					console.log('ci fuera del if', currentIndex);				
+					console.log('ci', currentIndex);
+					console.log('ni', newIndex);
+
+					var claseActual = "";
+					
+					if (newIndex === 1) {
+						console.log("entro al if de cambiar eel tamaño bigA");
+						claseActual = $("#formAtenderCitaOdontologica")[0].classList[0];
+						console.log("clase actual", claseActual);
+						$("#formAtenderCitaOdontologica").removeClass(claseActual);
+						$("#formAtenderCitaOdontologica").addClass("wizard-bigA");
+						console.log("se pone wizard-bigA");
+					}
+
+					if (newIndex === 2) {
+						console.log("entro al if de cambiar eel tamaño bigO");
+						claseActual = $("#formAtenderCitaOdontologica")[0].classList[1];
+							console.log("clase actual", claseActual);
+						$("#formAtenderCitaOdontologica").removeClass(claseActual);
+						$("#formAtenderCitaOdontologica").addClass("wizard-bigO");
+						console.log("se pone wizard-bigO");
+					}
+
+					if (newIndex === 3) {
+						console.log("entro al if de cambiar eel tamaño bigC");
+						claseActual = $("#formAtenderCitaOdontologica")[0].classList[2];
+							console.log("clase actual", claseActual);
+						$("#formAtenderCitaOdontologica").removeClass(claseActual);
+						$("#formAtenderCitaOdontologica").addClass("wizard-bigC");
+						console.log("se pone wizard-bigc");
+					}
+
+					// Always allow going backward even if the current step contains invalid fields!									   					 
 					if (currentIndex > newIndex) {
 						console.log("if onstepchange");
 						console.log(currentIndex);
@@ -3094,35 +3128,9 @@
 						return false;
 					}
 
-					var form = $(this);
-					//console.log("form");
-					//console.log(form);
-					console.log('ci fuera del if', currentIndex);
-
-					//console.log("if c n");
-					console.log('ci', currentIndex);
-					console.log('ni', newIndex);
-
-
-					if (newIndex === 1) {
-						console.log("entro al if de cambiar eel tamaño bigA");
-						$("#formAtenderCitaOdontologica").removeClass("");
-						$("#formAtenderCitaOdontologica").attr("class","wizard-bigA");
-					}
-
-					if (newIndex === 2) {
-						console.log("entro al if de cambiar eel tamaño bigO");
-						$("#formAtenderCitaOdontologica").removeClass("");
-						$("#formAtenderCitaOdontologica").addClass("wizard-bigO");
-					}
-
-					if (newIndex === 3) {
-						console.log("entro al if de cambiar eel tamaño bigC");
-						$("#formAtenderCitaOdontologica").removeClass("");
-						$("#formAtenderCitaOdontologica").addClass("wizard-bigC");
-					}
-
+					var form = $(this);					
 					
+		   					
 					// Clean up if user went backward before
 					if (currentIndex < newIndex) {
 						// To remove error styles
