@@ -858,6 +858,10 @@ namespace HC_Odontologicas.Models
 			{
 				entity.HasKey(e => e.Codigo);
 
+				entity.Property(e => e.Codigo)
+					.HasMaxLength(4)
+					.IsUnicode(false);
+
 				entity.Property(e => e.Descripcion)
 					.IsRequired()
 					.IsUnicode(false);
@@ -889,6 +893,10 @@ namespace HC_Odontologicas.Models
 			modelBuilder.Entity<PlantillaCorreoElectronico>(entity =>
 			{
 				entity.HasKey(e => e.Codigo);
+
+				entity.Property(e => e.Codigo)
+					.HasMaxLength(4)
+					.IsUnicode(false);
 
 				entity.Property(e => e.Asunto)
 					.IsRequired()

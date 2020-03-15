@@ -7,7 +7,7 @@ namespace HC_Odontologicas.Models
 {
     public partial class PlantillaCertificadoMedico
     {
-        public int Codigo { get; set; }
+        public string Codigo { get; set; }
         [Required(ErrorMessage = "Campo requerido.")]
         public string Nombre { get; set; }
         [Required(ErrorMessage = "Campo requerido.")]

@@ -50,6 +50,7 @@ namespace HC_Odontologicas.Controllers
 					var fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 					var fechaInicioDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 00, 00, 00);
 					var fechaInicioFinDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 23, 59, 59);
+					
 					var citaOdontologica = from c in _context.CitaOdontologica.Include(a => a.Personal).Include(a => a.Paciente).Where(a => a.FechaInicio > fechaInicioDia && a.FechaInicio < fechaInicioFinDia).OrderBy(p => p.FechaInicio) select c; //Include(h => h.Paciente).Include(hc => hc.Personal)
 
 
@@ -81,9 +82,44 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-
-		public IActionResult CitaOdontologica()
+		// GET: CitasOdontologicas/Edit/5
+		public async Task<IActionResult> Edit(string id)
 		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			var citaOdontologica = await _context.CitaOdontologica.FindAsync(id);
+			if (citaOdontologica == null)
+			{
+				return NotFound();
+			}
+			ViewData["CodigoPaciente"] = new SelectList(_context.Paciente, "Codigo", "Codigo", citaOdontologica.CodigoPaciente);
+			ViewData["CodigoPersonal"] = new SelectList(_context.Personal, "Codigo", "Codigo", citaOdontologica.CodigoPersonal);
+			return View(citaOdontologica);
+			//Anamnesis anamnesis = new Anamnesis();
+			//return View(anamnesis);
+		}
+		public async Task<IActionResult> AtenderCitaOdontologica(string Codigo)
+		{
+			Codigo = Encriptacion.Decrypt(Codigo);
+
+			var citaOdontologica = await _context.CitaOdontologica.FindAsync(Codigo);
+			
+
+			//var cita = _context.CitaOdontologica.Where(c => c.Codigo == codigo).SingleOrDefault();
+			var paciente = _context.Paciente.Where(p => p.Codigo == citaOdontologica.CodigoPaciente).Include(p => p.Facultad).Include(p => p.Carrera).SingleOrDefault();
+
+			//datos del paciente
+			ViewData["Cedula"] = paciente.Identificacion;
+			ViewData["Nombre"] = paciente.NombreCompleto;
+			ViewData["Direccion"] = paciente.Direccion;
+			ViewData["Correo"] = paciente.MailEpn;
+			ViewData["Telefono"] = paciente.Celular;
+			ViewData["Facultad"] = paciente.Facultad.Nombre;
+			ViewData["Carrera"] = paciente.Carrera.Nombre;
+
 			//paciente
 			List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
 			ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
@@ -155,30 +191,7 @@ namespace HC_Odontologicas.Controllers
 			ViewData["CodigoPersonal"] = new SelectList(_context.Personal, "Codigo", "Codigo", citaOdontologica.CodigoPersonal);
 			return View(citaOdontologica);
 		}
-
-		// GET: CitasOdontologicas/Edit/5
-		public async Task<IActionResult> Edit(string id)
-		{
-			if (id == null)
-			{
-				return NotFound();
-			}
-
-			var citaOdontologica = await _context.CitaOdontologica.FindAsync(id);
-			if (citaOdontologica == null)
-			{
-				return NotFound();
-			}
-			ViewData["CodigoPaciente"] = new SelectList(_context.Paciente, "Codigo", "Codigo", citaOdontologica.CodigoPaciente);
-			ViewData["CodigoPersonal"] = new SelectList(_context.Personal, "Codigo", "Codigo", citaOdontologica.CodigoPersonal);
-			return View(citaOdontologica);
-
-
-			//Anamnesis anamnesis = new Anamnesis();
-			//return View(anamnesis);
-
-		}
-
+		
 
 		//[TempData]
 		//public string CodigoCitaAlAtender { get; set; }

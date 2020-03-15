@@ -113,7 +113,11 @@ namespace HC_Odontologicas.Controllers
                 try
                 {
                     if (ModelState.IsValid)
-                    {                       
+                    {
+                        Int64 maxCodigo = 0;
+                        maxCodigo = Convert.ToInt64(_context.PlantillaCertificadoMedico.Max(f => f.Codigo));
+                        maxCodigo += 1;
+                        plantillaCertificadoMedico.Codigo = maxCodigo.ToString("D4");
                         _context.Add(plantillaCertificadoMedico);
                         await _context.SaveChangesAsync();
                         string clave = plantillaCertificadoMedico.Nombre;
@@ -147,13 +151,13 @@ namespace HC_Odontologicas.Controllers
         }
 
         // GET: PlantillasCertificadosMedicos/Edit/5
-        public async Task<IActionResult> Edit(int? codigo)
+        public async Task<IActionResult> Edit(string codigo)
         {
             var i = (ClaimsIdentity)User.Identity;
             if (i.IsAuthenticated)
             {
                 var permisos = i.Claims.Where(c => c.Type == "PlantillasCertificadosMedicos").Select(c => c.Value).SingleOrDefault().Split(";");
-                codigo =Convert.ToInt32(Encriptacion.Decrypt(codigo.ToString()));
+                codigo = Encriptacion.Decrypt(codigo);
                 if (Convert.ToBoolean(permisos[2]))
                 {
                     if (codigo == null)
@@ -192,10 +196,10 @@ namespace HC_Odontologicas.Controllers
                     {
                         try
                         {
-                            plantillaCertificadoMedico.Codigo =Convert.ToInt32(Encriptacion.Decrypt(plantillaCertificadoMedico.Codigo.ToString()));
+                            plantillaCertificadoMedico.Codigo =Encriptacion.Decrypt(plantillaCertificadoMedico.Codigo);
                             _context.Update(plantillaCertificadoMedico);
                             await _context.SaveChangesAsync();
-                            await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "PlantillaCertificadoMedico", plantillaCertificadoMedico.Codigo.ToString(), "U");
+                            await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "PlantillaCertificadoMedico", plantillaCertificadoMedico.Codigo, "U");
                             ViewBag.Message = "Save";
 
                             return View(plantillaCertificadoMedico);
@@ -228,7 +232,7 @@ namespace HC_Odontologicas.Controllers
 
         // POST: PlantillasCertificadosMedicos/Delete/5
         [HttpPost]        
-        public async Task<string> DeleteConfirmed(int codigo)
+        public async Task<string> DeleteConfirmed(string codigo)
         {
             try
             {
@@ -236,7 +240,7 @@ namespace HC_Odontologicas.Controllers
                 var plantillaCertificadoMedico = await _context.PlantillaCertificadoMedico.SingleOrDefaultAsync(f => f.Codigo == codigo);
                 _context.PlantillaCertificadoMedico.Remove(plantillaCertificadoMedico);
                 await _context.SaveChangesAsync();
-                await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "PlantillaCertificadoMedico", plantillaCertificadoMedico.Codigo.ToString(), "D");
+                await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "PlantillaCertificadoMedico", plantillaCertificadoMedico.Codigo, "D");
                 return "Delete";
 
             }

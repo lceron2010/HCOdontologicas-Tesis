@@ -95,7 +95,7 @@ namespace HC_Odontologicas.Controllers
 				if (Convert.ToBoolean(permisos[1]))
 				{
 
-					RecetaMedica recetaMedica = new RecetaMedica();
+					Odontograma odontograma = new Odontograma();
 
 					//llenar combos de paciente y doctor select * from citaodontologica where HoraInicio >= '9:00' and HoraFin <= '10:30'
 
@@ -117,13 +117,13 @@ namespace HC_Odontologicas.Controllers
 						Personal.Insert(0, vacio);
 						Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
 						Paciente.Insert(0, vacio);
-						recetaMedica.CodigoCitaOdontologica = null;
+						odontograma.CodigoCitaOdontologica = null;
 					}
 					else
 					{
 						Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", cita.CodigoPersonal).ToList();
 						Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", cita.CodigoPaciente).ToList();
-						recetaMedica.CodigoCitaOdontologica = cita.Codigo;
+						odontograma.CodigoCitaOdontologica = cita.Codigo;
 					}
 
 					ViewData["CodigoPersonal"] = Personal;

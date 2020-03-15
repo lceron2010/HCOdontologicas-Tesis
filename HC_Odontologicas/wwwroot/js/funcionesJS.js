@@ -148,6 +148,11 @@ function cargarDatosCarrera(Facultad) {
 }
 
 
+function abrir() {
+	var div = document.getElementById('menu');
+	div.style.display === "block";
+}
+
 //odontograma
 
 //mostrar y ocultar la lista de opciones
@@ -508,20 +513,19 @@ function GuardarDatosOdontograma(accion) {
 	//var data = new FormData();
 	//data.append('imagen', $('#svg742')[0].children[3]);
 
-	const codigoPaciente = $('#CodigoPaciente')[0].value;
-	const codigoPersonal = $('#CodigoPersonal')[0].value;
-	let codigoCitaOdontologica = null;
-	let codigo = null;
-	if (accion === "editar") {
-		codigoCitaOdontologica = $('#CodigoCitaOdontologica')[0].value;
-		codigo = $('#Codigo')[0].value;
-	}
+	//const codigoPaciente = $('#CodigoPaciente')[0].value;
+	//const codigoPersonal = $('#CodigoPersonal')[0].value;
+	let codigoCitaOdontologica = $('#Codigo')[0].value;
+	//let codigo = null;
+	//if (accion === "editar") {
+	//	codigoCitaOdontologica = $('#CodigoCitaOdontologica')[0].value;
+	//	codigo = $('#Codigo')[0].value;
+	//}
 	
 	//leer los detalles de pieza.
 	var listaOdontogramaDetalle = [];
 	const odontogramaDato = $('#svg742')[0].children[3];
 	for (var j = 0; j < odontogramaDato.childElementCount; j++) {
-
 		if (odontogramaDato.children[j].id.charAt(0) === "g") {
 			datos = odontogramaDato.children[j]; 
 			for (var i = 0; i < datos.childElementCount; i++) {				
@@ -576,7 +580,7 @@ function GuardarDatosOdontograma(accion) {
 	console.log(listaOdontogramaDetalle);
 	var odontograma = [
 		{
-			CodigoPaciente: codigoPaciente, CodigoPersonal: codigoPersonal, CodigoCitaOdontologica: codigoCitaOdontologica, Codigo: codigo,
+			CodigoCitaOdontologica: codigoCitaOdontologica,
 			OdontogramaDetalle: listaOdontogramaDetalle
 		}
 	];

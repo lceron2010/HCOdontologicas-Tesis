@@ -30,7 +30,7 @@ namespace HC_Odontologicas.Controllers
             if (i.IsAuthenticated)
             {
                 //Permisos de usuario
-                var permisos = i.Claims.Where(c => c.Type == "PlantillaConcentimientosInformados").Select(c => c.Value).SingleOrDefault().Split(";");
+                var permisos = i.Claims.Where(c => c.Type == "PlantillaConsentimientosInformados").Select(c => c.Value).SingleOrDefault().Split(";");
                 ViewData["Crear"] = Convert.ToBoolean(permisos[1]);
                 ViewData["Editar"] = Convert.ToBoolean(permisos[2]);
                 ViewData["Eliminar"] = Convert.ToBoolean(permisos[3]);
@@ -82,7 +82,7 @@ namespace HC_Odontologicas.Controllers
             var i = (ClaimsIdentity)User.Identity;
             if (i.IsAuthenticated)
             {
-                var permisos = i.Claims.Where(c => c.Type == "PlantillaConcentimientosInformados").Select(c => c.Value).SingleOrDefault().Split(";");
+                var permisos = i.Claims.Where(c => c.Type == "PlantillaConsentimientosInformados").Select(c => c.Value).SingleOrDefault().Split(";");
 
                 if (Convert.ToBoolean(permisos[1]))
                 {
@@ -90,7 +90,7 @@ namespace HC_Odontologicas.Controllers
                     return View();
                 }
                 else
-                    return Redirect("../PlantillaConcentimientosInformados");
+                    return Redirect("../PlantillaConsentimientosInformados");
             }
             else
             {
@@ -146,7 +146,7 @@ namespace HC_Odontologicas.Controllers
         public async Task<IActionResult> Edit(String codigo)
         {
             var i = (ClaimsIdentity)User.Identity;
-            if (i.IsAuthenticated)
+            if (i.IsAuthenticated) 
             {
                 var permisos = i.Claims.Where(c => c.Type == "PlantillaConsentimientosInformados").Select(c => c.Value).SingleOrDefault().Split(";");
                 codigo = Encriptacion.Decrypt(codigo);
@@ -163,7 +163,7 @@ namespace HC_Odontologicas.Controllers
                     return View(plantillaConsentimientoInformado);
                 }
                 else
-                    return Redirect("../PlantillaConcentimientosInformados");
+                    return Redirect("../PlantillaConsentimientosInformados");
             }
             else
             {

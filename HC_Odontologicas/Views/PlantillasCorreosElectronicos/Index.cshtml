@@ -1,47 +1,53 @@
 ﻿@model IEnumerable<HC_Odontologicas.Models.PlantillaCorreoElectronico>
 @using HC_Odontologicas.FuncionesGenerales;
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Index";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h4>Plantilla Correo Electrónico</h4>
 @if ((bool)ViewData["Crear"])
 {
-<a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> Nuevo</a>
+	<a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> Nuevo</a>
 }
 <br />
 <br />
 @* Buscar *@
 <form class="form-inline" asp-action="Index" method="get">
-    <input class="form-control mr-sm-2" type="search" name="search" placeholder="Buscar..." value="@ViewData["Filter"]">
-    <button class="btn btn-sm btn-primary" type="submit">Buscar</button>
-    <a asp-action="Index" class="btn btn-sm btn-danger" title="Limpiar filtro">Limpiar</a>
+	<input class="form-control mr-sm-2" type="search" name="search" placeholder="Buscar..." value="@ViewData["Filter"]">
+	<button class="btn btn-sm btn-primary" type="submit">Buscar</button>
+	<a asp-action="Index" class="btn btn-sm btn-danger" title="Limpiar filtro">Limpiar</a>
 </form>
 <br />
 <table class="table">
-    <thead>
-        <tr>
+	<thead>
+		<tr>
 
-            <th>
-               Asunto
-            </th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
+			<th>
+				Asunto
+			</th>
+			<th>Acciones</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.Asunto)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo.ToString())" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Editar"><i class="fa fa-edit"></i> Editar</a>
-                    <a onclick="eliminar('@item.Codigo','../PlantillasCorreosElectronicos/DeleteConfirmed','/../PlantillasCorreosElectronicos')" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Eliminar"><i class="fa fa-trash"></i> Eliminar</a>    >
-                </td>
-            </tr>
-        }
-    </tbody>
+				<td>
+					@Html.DisplayFor(modelItem => item.Asunto)
+				</td>
+				<td>
+					@if ((bool)ViewData["Editar"])
+					{
+						<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo.ToString())" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Editar"><i class="fa fa-edit"></i> Editar</a>
+					}
+					@if ((bool)ViewData["Eliminar"])
+					{
+						<a onclick="eliminar('@item.Codigo','../PlantillasCorreosElectronicos/DeleteConfirmed','/../PlantillasCorreosElectronicos')" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Eliminar"><i class="fa fa-trash"></i> Eliminar</a>
+					}
+				</td>
+				</tr>
+		}
+</tbody>
 </table>

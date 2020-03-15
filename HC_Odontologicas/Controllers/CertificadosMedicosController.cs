@@ -273,7 +273,7 @@ namespace HC_Odontologicas.Controllers
                     if (codigo == null)
                         return NotFound();
 
-                    var plantillaCertificadoMedico = await _context.PlantillaCertificadoMedico.SingleOrDefaultAsync(f => f.Codigo == codigoInt);
+                    var plantillaCertificadoMedico = await _context.PlantillaCertificadoMedico.SingleOrDefaultAsync(f => f.Codigo == codigo);
 
                     if (plantillaCertificadoMedico == null)
                         return NotFound();
@@ -304,7 +304,7 @@ namespace HC_Odontologicas.Controllers
                 {                    
                     var codigoModel = ModelState.Root.Children[0].RawValue.ToString();
                     var codigo = Encriptacion.Decrypt(codigoModel);
-                    plantillaCertificadoMedico.Codigo = Convert.ToInt32(codigo);
+                    plantillaCertificadoMedico.Codigo = (codigo);
                    
                     ModelState.Remove("{Codigo}");
 
@@ -347,7 +347,7 @@ namespace HC_Odontologicas.Controllers
 
         // POST: CertificadosMedicos/Delete/5
         [HttpPost]
-        public async Task<String> DeleteConfirmed(int codigo)
+        public async Task<String> DeleteConfirmed(string codigo)
         {
             try
             {

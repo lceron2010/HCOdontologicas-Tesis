@@ -111,7 +111,11 @@ namespace HC_Odontologicas.Controllers
                 try
                 {
                     if (ModelState.IsValid)
-                    {                        
+                    {
+                        Int64 maxCodigo = 0;
+                        maxCodigo = Convert.ToInt64(_context.PlantillaCorreoElectronico.Max(f => f.Codigo));
+                        maxCodigo += 1;
+                        plantillaCorreoElectronico.Codigo = maxCodigo.ToString("D4");
                         _context.Add(plantillaCorreoElectronico);
                         await _context.SaveChangesAsync();
                         string clave = plantillaCorreoElectronico.Asunto;
@@ -145,13 +149,13 @@ namespace HC_Odontologicas.Controllers
         }
 
         // GET: PlantillasCorreosElectronicos/Edit/5
-        public async Task<IActionResult> Edit(int? codigo)
+        public async Task<IActionResult> Edit(string codigo)
         {
             var i = (ClaimsIdentity)User.Identity;
             if (i.IsAuthenticated)
             {
                 var permisos = i.Claims.Where(c => c.Type == "Cie10").Select(c => c.Value).SingleOrDefault().Split(";");
-                codigo =Convert.ToInt32(Encriptacion.Decrypt(codigo.ToString()));
+                codigo =Encriptacion.Decrypt(codigo);
                 if (Convert.ToBoolean(permisos[2]))
                 {
                     if (codigo == null)
@@ -190,10 +194,10 @@ namespace HC_Odontologicas.Controllers
                     {
                         try
                         {
-                            plantillaCorreoElectronico.Codigo = Convert.ToInt32(Encriptacion.Decrypt(plantillaCorreoElectronico.Codigo.ToString()));
+                            plantillaCorreoElectronico.Codigo = Encriptacion.Decrypt(plantillaCorreoElectronico.Codigo);
                             _context.Update(plantillaCorreoElectronico);
                             await _context.SaveChangesAsync();
-                            await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "PlantillaCorreoElectronico", plantillaCorreoElectronico.Codigo.ToString(), "U");
+                            await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "PlantillaCorreoElectronico", plantillaCorreoElectronico.Codigo, "U");
                             ViewBag.Message = "Save";
 
                             return View(plantillaCorreoElectronico);
@@ -227,7 +231,7 @@ namespace HC_Odontologicas.Controllers
 
         // POST: PlantillasCorreosElectronicos/Delete/5
         [HttpPost]        
-        public async Task<string> DeleteConfirmed(int codigo)
+        public async Task<string> DeleteConfirmed(string codigo)
         {
             try
             {
