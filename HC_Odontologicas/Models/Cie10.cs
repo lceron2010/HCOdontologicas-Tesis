@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HC_Odontologicas.Models
@@ -12,7 +13,9 @@ namespace HC_Odontologicas.Models
         }
 
         public string Codigo { get; set; }
+        [Required(ErrorMessage = "Campo requerido.")]
         public string CodigoInterno { get; set; }
+        [Required(ErrorMessage = "Campo requerido.")]
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
 

@@ -6,147 +6,248 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HC_Odontologicas.Models;
+using System.Security.Claims;
+using HC_Odontologicas.FuncionesGenerales;
 
 namespace HC_Odontologicas.Controllers
 {
     public class PlantillasRecetasMedicasController : Controller
     {
         private readonly HCOdontologicasContext _context;
-
+        private ValidacionesController validaciones;
+        private readonly AuditoriaController _auditoria;
         public PlantillasRecetasMedicasController(HCOdontologicasContext context)
         {
             _context = context;
+            validaciones = new ValidacionesController(_context);
+            _auditoria = new AuditoriaController(context);
         }
 
         // GET: PlantillasRecetasMedicas
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search, string Filter, string sortOrder, int? page)
         {
-            return View(await _context.PlantillaRecetaMedica.ToListAsync());
-        }
-
-        // GET: PlantillasRecetasMedicas/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
             {
-                return NotFound();
-            }
+                //Permisos de usuario
+                var permisos = i.Claims.Where(c => c.Type == "PlantillasRecetasMedicas").Select(c => c.Value).SingleOrDefault().Split(";");
+                ViewData["Crear"] = Convert.ToBoolean(permisos[1]);
+                ViewData["Editar"] = Convert.ToBoolean(permisos[2]);
+                ViewData["Eliminar"] = Convert.ToBoolean(permisos[3]);
+                ViewData["Exportar"] = Convert.ToBoolean(permisos[4]);
 
-            var plantillaRecetaMedica = await _context.PlantillaRecetaMedica
-                .FirstOrDefaultAsync(m => m.Codigo == id);
-            if (plantillaRecetaMedica == null)
+                if (Convert.ToBoolean(permisos[0]))
+                {
+                    //permite mantener la busqueda introducida en el filtro de busqueda
+                    if (search != null)
+                        page = 1;
+                    else
+                        search = Filter;
+
+                    ViewData["Filter"] = search;
+                    ViewData["CurrentSort"] = sortOrder;
+
+                    var plantillaReceta = from c in _context.PlantillaRecetaMedica select c;
+                    if (!String.IsNullOrEmpty(search))
+                        plantillaReceta = plantillaReceta.Where(s => s.Nombre.Contains(search));
+
+                    switch (sortOrder)
+                    {
+                        case "nombre_desc":
+                            plantillaReceta = plantillaReceta.OrderByDescending(s => s.Nombre);
+                            break;
+                        default:
+                            plantillaReceta = plantillaReceta.OrderBy(s => s.Nombre);
+                            break;
+
+                    }
+                    //int pageSize = 10;
+                    // return View(await Paginacion<Anamnesis>.CreateAsync(cie10, page ?? 1, pageSize));
+                    return View(plantillaReceta);
+                }
+                else
+                {
+                    return Redirect("../Home");
+                }
+            }
+            else
             {
-                return NotFound();
+                return Redirect("../Identity/Account/Login");
             }
-
-            return View(plantillaRecetaMedica);
         }
 
         // GET: PlantillasRecetasMedicas/Create
         public IActionResult Create()
         {
-            return View();
+
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
+            {
+                var permisos = i.Claims.Where(c => c.Type == "PlantillasRecetasMedicas").Select(c => c.Value).SingleOrDefault().Split(";");
+
+                if (Convert.ToBoolean(permisos[1]))
+                {
+
+                    return View();
+                }
+                else
+                    return Redirect("../PlantillasRecetasMedicas");
+            }
+            else
+            {
+                return Redirect("../Identity/Account/Login");
+            }
         }
 
         // POST: PlantillasRecetasMedicas/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Codigo,Nombre,Descripcion")] PlantillaRecetaMedica plantillaRecetaMedica)
+        [HttpPost]        
+        public async Task<IActionResult> Create(PlantillaRecetaMedica plantillaRecetaMedica)
         {
-            if (ModelState.IsValid)
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
             {
-                _context.Add(plantillaRecetaMedica);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        Int64 maxCodigo = 0;
+                        maxCodigo = Convert.ToInt64(_context.PlantillaRecetaMedica.Max(f => f.Codigo));
+                        maxCodigo += 1;
+                        plantillaRecetaMedica.Codigo = maxCodigo.ToString("D4");
+                        _context.Add(plantillaRecetaMedica);
+                        await _context.SaveChangesAsync();
+                        await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "PlantillaRecetaMedica", plantillaRecetaMedica.Codigo, "I");
+                        ViewBag.Message = "Save";
+                        return View(plantillaRecetaMedica);
+                    }
+                    return View(plantillaRecetaMedica);
+
+                }
+                catch (Exception e)
+                {
+                    string mensaje = e.Message;
+                    if (e.InnerException != null)
+                        mensaje = MensajesError.UniqueKey(e.InnerException.Message);
+
+                    ViewBag.Message = mensaje;
+                    return View(plantillaRecetaMedica);
+                }
             }
-            return View(plantillaRecetaMedica);
+            else
+            {
+                return Redirect("../Identity/Account/Login");
+            }
+
         }
 
         // GET: PlantillasRecetasMedicas/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(string codigo)
         {
-            if (id == null)
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
             {
-                return NotFound();
+                var permisos = i.Claims.Where(c => c.Type == "PlantillasRecetasMedicas").Select(c => c.Value).SingleOrDefault().Split(";");
+                codigo = Encriptacion.Decrypt(codigo);
+                if (Convert.ToBoolean(permisos[2]))
+                {
+                    if (codigo == null)
+                        return NotFound();
+
+                    var plantillaRecetaMedica = await _context.PlantillaRecetaMedica.SingleOrDefaultAsync(f => f.Codigo == codigo);
+
+                    if (plantillaRecetaMedica == null)
+                        return NotFound();
+
+                    return View(plantillaRecetaMedica);
+                }
+                else
+                    return Redirect("../PlantillasRecetasMedicas");
+            }
+            else
+            {
+                return Redirect("../Identity/Account/Login");
             }
 
-            var plantillaRecetaMedica = await _context.PlantillaRecetaMedica.FindAsync(id);
-            if (plantillaRecetaMedica == null)
-            {
-                return NotFound();
-            }
-            return View(plantillaRecetaMedica);
         }
 
         // POST: PlantillasRecetasMedicas/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Codigo,Nombre,Descripcion")] PlantillaRecetaMedica plantillaRecetaMedica)
+        public async Task<IActionResult> Edit(PlantillaRecetaMedica plantillaRecetaMedica)
         {
-            if (id != plantillaRecetaMedica.Codigo)
-            {
-                return NotFound();
-            }
+            var i = (ClaimsIdentity)User.Identity;
 
-            if (ModelState.IsValid)
+            if (i.IsAuthenticated)
             {
                 try
                 {
-                    _context.Update(plantillaRecetaMedica);
-                    await _context.SaveChangesAsync();
+
+                    if (ModelState.IsValid)
+                    {
+                        try
+                        {
+                            plantillaRecetaMedica.Codigo = Encriptacion.Decrypt(plantillaRecetaMedica.Codigo);
+                            _context.Update(plantillaRecetaMedica);
+                            await _context.SaveChangesAsync();
+                            await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "PlantillaRecetaMedica", plantillaRecetaMedica.Codigo, "U");
+                            ViewBag.Message = "Save";
+
+                            return View(plantillaRecetaMedica);
+                        }
+                        catch (DbUpdateConcurrencyException)
+                        {
+                            throw;
+                        }
+                    }
+
+                    return View(plantillaRecetaMedica);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception e)
                 {
-                    if (!PlantillaRecetaMedicaExists(plantillaRecetaMedica.Codigo))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    string mensaje = e.Message;
+                    if (e.InnerException != null)
+                        mensaje = MensajesError.UniqueKey(e.InnerException.Message);
+
+                    ViewBag.Message = mensaje;
+
+                    return View(plantillaRecetaMedica);
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(plantillaRecetaMedica);
+            else
+            {
+                return Redirect("../Identity/Account/Login");
+            }
         }
 
-        // GET: PlantillasRecetasMedicas/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var plantillaRecetaMedica = await _context.PlantillaRecetaMedica
-                .FirstOrDefaultAsync(m => m.Codigo == id);
-            if (plantillaRecetaMedica == null)
-            {
-                return NotFound();
-            }
-
-            return View(plantillaRecetaMedica);
-        }
+       
 
         // POST: PlantillasRecetasMedicas/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        [HttpPost]    
+        public async Task<string> DeleteConfirmed(string codigo)
         {
-            var plantillaRecetaMedica = await _context.PlantillaRecetaMedica.FindAsync(id);
-            _context.PlantillaRecetaMedica.Remove(plantillaRecetaMedica);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                var i = (ClaimsIdentity)User.Identity;
+                var plantillaRecetaMedica = await _context.PlantillaRecetaMedica.SingleOrDefaultAsync(f => f.Codigo == codigo);
+                _context.PlantillaRecetaMedica.Remove(plantillaRecetaMedica);
+                await _context.SaveChangesAsync();
+                await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "PlantillaRecetaMedica", plantillaRecetaMedica.Codigo, "D");
+                return "Delete";
+
+            }
+            catch (Exception e)
+            {
+                string mensaje = e.Message;
+                if (e.InnerException != null)
+                    mensaje = MensajesError.ForeignKey(e.InnerException.Message);
+                return mensaje;
+            }
+
         }
 
-        private bool PlantillaRecetaMedicaExists(string id)
-        {
-            return _context.PlantillaRecetaMedica.Any(e => e.Codigo == id);
-        }
+
     }
 }

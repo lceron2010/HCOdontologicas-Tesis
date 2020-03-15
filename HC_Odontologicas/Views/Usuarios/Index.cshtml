@@ -1,54 +1,61 @@
 ﻿@model IEnumerable<HC_Odontologicas.Models.Usuario>
-
+@using HC_Odontologicas.FuncionesGenerales;
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<h3>Usuarios</h3>
+@if ((bool)ViewData["Crear"])
+{
+    <a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> Nuevo</a>
+}
+<br />
+<br />
+@* Buscar *@
+<form class="form-inline" asp-action="Index" method="get">
+    <input class="form-control mr-sm-2" type="search" name="search" placeholder="Buscar..." value="@ViewData["Filter"]">
+    <button class="btn btn-sm btn-primary" type="submit">Buscar</button>
+    <a asp-action="Index" class="btn btn-sm btn-danger" title="Limpiar filtro">Limpiar</a>
+</form>
+<br />
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.NombreUsuario)
+               Perfil
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Contrasenia)
-            </th>
+               Nombre Usuario
+            </th>           
             <th>
-                @Html.DisplayNameFor(model => model.CorreoElectronico)
+              Correo Electrónico
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Perfil)
-            </th>
-            <th></th>
+
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Perfil.Nombre)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.NombreUsuario)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Contrasenia)
-            </td>
+           
             <td>
                 @Html.DisplayFor(modelItem => item.CorreoElectronico)
             </td>
+
             <td>
-                @Html.DisplayFor(modelItem => item.Perfil.Codigo)
+                <a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Editar"><i class="fa fa-edit"></i> Editar</a>
+                <a onclick="eliminar('@item.Codigo','../Usuarios/DeleteConfirmed','/../Usuarios')" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Eliminar"><i class="fa fa-trash"></i> Eliminar</a>
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Codigo">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Codigo">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Codigo">Delete</a>
-            </td>
+
         </tr>
-}
+        }
     </tbody>
 </table>

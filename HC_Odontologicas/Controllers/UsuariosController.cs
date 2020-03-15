@@ -11,27 +11,28 @@ using HC_Odontologicas.FuncionesGenerales;
 
 namespace HC_Odontologicas.Controllers
 {
-	public class CarrerasController : Controller
-	{
-		private readonly HCOdontologicasContext _context;
-		private ValidacionesController validaciones;
-		private readonly AuditoriaController _auditoria;
+    public class UsuariosController : Controller
+    {
+        private readonly HCOdontologicasContext _context;
+        private ValidacionesController validaciones;
+        private readonly AuditoriaController _auditoria;
 		SelectListItem vacio = new SelectListItem(value: "0", text: "Seleccione...");
-		public CarrerasController(HCOdontologicasContext context)
-		{
-			_context = context;
-			validaciones = new ValidacionesController(_context);
-			_auditoria = new AuditoriaController(context);
-		}
 
-		// GET: Carrera
+		public UsuariosController(HCOdontologicasContext context)
+        {
+            _context = context;
+            validaciones = new ValidacionesController(_context);
+            _auditoria = new AuditoriaController(context);
+        }
+
+		// GET: Usuario
 		public async Task<IActionResult> Index(string search, string Filter, string sortOrder, int? page)
 		{
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
 				//Permisos de usuario
-				var permisos = i.Claims.Where(c => c.Type == "Carreras").Select(c => c.Value).SingleOrDefault().Split(";");
+				var permisos = i.Claims.Where(c => c.Type == "Usuarios").Select(c => c.Value).SingleOrDefault().Split(";");
 				ViewData["Crear"] = Convert.ToBoolean(permisos[1]);
 				ViewData["Editar"] = Convert.ToBoolean(permisos[2]);
 				ViewData["Eliminar"] = Convert.ToBoolean(permisos[3]);
@@ -48,23 +49,23 @@ namespace HC_Odontologicas.Controllers
 					ViewData["Filter"] = search;
 					ViewData["CurrentSort"] = sortOrder;
 
-					var carrera = from c in _context.Carrera.Include(c => c.Facultad) select c;
+					var usuario = from c in _context.Usuario.Include(u=>u.Perfil) select c;
 					if (!String.IsNullOrEmpty(search))
-						carrera = carrera.Where(s => s.Nombre.Contains(search));
+						usuario = usuario.Where(s => s.NombreUsuario.Contains(search) || s.CorreoElectronico.Contains(search));
 
 					switch (sortOrder)
 					{
 						case "nombre_desc":
-							carrera = carrera.OrderByDescending(s => s.Nombre);
+							usuario = usuario.OrderByDescending(s => s.NombreUsuario);
 							break;
 						default:
-							carrera = carrera.OrderBy(s => s.Nombre);
+							usuario = usuario.OrderBy(s => s.NombreUsuario);
 							break;
 
 					}
 					//int pageSize = 10;
-					// return View(await Paginacion<Anamnesis>.CreateAsync(carrera, page ?? 1, pageSize));
-					return View(carrera);
+					// return View(await Paginacion<Anamnesis>.CreateAsync(usuario, page ?? 1, pageSize));
+					return View(usuario);
 				}
 				else
 				{
@@ -77,24 +78,24 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-		// GET: Carrera/Create
+		// GET: Usuario/Create
 		public IActionResult Create()
 		{
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
-				var permisos = i.Claims.Where(c => c.Type == "Carreras").Select(c => c.Value).SingleOrDefault().Split(";");
+				var permisos = i.Claims.Where(c => c.Type == "Usuarios").Select(c => c.Value).SingleOrDefault().Split(";");
 
 				if (Convert.ToBoolean(permisos[1]))
 				{
-					List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
-					Facultad.Insert(0, vacio);
-					ViewData["CodigoFacultad"] = Facultad;
+					List<SelectListItem> Perfil = new SelectList(_context.Perfil.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
+					Perfil.Insert(0, vacio);
+					ViewData["CodigoPerfil"] = Perfil;
 
 					return View();
 				}
 				else
-					return Redirect("../Carreras");
+					return Redirect("../Usuarios");
 			}
 			else
 			{
@@ -102,14 +103,14 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-		// POST: carrera/Create
+		// POST: Usuario/Create
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
-		public async Task<IActionResult> Create(Carrera carrera)
+		public async Task<IActionResult> Create(Usuario usuario)
 		{
 			var i = (ClaimsIdentity)User.Identity;
-			List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
+			List<SelectListItem> Perfil = new SelectList(_context.Perfil.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
 			if (i.IsAuthenticated)
 			{
 				try
@@ -117,20 +118,20 @@ namespace HC_Odontologicas.Controllers
 					if (ModelState.IsValid)
 					{
 						Int64 maxCodigo = 0;
-						maxCodigo = Convert.ToInt64(_context.Carrera.Max(f => f.Codigo));
+						maxCodigo = Convert.ToInt64(_context.Usuario.Max(f => f.Codigo));
 						maxCodigo += 1;
-						carrera.Codigo = maxCodigo.ToString("D4");
-						_context.Add(carrera);
+						usuario.Codigo = maxCodigo.ToString("D8");
+						_context.Add(usuario);
 						await _context.SaveChangesAsync();
-						await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Carrera", carrera.Codigo, "I");
-
-						Facultad.Insert(0, vacio);
-						ViewData["CodigoFacultad"] = Facultad;
+						await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Usuario", usuario.Codigo, "I");
+						
+						Perfil.Insert(0, vacio);
+						ViewData["CodigoPerfil"] = Perfil;
 
 						ViewBag.Message = "Save";
-						return View(carrera);
+						return View(usuario);
 					}
-					return View(carrera);
+					return View(usuario);
 
 				}
 				catch (Exception e)
@@ -139,12 +140,10 @@ namespace HC_Odontologicas.Controllers
 					if (e.InnerException != null)
 						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
 
-					ViewBag.Message = mensaje;
+					Perfil.Insert(0, vacio);
+					ViewData["CodigoPerfil"] = Perfil;
 
-					Facultad.Insert(0, vacio);
-					ViewData["CodigoFacultad"] = Facultad;
-
-					return View(carrera);
+					return View(usuario);
 				}
 			}
 			else
@@ -153,46 +152,46 @@ namespace HC_Odontologicas.Controllers
 			}
 
 		}
-		// GET: Carrera/Edit/5
+		// GET: Usuario/Edit/5
 		public async Task<IActionResult> Edit(String codigo)
 		{
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
-				var permisos = i.Claims.Where(c => c.Type == "Carreras").Select(c => c.Value).SingleOrDefault().Split(";");
+				var permisos = i.Claims.Where(c => c.Type == "Usuarios").Select(c => c.Value).SingleOrDefault().Split(";");
 				codigo = Encriptacion.Decrypt(codigo);
 				if (Convert.ToBoolean(permisos[2]))
 				{
 					if (codigo == null)
 						return NotFound();
 
-					var carrera = await _context.Carrera.SingleOrDefaultAsync(f => f.Codigo == codigo);
+					var usuario = await _context.Usuario.SingleOrDefaultAsync(f => f.Codigo == codigo);
 
-					if (carrera == null)
+					if (usuario == null)
 						return NotFound();
 
-					List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre), "Codigo", "Nombre", carrera.CodigoFacultad).ToList();
-					Facultad.Insert(0, vacio);
-					ViewData["CodigoFacultad"] = Facultad;
+					List<SelectListItem> Perfil = new SelectList(_context.Perfil.OrderBy(f => f.Nombre), "Codigo", "Nombre", usuario.CodigoPerfil).ToList();
+					Perfil.Insert(0, vacio);
+					ViewData["CodigoPerfil"] = Perfil;
 
-					return View(carrera);
+					return View(usuario);
 				}
 				else
-					return Redirect("../Carreras");
+					return Redirect("../Usuarios");
 			}
 			else
 			{
 				return Redirect("../Identity/Account/Login");
 			}
 		}
-		// POST: Carrera/Edit/5
+		// POST: Usuario/Edit/5
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
-		public async Task<IActionResult> Edit(Carrera carrera)
+		public async Task<IActionResult> Edit(Usuario usuario)
 		{
 			var i = (ClaimsIdentity)User.Identity;
-			List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
+			List<SelectListItem> Perfil = new SelectList(_context.Perfil.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
 			if (i.IsAuthenticated)
 			{
 				try
@@ -202,17 +201,16 @@ namespace HC_Odontologicas.Controllers
 					{
 						try
 						{
-							carrera.Codigo = Encriptacion.Decrypt(carrera.Codigo);
-							_context.Update(carrera);
+							usuario.Codigo = Encriptacion.Decrypt(usuario.Codigo);
+							_context.Update(usuario);
 							await _context.SaveChangesAsync();
-							await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Carrera", carrera.Codigo, "U");
-
-							Facultad.Insert(0, vacio);
-							ViewData["CodigoFacultad"] = Facultad;
-
+							await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Usuario", usuario.Codigo, "U");
 							ViewBag.Message = "Save";
 
-							return View(carrera);
+							Perfil.Insert(0, vacio);
+							ViewData["CodigoPerfil"] = Perfil;
+
+							return View(usuario);
 						}
 						catch (DbUpdateConcurrencyException)
 						{
@@ -220,10 +218,10 @@ namespace HC_Odontologicas.Controllers
 						}
 					}
 
-					Facultad.Insert(0, vacio);
-					ViewData["CodigoFacultad"] = Facultad;
+					Perfil.Insert(0, vacio);
+					ViewData["CodigoPerfil"] = Perfil;
 
-					return View(carrera);
+					return View(usuario);
 				}
 				catch (Exception e)
 				{
@@ -231,12 +229,12 @@ namespace HC_Odontologicas.Controllers
 					if (e.InnerException != null)
 						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
 
-					Facultad.Insert(0, vacio);
-					ViewData["CodigoFacultad"] = Facultad;
+					Perfil.Insert(0, vacio);
+					ViewData["CodigoPerfil"] = Perfil;
 
 					ViewBag.Message = mensaje;
 
-					return View(carrera);
+					return View(usuario);
 				}
 			}
 			else
@@ -244,19 +242,17 @@ namespace HC_Odontologicas.Controllers
 				return Redirect("../Identity/Account/Login");
 			}
 		}
-
-
-		// POST: Carrera/Delete/5
+		// POST: usuario/Delete/5
 		[HttpPost]
 		public async Task<String> DeleteConfirmed(string codigo)
 		{
 			try
 			{
 				var i = (ClaimsIdentity)User.Identity;
-				var carrera = await _context.Carrera.SingleOrDefaultAsync(f => f.Codigo == codigo);
-				_context.Carrera.Remove(carrera);
+				var usuario = await _context.Usuario.SingleOrDefaultAsync(f => f.Codigo == codigo);
+				_context.Usuario.Remove(usuario);
 				await _context.SaveChangesAsync();
-				await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Carrera", carrera.Codigo, "D");
+				await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Usuario", usuario.Codigo, "D");
 				return "Delete";
 
 			}

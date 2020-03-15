@@ -225,5 +225,8 @@
 	animation-fill-mode: both;
 }
 
+/*botones defs acciones editat, eliminar*/
 
-
+.colorBordeBotonAccion {
+	border-color: #acb2b7;
+}

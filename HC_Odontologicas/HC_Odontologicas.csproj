@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <Folder Include="Context\" />
+    <Folder Include="wwwroot\lib\dataTables\" />
   </ItemGroup>
 
 

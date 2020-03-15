@@ -6,147 +6,249 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HC_Odontologicas.Models;
+using System.Security.Claims;
+using HC_Odontologicas.FuncionesGenerales;
 
 namespace HC_Odontologicas.Controllers
 {
     public class PlantillasCorreosElectronicosController : Controller
     {
         private readonly HCOdontologicasContext _context;
-
+        private ValidacionesController validaciones;
+        private readonly AuditoriaController _auditoria;
         public PlantillasCorreosElectronicosController(HCOdontologicasContext context)
         {
             _context = context;
+            validaciones = new ValidacionesController(_context);
+            _auditoria = new AuditoriaController(context);
         }
 
         // GET: PlantillasCorreosElectronicos
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search, string Filter, string sortOrder, int? page)
         {
-            return View(await _context.PlantillaCorreoElectronico.ToListAsync());
-        }
-
-        // GET: PlantillasCorreosElectronicos/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
             {
-                return NotFound();
-            }
+                //Permisos de usuario
+                var permisos = i.Claims.Where(c => c.Type == "PlantillasCorreosElectronicos").Select(c => c.Value).SingleOrDefault().Split(";");
+                ViewData["Crear"] = Convert.ToBoolean(permisos[1]);
+                ViewData["Editar"] = Convert.ToBoolean(permisos[2]);
+                ViewData["Eliminar"] = Convert.ToBoolean(permisos[3]);
+                ViewData["Exportar"] = Convert.ToBoolean(permisos[4]);
 
-            var plantillaCorreoElectronico = await _context.PlantillaCorreoElectronico
-                .FirstOrDefaultAsync(m => m.Codigo == id);
-            if (plantillaCorreoElectronico == null)
+                if (Convert.ToBoolean(permisos[0]))
+                {
+                    //permite mantener la busqueda introducida en el filtro de busqueda
+                    if (search != null)
+                        page = 1;
+                    else
+                        search = Filter;
+
+                    ViewData["Filter"] = search;
+                    ViewData["CurrentSort"] = sortOrder;
+
+                    var plantillaCorreo = from c in _context.PlantillaCorreoElectronico select c;
+                    if (!String.IsNullOrEmpty(search))
+                        plantillaCorreo = plantillaCorreo.Where(s => s.Asunto.Contains(search));
+
+                    switch (sortOrder)
+                    {
+                        case "nombre_desc":
+                            plantillaCorreo = plantillaCorreo.OrderByDescending(s => s.Asunto);
+                            break;
+                        default:
+                            plantillaCorreo = plantillaCorreo.OrderBy(s => s.Asunto);
+                            break;
+
+                    }
+                    //int pageSize = 10;
+                    // return View(await Paginacion<Anamnesis>.CreateAsync(cie10, page ?? 1, pageSize));
+                    return View(plantillaCorreo);
+                }
+                else
+                {
+                    return Redirect("../Home");
+                }
+            }
+            else
             {
-                return NotFound();
+                return Redirect("../Identity/Account/Login");
             }
-
-            return View(plantillaCorreoElectronico);
         }
 
         // GET: PlantillasCorreosElectronicos/Create
         public IActionResult Create()
         {
-            return View();
+
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
+            {
+                var permisos = i.Claims.Where(c => c.Type == "PlantillasCorreosElectronicos").Select(c => c.Value).SingleOrDefault().Split(";");
+
+                if (Convert.ToBoolean(permisos[1]))
+                {
+
+                    return View();
+                }
+                else
+                    return Redirect("../PlantillasCorreosElectronicos");
+            }
+            else
+            {
+                return Redirect("../Identity/Account/Login");
+            }
         }
 
         // POST: PlantillasCorreosElectronicos/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Codigo,Nombre,Asunto,Cuerpo,Comentario")] PlantillaCorreoElectronico plantillaCorreoElectronico)
+        [HttpPost]        
+        public async Task<IActionResult> Create(PlantillaCorreoElectronico plantillaCorreoElectronico)
         {
-            if (ModelState.IsValid)
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
             {
-                _context.Add(plantillaCorreoElectronico);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    if (ModelState.IsValid)
+                    {                        
+                        _context.Add(plantillaCorreoElectronico);
+                        await _context.SaveChangesAsync();
+                        string clave = plantillaCorreoElectronico.Asunto;
+                        if (clave.Length > 54)
+                        {
+                            clave.Substring(0, 53);
+                        }
+
+                        await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "PlantillaCorreoElectronico", clave, "I");
+                        ViewBag.Message = "Save";
+                        return View(plantillaCorreoElectronico);
+                    }
+                    return View(plantillaCorreoElectronico);
+
+                }
+                catch (Exception e)
+                {
+                    string mensaje = e.Message;
+                    if (e.InnerException != null)
+                        mensaje = MensajesError.UniqueKey(e.InnerException.Message);
+
+                    ViewBag.Message = mensaje;
+                    return View(plantillaCorreoElectronico);
+                }
             }
-            return View(plantillaCorreoElectronico);
+            else
+            {
+                return Redirect("../Identity/Account/Login");
+            }
+
         }
 
         // GET: PlantillasCorreosElectronicos/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? codigo)
         {
-            if (id == null)
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
             {
-                return NotFound();
-            }
+                var permisos = i.Claims.Where(c => c.Type == "Cie10").Select(c => c.Value).SingleOrDefault().Split(";");
+                codigo =Convert.ToInt32(Encriptacion.Decrypt(codigo.ToString()));
+                if (Convert.ToBoolean(permisos[2]))
+                {
+                    if (codigo == null)
+                        return NotFound();
 
-            var plantillaCorreoElectronico = await _context.PlantillaCorreoElectronico.FindAsync(id);
-            if (plantillaCorreoElectronico == null)
-            {
-                return NotFound();
+                    var plantillaCorreoElectronico = await _context.PlantillaCorreoElectronico.SingleOrDefaultAsync(f => f.Codigo == codigo);
+
+                    if (plantillaCorreoElectronico == null)
+                        return NotFound();
+
+                    return View(plantillaCorreoElectronico);
+                }
+                else
+                    return Redirect("../PlantillasCorreosElectronicos");
             }
-            return View(plantillaCorreoElectronico);
+            else
+            {
+                return Redirect("../Identity/Account/Login");
+            }
         }
 
         // POST: PlantillasCorreosElectronicos/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Codigo,Nombre,Asunto,Cuerpo,Comentario")] PlantillaCorreoElectronico plantillaCorreoElectronico)
+        [HttpPost]        
+        public async Task<IActionResult> Edit(PlantillaCorreoElectronico plantillaCorreoElectronico)
         {
-            if (id != plantillaCorreoElectronico.Codigo)
-            {
-                return NotFound();
-            }
+            var i = (ClaimsIdentity)User.Identity;
 
-            if (ModelState.IsValid)
+            if (i.IsAuthenticated)
             {
                 try
                 {
-                    _context.Update(plantillaCorreoElectronico);
-                    await _context.SaveChangesAsync();
+
+                    if (ModelState.IsValid)
+                    {
+                        try
+                        {
+                            plantillaCorreoElectronico.Codigo = Convert.ToInt32(Encriptacion.Decrypt(plantillaCorreoElectronico.Codigo.ToString()));
+                            _context.Update(plantillaCorreoElectronico);
+                            await _context.SaveChangesAsync();
+                            await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "PlantillaCorreoElectronico", plantillaCorreoElectronico.Codigo.ToString(), "U");
+                            ViewBag.Message = "Save";
+
+                            return View(plantillaCorreoElectronico);
+                        }
+                        catch (DbUpdateConcurrencyException)
+                        {
+                            throw;
+                        }
+                    }
+
+                    return View(plantillaCorreoElectronico);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception e)
                 {
-                    if (!PlantillaCorreoElectronicoExists(plantillaCorreoElectronico.Codigo))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    string mensaje = e.Message;
+                    if (e.InnerException != null)
+                        mensaje = MensajesError.UniqueKey(e.InnerException.Message);
+
+                    ViewBag.Message = mensaje;
+
+                    return View(plantillaCorreoElectronico);
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(plantillaCorreoElectronico);
+            else
+            {
+                return Redirect("../Identity/Account/Login");
+            }
         }
 
-        // GET: PlantillasCorreosElectronicos/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var plantillaCorreoElectronico = await _context.PlantillaCorreoElectronico
-                .FirstOrDefaultAsync(m => m.Codigo == id);
-            if (plantillaCorreoElectronico == null)
-            {
-                return NotFound();
-            }
-
-            return View(plantillaCorreoElectronico);
-        }
+        
 
         // POST: PlantillasCorreosElectronicos/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]        
+        public async Task<string> DeleteConfirmed(int codigo)
         {
-            var plantillaCorreoElectronico = await _context.PlantillaCorreoElectronico.FindAsync(id);
-            _context.PlantillaCorreoElectronico.Remove(plantillaCorreoElectronico);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                var i = (ClaimsIdentity)User.Identity;
+                var plantillaCorreoElectronico = await _context.PlantillaCorreoElectronico.SingleOrDefaultAsync(f => f.Codigo == codigo);
+                _context.PlantillaCorreoElectronico.Remove(plantillaCorreoElectronico);
+                await _context.SaveChangesAsync();
+                await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "PlantillaCorreoElectronico", plantillaCorreoElectronico.Codigo.ToString(), "D");
+                return "Delete";
+
+            }
+            catch (Exception e)
+            {
+                string mensaje = e.Message;
+                if (e.InnerException != null)
+                    mensaje = MensajesError.ForeignKey(e.InnerException.Message);
+                return mensaje;
+            }
+
         }
 
-        private bool PlantillaCorreoElectronicoExists(int id)
-        {
-            return _context.PlantillaCorreoElectronico.Any(e => e.Codigo == id);
-        }
+
     }
 }

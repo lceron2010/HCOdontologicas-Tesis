@@ -6,147 +6,243 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HC_Odontologicas.Models;
+using System.Security.Claims;
+using HC_Odontologicas.FuncionesGenerales;
 
 namespace HC_Odontologicas.Controllers
 {
     public class PlantillaConsentimientosInformadosController : Controller
     {
         private readonly HCOdontologicasContext _context;
-
+        private ValidacionesController validaciones;
+        private readonly AuditoriaController _auditoria;
         public PlantillaConsentimientosInformadosController(HCOdontologicasContext context)
         {
             _context = context;
+            validaciones = new ValidacionesController(_context);
+            _auditoria = new AuditoriaController(context);
         }
 
         // GET: PlantillaConsentimientosInformados
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search, string Filter, string sortOrder, int? page)
         {
-            return View(await _context.PlantillaConsentimientoInformado.ToListAsync());
-        }
-
-        // GET: PlantillaConsentimientosInformados/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
             {
-                return NotFound();
-            }
+                //Permisos de usuario
+                var permisos = i.Claims.Where(c => c.Type == "PlantillaConcentimientosInformados").Select(c => c.Value).SingleOrDefault().Split(";");
+                ViewData["Crear"] = Convert.ToBoolean(permisos[1]);
+                ViewData["Editar"] = Convert.ToBoolean(permisos[2]);
+                ViewData["Eliminar"] = Convert.ToBoolean(permisos[3]);
+                ViewData["Exportar"] = Convert.ToBoolean(permisos[4]);
 
-            var plantillaConsentimientoInformado = await _context.PlantillaConsentimientoInformado
-                .FirstOrDefaultAsync(m => m.Codigo == id);
-            if (plantillaConsentimientoInformado == null)
+                if (Convert.ToBoolean(permisos[0]))
+                {
+                    //permite mantener la busqueda introducida en el filtro de busqueda
+                    if (search != null)
+                        page = 1;
+                    else
+                        search = Filter;
+
+                    ViewData["Filter"] = search;
+                    ViewData["CurrentSort"] = sortOrder;
+
+                    var plantillaConsentimientoInformado = from c in _context.PlantillaConsentimientoInformado select c;
+                    if (!String.IsNullOrEmpty(search))
+                        plantillaConsentimientoInformado = plantillaConsentimientoInformado.Where(s => s.Nombre.Contains(search));
+
+                    switch (sortOrder)
+                    {
+                        case "nombre_desc":
+                            plantillaConsentimientoInformado = plantillaConsentimientoInformado.OrderByDescending(s => s.Nombre);
+                            break;
+                        default:
+                            plantillaConsentimientoInformado = plantillaConsentimientoInformado.OrderBy(s => s.Nombre);
+                            break;
+
+                    }
+                    //int pageSize = 10;
+                    // return View(await Paginacion<Anamnesis>.CreateAsync(plantillaConsentimientoInformado, page ?? 1, pageSize));
+                    return View(plantillaConsentimientoInformado);
+                }
+                else
+                {
+                    return Redirect("../Home");
+                }
+            }
+            else
             {
-                return NotFound();
+                return Redirect("../Identity/Account/Login");
             }
-
-            return View(plantillaConsentimientoInformado);
         }
 
         // GET: PlantillaConsentimientosInformados/Create
         public IActionResult Create()
         {
-            return View();
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
+            {
+                var permisos = i.Claims.Where(c => c.Type == "PlantillaConcentimientosInformados").Select(c => c.Value).SingleOrDefault().Split(";");
+
+                if (Convert.ToBoolean(permisos[1]))
+                {
+
+                    return View();
+                }
+                else
+                    return Redirect("../PlantillaConcentimientosInformados");
+            }
+            else
+            {
+                return Redirect("../Identity/Account/Login");
+            }
         }
 
         // POST: PlantillaConsentimientosInformados/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Codigo,Nombre,Descripcion")] PlantillaConsentimientoInformado plantillaConsentimientoInformado)
+        [HttpPost]       
+        public async Task<IActionResult> Create(PlantillaConsentimientoInformado plantillaConsentimientoInformado)
         {
-            if (ModelState.IsValid)
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
             {
-                _context.Add(plantillaConsentimientoInformado);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        Int64 maxCodigo = 0;
+                        maxCodigo = Convert.ToInt64(_context.PlantillaConsentimientoInformado.Max(f => f.Codigo));
+                        maxCodigo += 1;
+                        plantillaConsentimientoInformado.Codigo = maxCodigo.ToString("D4");
+                        _context.Add(plantillaConsentimientoInformado);
+                        await _context.SaveChangesAsync();
+                        await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "plantillaConsentimientoInformado", plantillaConsentimientoInformado.Codigo, "I");
+                        ViewBag.Message = "Save";
+                        return View(plantillaConsentimientoInformado);
+                    }
+                    return View(plantillaConsentimientoInformado);
+
+                }
+                catch (Exception e)
+                {
+                    string mensaje = e.Message;
+                    if (e.InnerException != null)
+                        mensaje = MensajesError.UniqueKey(e.InnerException.Message);
+
+                    ViewBag.Message = mensaje;
+
+                    return View(plantillaConsentimientoInformado);
+                }
             }
-            return View(plantillaConsentimientoInformado);
+            else
+            {
+                return Redirect("../Identity/Account/Login");
+            }
+
         }
 
         // GET: PlantillaConsentimientosInformados/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(String codigo)
         {
-            if (id == null)
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
             {
-                return NotFound();
-            }
+                var permisos = i.Claims.Where(c => c.Type == "PlantillaConsentimientosInformados").Select(c => c.Value).SingleOrDefault().Split(";");
+                codigo = Encriptacion.Decrypt(codigo);
+                if (Convert.ToBoolean(permisos[2]))
+                {
+                    if (codigo == null)
+                        return NotFound();
 
-            var plantillaConsentimientoInformado = await _context.PlantillaConsentimientoInformado.FindAsync(id);
-            if (plantillaConsentimientoInformado == null)
-            {
-                return NotFound();
+                    var plantillaConsentimientoInformado = await _context.PlantillaConsentimientoInformado.SingleOrDefaultAsync(f => f.Codigo == codigo);
+
+                    if (plantillaConsentimientoInformado == null)
+                        return NotFound();
+
+                    return View(plantillaConsentimientoInformado);
+                }
+                else
+                    return Redirect("../PlantillaConcentimientosInformados");
             }
-            return View(plantillaConsentimientoInformado);
+            else
+            {
+                return Redirect("../Identity/Account/Login");
+            }
         }
 
         // POST: PlantillaConsentimientosInformados/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Codigo,Nombre,Descripcion")] PlantillaConsentimientoInformado plantillaConsentimientoInformado)
+        public async Task<IActionResult> Edit(PlantillaConsentimientoInformado plantillaConsentimientoInformado)
         {
-            if (id != plantillaConsentimientoInformado.Codigo)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
             {
                 try
                 {
-                    _context.Update(plantillaConsentimientoInformado);
-                    await _context.SaveChangesAsync();
+
+                    if (ModelState.IsValid)
+                    {
+                        try
+                        {
+                            plantillaConsentimientoInformado.Codigo = Encriptacion.Decrypt(plantillaConsentimientoInformado.Codigo);
+                            _context.Update(plantillaConsentimientoInformado);
+                            await _context.SaveChangesAsync();
+                            await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "plantillaConsentimientoInformado", plantillaConsentimientoInformado.Codigo, "U");
+                            ViewBag.Message = "Save";
+
+                            return View(plantillaConsentimientoInformado);
+                        }
+                        catch (DbUpdateConcurrencyException)
+                        {
+                            throw;
+                        }
+                    }
+
+                    return View(plantillaConsentimientoInformado);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception e)
                 {
-                    if (!PlantillaConsentimientoInformadoExists(plantillaConsentimientoInformado.Codigo))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    string mensaje = e.Message;
+                    if (e.InnerException != null)
+                        mensaje = MensajesError.UniqueKey(e.InnerException.Message);
+
+                    ViewBag.Message = mensaje;
+
+                    return View(plantillaConsentimientoInformado);
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(plantillaConsentimientoInformado);
-        }
-
-        // GET: PlantillaConsentimientosInformados/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
+            else
             {
-                return NotFound();
+                return Redirect("../Identity/Account/Login");
             }
-
-            var plantillaConsentimientoInformado = await _context.PlantillaConsentimientoInformado
-                .FirstOrDefaultAsync(m => m.Codigo == id);
-            if (plantillaConsentimientoInformado == null)
-            {
-                return NotFound();
-            }
-
-            return View(plantillaConsentimientoInformado);
         }
 
         // POST: PlantillaConsentimientosInformados/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        [HttpPost]        
+        public async Task<string> DeleteConfirmed(string codigo)
         {
-            var plantillaConsentimientoInformado = await _context.PlantillaConsentimientoInformado.FindAsync(id);
-            _context.PlantillaConsentimientoInformado.Remove(plantillaConsentimientoInformado);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                var i = (ClaimsIdentity)User.Identity;
+                var plantillaConsentimientoInformado = await _context.PlantillaConsentimientoInformado.SingleOrDefaultAsync(f => f.Codigo == codigo);
+                _context.PlantillaConsentimientoInformado.Remove(plantillaConsentimientoInformado);
+                await _context.SaveChangesAsync();
+                await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "PlantillaConsentimientoInformado", plantillaConsentimientoInformado.Codigo, "D");
+                return "Delete";
+
+            }
+            catch (Exception e)
+            {
+                string mensaje = e.Message;
+                if (e.InnerException != null)
+                    mensaje = MensajesError.ForeignKey(e.InnerException.Message);
+                return mensaje;
+            }
         }
 
-        private bool PlantillaConsentimientoInformadoExists(string id)
-        {
-            return _context.PlantillaConsentimientoInformado.Any(e => e.Codigo == id);
-        }
+        
     }
 }

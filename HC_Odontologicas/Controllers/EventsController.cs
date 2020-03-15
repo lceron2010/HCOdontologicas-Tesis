@@ -72,7 +72,7 @@ namespace HC_Odontologicas.Controllers
 			//enviar el mail
 
 			PlantillaCorreoElectronico correo = new PlantillaCorreoElectronico();
-			correo = _context.PlantillaCorreoElectronico.SingleOrDefault(p => p.Nombre.Contains("Cita"));
+			correo = _context.PlantillaCorreoElectronico.SingleOrDefault(p => p.Asunto.Contains("Cita"));
 			var paciente = _context.Paciente.Where(p => p.Codigo == apiEvent.paciente).FirstOrDefault();
 			var doctor = _context.Personal.Where(d => d.Codigo == apiEvent.doctor).FirstOrDefault();			
 			var soloFecha = Convert.ToDateTime(newEvent.FechaInicio.ToString("dd/MM/yyyy"));

@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace HC_Odontologicas.Models
 {
     public partial class PlantillaCorreoElectronico
     {
         public int Codigo { get; set; }
-        public string Nombre { get; set; }
+        [Required(ErrorMessage = "Campo requerido.")]
         public string Asunto { get; set; }
+        [Required(ErrorMessage = "Campo requerido.")]
         public string Cuerpo { get; set; }
-        public string Comentario { get; set; }
+       
         
     }
 }

@@ -893,20 +893,12 @@ namespace HC_Odontologicas.Models
 				entity.Property(e => e.Asunto)
 					.IsRequired()
 					.HasMaxLength(256)
-					.IsUnicode(false);
-
-				entity.Property(e => e.Comentario)
-					.HasMaxLength(128)
-					.IsUnicode(false);
+					.IsUnicode(false);				
 
 				entity.Property(e => e.Cuerpo)
 					.IsRequired()
 					.IsUnicode(false);
 
-				entity.Property(e => e.Nombre)
-					.IsRequired()
-					.HasMaxLength(32)
-					.IsUnicode(false);
 			});
 
 			modelBuilder.Entity<PlantillaRecetaMedica>(entity =>

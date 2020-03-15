@@ -6,147 +6,243 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HC_Odontologicas.Models;
+using System.Security.Claims;
+using HC_Odontologicas.FuncionesGenerales;
 
 namespace HC_Odontologicas.Controllers
 {
     public class EnfermedadesController : Controller
     {
         private readonly HCOdontologicasContext _context;
-
+        private ValidacionesController validaciones;
+        private readonly AuditoriaController _auditoria;
         public EnfermedadesController(HCOdontologicasContext context)
         {
             _context = context;
+            validaciones = new ValidacionesController(_context);
+            _auditoria = new AuditoriaController(context);
         }
 
         // GET: Enfermedads
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search, string Filter, string sortOrder, int? page)
         {
-            return View(await _context.Enfermedad.ToListAsync());
-        }
-
-        // GET: Enfermedads/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
             {
-                return NotFound();
-            }
+                //Permisos de usuario
+                var permisos = i.Claims.Where(c => c.Type == "Enfermedades").Select(c => c.Value).SingleOrDefault().Split(";");
+                ViewData["Crear"] = Convert.ToBoolean(permisos[1]);
+                ViewData["Editar"] = Convert.ToBoolean(permisos[2]);
+                ViewData["Eliminar"] = Convert.ToBoolean(permisos[3]);
+                ViewData["Exportar"] = Convert.ToBoolean(permisos[4]);
 
-            var enfermedad = await _context.Enfermedad
-                .FirstOrDefaultAsync(m => m.Codigo == id);
-            if (enfermedad == null)
+                if (Convert.ToBoolean(permisos[0]))
+                {
+                    //permite mantener la busqueda introducida en el filtro de busqueda
+                    if (search != null)
+                        page = 1;
+                    else
+                        search = Filter;
+
+                    ViewData["Filter"] = search;
+                    ViewData["CurrentSort"] = sortOrder;
+
+                    var enfermedad = from c in _context.Enfermedad select c;
+                    if (!String.IsNullOrEmpty(search))
+                        enfermedad = enfermedad.Where(s => s.Nombre.Contains(search));
+
+                    switch (sortOrder)
+                    {
+                        case "nombre_desc":
+                            enfermedad = enfermedad.OrderByDescending(s => s.Nombre);
+                            break;
+                        default:
+                            enfermedad = enfermedad.OrderBy(s => s.Nombre);
+                            break;
+
+                    }
+                    //int pageSize = 10;
+                    // return View(await Paginacion<Anamnesis>.CreateAsync(enfermedad, page ?? 1, pageSize));
+                    return View(enfermedad);
+                }
+                else
+                {
+                    return Redirect("../Home");
+                }
+            }
+            else
             {
-                return NotFound();
+                return Redirect("../Identity/Account/Login");
             }
-
-            return View(enfermedad);
         }
 
         // GET: Enfermedads/Create
         public IActionResult Create()
         {
-            return View();
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
+            {
+                var permisos = i.Claims.Where(c => c.Type == "Enfermedades").Select(c => c.Value).SingleOrDefault().Split(";");
+
+                if (Convert.ToBoolean(permisos[1]))
+                {
+
+                    return View();
+                }
+                else
+                    return Redirect("../Enfermedades");
+            }
+            else
+            {
+                return Redirect("../Identity/Account/Login");
+            }
         }
 
         // POST: Enfermedads/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Codigo,Nombre,Descripcion,Estado")] Enfermedad enfermedad)
+        [HttpPost]        
+        public async Task<IActionResult> Create(Enfermedad enfermedad)
         {
-            if (ModelState.IsValid)
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
             {
-                _context.Add(enfermedad);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        Int64 maxCodigo = 0;
+                        maxCodigo = Convert.ToInt64(_context.Enfermedad.Max(f => f.Codigo));
+                        maxCodigo += 1;
+                        enfermedad.Codigo = maxCodigo.ToString("D8");
+                        _context.Add(enfermedad);
+                        await _context.SaveChangesAsync();
+                        await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Enfermedad", enfermedad.Codigo, "I");
+                        ViewBag.Message = "Save";
+                        return View(enfermedad);
+                    }
+                    return View(enfermedad);
+
+                }
+                catch (Exception e)
+                {
+                    string mensaje = e.Message;
+                    if (e.InnerException != null)
+                        mensaje = MensajesError.UniqueKey(e.InnerException.Message);
+                    ViewBag.Message = mensaje;
+
+                    return View(enfermedad);
+                }
             }
-            return View(enfermedad);
+            else
+            {
+                return Redirect("../Identity/Account/Login");
+            }
+
         }
 
         // GET: Enfermedads/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(String codigo)
         {
-            if (id == null)
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
             {
-                return NotFound();
-            }
+                var permisos = i.Claims.Where(c => c.Type == "Enfermedades").Select(c => c.Value).SingleOrDefault().Split(";");
+                codigo = Encriptacion.Decrypt(codigo);
+                if (Convert.ToBoolean(permisos[2]))
+                {
+                    if (codigo == null)
+                        return NotFound();
 
-            var enfermedad = await _context.Enfermedad.FindAsync(id);
-            if (enfermedad == null)
-            {
-                return NotFound();
+                    var enfermedad = await _context.Enfermedad.SingleOrDefaultAsync(f => f.Codigo == codigo);
+
+                    if (enfermedad == null)
+                        return NotFound();
+
+                    return View(enfermedad);
+                }
+                else
+                    return Redirect("../Enfermedades");
             }
-            return View(enfermedad);
+            else
+            {
+                return Redirect("../Identity/Account/Login");
+            }
         }
 
         // POST: Enfermedads/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Codigo,Nombre,Descripcion,Estado")] Enfermedad enfermedad)
+        [HttpPost]        
+        public async Task<IActionResult> Edit(Enfermedad enfermedad)
         {
-            if (id != enfermedad.Codigo)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
             {
                 try
                 {
-                    _context.Update(enfermedad);
-                    await _context.SaveChangesAsync();
+
+                    if (ModelState.IsValid)
+                    {
+                        try
+                        {
+                            enfermedad.Codigo = Encriptacion.Decrypt(enfermedad.Codigo);
+                            _context.Update(enfermedad);
+                            await _context.SaveChangesAsync();
+                            await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Enfermedad", enfermedad.Codigo, "U");
+                            ViewBag.Message = "Save";
+
+                            return View(enfermedad);
+                        }
+                        catch (DbUpdateConcurrencyException)
+                        {
+                            throw;
+                        }
+                    }
+
+                    return View(enfermedad);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception e)
                 {
-                    if (!EnfermedadExists(enfermedad.Codigo))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    string mensaje = e.Message;
+                    if (e.InnerException != null)
+                        mensaje = MensajesError.UniqueKey(e.InnerException.Message);
+
+                    ViewBag.Message = mensaje;
+
+                    return View(enfermedad);
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(enfermedad);
+            else
+            {
+                return Redirect("../Identity/Account/Login");
+            }
+
         }
 
-        // GET: Enfermedads/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var enfermedad = await _context.Enfermedad
-                .FirstOrDefaultAsync(m => m.Codigo == id);
-            if (enfermedad == null)
-            {
-                return NotFound();
-            }
-
-            return View(enfermedad);
-        }
-
+     
         // POST: Enfermedads/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        [HttpPost]       
+        public async Task<string> DeleteConfirmed(string codigo)
         {
-            var enfermedad = await _context.Enfermedad.FindAsync(id);
-            _context.Enfermedad.Remove(enfermedad);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                var i = (ClaimsIdentity)User.Identity;
+                var enfermedad = await _context.Enfermedad.SingleOrDefaultAsync(f => f.Codigo == codigo);
+                _context.Enfermedad.Remove(enfermedad);
+                await _context.SaveChangesAsync();
+                await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Enfermedad", enfermedad.Codigo, "D");
+                return "Delete";
+
+            }
+            catch (Exception e)
+            {
+                string mensaje = e.Message;
+                if (e.InnerException != null)
+                    mensaje = MensajesError.ForeignKey(e.InnerException.Message);
+                return mensaje;
+            }
         }
 
-        private bool EnfermedadExists(string id)
-        {
-            return _context.Enfermedad.Any(e => e.Codigo == id);
-        }
     }
 }

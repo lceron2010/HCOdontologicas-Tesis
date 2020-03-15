@@ -6,147 +6,245 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HC_Odontologicas.Models;
+using System.Security.Claims;
+using HC_Odontologicas.FuncionesGenerales;
 
 namespace HC_Odontologicas.Controllers
 {
     public class TipoIdentificacionesController : Controller
     {
         private readonly HCOdontologicasContext _context;
-
+        private ValidacionesController validaciones;
+        private readonly AuditoriaController _auditoria;
         public TipoIdentificacionesController(HCOdontologicasContext context)
         {
             _context = context;
+            validaciones = new ValidacionesController(_context);
+            _auditoria = new AuditoriaController(context);
         }
 
         // GET: TipoIdentificaciones
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search, string Filter, string sortOrder, int? page)
         {
-            return View(await _context.TipoIdentificacion.ToListAsync());
-        }
-
-        // GET: TipoIdentificaciones/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
             {
-                return NotFound();
-            }
+                //Permisos de usuario
+                var permisos = i.Claims.Where(c => c.Type == "TipoIdentificaciones").Select(c => c.Value).SingleOrDefault().Split(";");
+                ViewData["Crear"] = Convert.ToBoolean(permisos[1]);
+                ViewData["Editar"] = Convert.ToBoolean(permisos[2]);
+                ViewData["Eliminar"] = Convert.ToBoolean(permisos[3]);
+                ViewData["Exportar"] = Convert.ToBoolean(permisos[4]);
 
-            var tipoIdentificacion = await _context.TipoIdentificacion
-                .FirstOrDefaultAsync(m => m.Codigo == id);
-            if (tipoIdentificacion == null)
+                if (Convert.ToBoolean(permisos[0]))
+                {
+                    //permite mantener la busqueda introducida en el filtro de busqueda
+                    if (search != null)
+                        page = 1;
+                    else
+                        search = Filter;
+
+                    ViewData["Filter"] = search;
+                    ViewData["CurrentSort"] = sortOrder;
+
+                    var tipoIdentificacion = from c in _context.TipoIdentificacion select c;
+                    if (!String.IsNullOrEmpty(search))
+                        tipoIdentificacion = tipoIdentificacion.Where(s => s.Nombre.Contains(search));
+
+                    switch (sortOrder)
+                    {
+                        case "nombre_desc":
+                            tipoIdentificacion = tipoIdentificacion.OrderByDescending(s => s.Nombre);
+                            break;
+                        default:
+                            tipoIdentificacion = tipoIdentificacion.OrderBy(s => s.Nombre);
+                            break;
+
+                    }
+                    //int pageSize = 10;
+                    // return View(await Paginacion<Anamnesis>.CreateAsync(cie10, page ?? 1, pageSize));
+                    return View(tipoIdentificacion);
+                }
+                else
+                {
+                    return Redirect("../Home");
+                }
+            }
+            else
             {
-                return NotFound();
+                return Redirect("../Identity/Account/Login");
             }
-
-            return View(tipoIdentificacion);
-        }
-
+        }      
         // GET: TipoIdentificaciones/Create
         public IActionResult Create()
         {
-            return View();
+
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
+            {
+                var permisos = i.Claims.Where(c => c.Type == "TipoIdentificaciones").Select(c => c.Value).SingleOrDefault().Split(";");
+
+                if (Convert.ToBoolean(permisos[1]))
+                {
+
+                    return View();
+                }
+                else
+                    return Redirect("../TipoIdentificaciones");
+            }
+            else
+            {
+                return Redirect("../Identity/Account/Login");
+            }
         }
 
         // POST: TipoIdentificaciones/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Codigo,Nombre,Descripcion")] TipoIdentificacion tipoIdentificacion)
+        [HttpPost]        
+        public async Task<IActionResult> Create(TipoIdentificacion tipoIdentificacion)
         {
-            if (ModelState.IsValid)
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
             {
-                _context.Add(tipoIdentificacion);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        Int64 maxCodigo = 0;
+                        maxCodigo = Convert.ToInt64(_context.TipoIdentificacion.Max(f => f.Codigo));
+                        maxCodigo += 1;
+                        tipoIdentificacion.Codigo = maxCodigo.ToString("D4");
+                        _context.Add(tipoIdentificacion);
+                        await _context.SaveChangesAsync();
+                        await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "TipoIdentificacion", tipoIdentificacion.Codigo, "I");
+                        ViewBag.Message = "Save";
+                        return View(tipoIdentificacion);
+                    }
+                    return View(tipoIdentificacion);
+
+                }
+                catch (Exception e)
+                {
+                    string mensaje = e.Message;
+                    if (e.InnerException != null)
+                        mensaje = MensajesError.UniqueKey(e.InnerException.Message);
+
+                    ViewBag.Message = mensaje;
+                    return View(tipoIdentificacion);
+                }
             }
-            return View(tipoIdentificacion);
+            else
+            {
+                return Redirect("../Identity/Account/Login");
+            }
+
         }
 
         // GET: TipoIdentificaciones/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(string codigo)
         {
-            if (id == null)
+            var i = (ClaimsIdentity)User.Identity;
+            if (i.IsAuthenticated)
             {
-                return NotFound();
+                var permisos = i.Claims.Where(c => c.Type == "TipoIdentificaciones").Select(c => c.Value).SingleOrDefault().Split(";");
+                codigo = Encriptacion.Decrypt(codigo);
+                if (Convert.ToBoolean(permisos[2]))
+                {
+                    if (codigo == null)
+                        return NotFound();
+
+                    var tipoIdentificacion = await _context.TipoIdentificacion.SingleOrDefaultAsync(f => f.Codigo == codigo);
+
+                    if (tipoIdentificacion == null)
+                        return NotFound();
+
+                    return View(tipoIdentificacion);
+                }
+                else
+                    return Redirect("../TipoIdentificaciones");
+            }
+            else
+            {
+                return Redirect("../Identity/Account/Login");
             }
 
-            var tipoIdentificacion = await _context.TipoIdentificacion.FindAsync(id);
-            if (tipoIdentificacion == null)
-            {
-                return NotFound();
-            }
-            return View(tipoIdentificacion);
         }
 
         // POST: TipoIdentificaciones/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Codigo,Nombre,Descripcion")] TipoIdentificacion tipoIdentificacion)
+        [HttpPost]        
+        public async Task<IActionResult> Edit(TipoIdentificacion tipoIdentificacion)
         {
-            if (id != tipoIdentificacion.Codigo)
-            {
-                return NotFound();
-            }
+            var i = (ClaimsIdentity)User.Identity;
 
-            if (ModelState.IsValid)
+            if (i.IsAuthenticated)
             {
                 try
                 {
-                    _context.Update(tipoIdentificacion);
-                    await _context.SaveChangesAsync();
+
+                    if (ModelState.IsValid)
+                    {
+                        try
+                        {
+                            tipoIdentificacion.Codigo = Encriptacion.Decrypt(tipoIdentificacion.Codigo);
+                            _context.Update(tipoIdentificacion);
+                            await _context.SaveChangesAsync();
+                            await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "TipoIdentificacion", tipoIdentificacion.Codigo, "U");
+                            ViewBag.Message = "Save";
+
+                            return View(tipoIdentificacion);
+                        }
+                        catch (DbUpdateConcurrencyException)
+                        {
+                            throw;
+                        }
+                    }
+
+                    return View(tipoIdentificacion);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception e)
                 {
-                    if (!TipoIdentificacionExists(tipoIdentificacion.Codigo))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    string mensaje = e.Message;
+                    if (e.InnerException != null)
+                        mensaje = MensajesError.UniqueKey(e.InnerException.Message);
+
+                    ViewBag.Message = mensaje;
+
+                    return View(tipoIdentificacion);
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(tipoIdentificacion);
-        }
-
-        // GET: TipoIdentificaciones/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
+            else
             {
-                return NotFound();
+                return Redirect("../Identity/Account/Login");
             }
-
-            var tipoIdentificacion = await _context.TipoIdentificacion
-                .FirstOrDefaultAsync(m => m.Codigo == id);
-            if (tipoIdentificacion == null)
-            {
-                return NotFound();
-            }
-
-            return View(tipoIdentificacion);
         }
 
         // POST: TipoIdentificaciones/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        [HttpPost]
+        public async Task<string> DeleteConfirmed(string codigo)
         {
-            var tipoIdentificacion = await _context.TipoIdentificacion.FindAsync(id);
-            _context.TipoIdentificacion.Remove(tipoIdentificacion);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                var i = (ClaimsIdentity)User.Identity;
+                var tipoIdentificacion = await _context.TipoIdentificacion.SingleOrDefaultAsync(f => f.Codigo == codigo);
+                _context.TipoIdentificacion.Remove(tipoIdentificacion);
+                await _context.SaveChangesAsync();
+                await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "tipoIdentificacion", tipoIdentificacion.Codigo, "D");
+                return "Delete";
+
+            }
+            catch (Exception e)
+            {
+                string mensaje = e.Message;
+                if (e.InnerException != null)
+                    mensaje = MensajesError.ForeignKey(e.InnerException.Message);
+                return mensaje;
+            }
+
         }
 
-        private bool TipoIdentificacionExists(string id)
-        {
-            return _context.TipoIdentificacion.Any(e => e.Codigo == id);
-        }
+
     }
 }

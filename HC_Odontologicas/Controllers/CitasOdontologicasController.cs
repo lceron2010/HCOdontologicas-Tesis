@@ -104,7 +104,7 @@ namespace HC_Odontologicas.Controllers
 			ViewData["CIE10"] = Cie10;
 
 			//concentimiento informado
-			var PlantillaCI = _context.PlantillaConsentimientoInformado.SingleOrDefault();
+			var PlantillaCI = _context.PlantillaConsentimientoInformado.Where(c => c.Nombre.Contains("Consentimiento Informado")).SingleOrDefault();
 			ViewData["Descripcion"] = PlantillaCI.Descripcion;
 
 			//receta medica

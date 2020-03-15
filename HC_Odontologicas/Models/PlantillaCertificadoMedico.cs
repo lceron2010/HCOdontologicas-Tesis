@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HC_Odontologicas.Models
@@ -7,7 +8,9 @@ namespace HC_Odontologicas.Models
     public partial class PlantillaCertificadoMedico
     {
         public int Codigo { get; set; }
+        [Required(ErrorMessage = "Campo requerido.")]
         public string Nombre { get; set; }
+        [Required(ErrorMessage = "Campo requerido.")]
         public string Descripcion { get; set; }
 
     }
