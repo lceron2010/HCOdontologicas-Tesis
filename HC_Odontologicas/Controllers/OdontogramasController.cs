@@ -142,10 +142,6 @@ namespace HC_Odontologicas.Controllers
 
 		}
 
-
-
-
-
 		// POST: Odontogramas/Create
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -153,119 +149,65 @@ namespace HC_Odontologicas.Controllers
 		public async Task<string> Create(List<Odontograma> odontograma)
 		{
 			var i = (ClaimsIdentity)User.Identity;
-				try
+			try
+			{
+				//guardar el odontograma
+				Odontograma odont = new Odontograma();
+				Int64 maxCodigo = 0;
+				maxCodigo = Convert.ToInt64(_context.Odontograma.Max(f => f.Codigo));
+				maxCodigo += 1;
+
+				odont.Codigo = maxCodigo.ToString("D8");
+				odont.CodigoCitaOdontologica = odontograma[0].CodigoCitaOdontologica;
+				odont.FechaActualizacion = fecha;
+				odont.Observaciones = null;
+				odont.Estado = "I";
+
+				_context.Odontograma.Add(odont);
+
+				//guardar odontogramaDetalle
+				Int64 maxCodigoOd = 0;
+				maxCodigoOd = Convert.ToInt64(_context.OdontogramaDetalle.Max(f => f.Codigo));
+				foreach (var detalle in odontograma[0].OdontogramaDetalle)
 				{
-					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
-					Personal.Insert(0, vacio);
-					ViewData["CodigoPersonal"] = Personal;
 
-					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
-					Paciente.Insert(0, vacio);
-					ViewData["CodigoPaciente"] = Paciente;
+					OdontogramaDetalle odontDetalle = new OdontogramaDetalle();
+					maxCodigoOd += 1;
+					odontDetalle.Codigo = maxCodigoOd.ToString("D8");
+					odontDetalle.CodigoOdontograma = odont.Codigo;
+					odontDetalle.Pieza = detalle.Pieza;
+					odontDetalle.Region = detalle.Region;
+					odontDetalle.Enfermedad = detalle.Enfermedad;
+					odontDetalle.Valor = detalle.Valor;
+					odontDetalle.Diagnostico = detalle.Diagnostico;
+					_context.OdontogramaDetalle.Add(odontDetalle);
 
-					//if (ModelState.IsValid)
-					//{
-
-						//cita odontologica						
-						CitaOdontologica citaOdontologica = _context.CitaOdontologica.Where(ci => ci.Codigo == odontograma[0].CodigoCitaOdontologica).SingleOrDefault();
-						DateTime FechaCitaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
-						var transaction = _context.Database.BeginTransaction();
-						if (citaOdontologica == null)
-						{
-							CitaOdontologica cita = new CitaOdontologica();
-							Int64 maxCodigoHC = 0;
-							maxCodigoHC = Convert.ToInt64(_context.CitaOdontologica.Max(f => f.Codigo));
-							maxCodigoHC += 1;
-							cita.Codigo = maxCodigoHC.ToString("D8");
-							cita.CodigoPaciente = odontograma[0].CodigoPaciente;
-							cita.CodigoPersonal = odontograma[0].CodigoPersonal;
-							cita.FechaCreacion = FechaCitaCreacion;
-							cita.Observaciones = null;
-							cita.Estado = "N";
-							cita.FechaInicio = FechaCitaCreacion;
-							cita.FechaFin = FechaCitaCreacion;
-							cita.HoraInicio = new TimeSpan(FechaCitaCreacion.Hour, FechaCitaCreacion.Minute, 00);
-							cita.HoraFin = new TimeSpan(FechaCitaCreacion.Hour, FechaCitaCreacion.Minute, 00);
-							cita.UsuarioCreacion = i.Name;
-							_context.Add(cita);
-							await _context.SaveChangesAsync();
-							await _auditoria.GuardarLogAuditoria(cita.FechaCreacion, i.Name, "CitaOdontologica", cita.Codigo, "I");
-							odontograma[0].CodigoCitaOdontologica = cita.Codigo;
-						}
-						else
-						{
-							odontograma[0].CodigoCitaOdontologica = citaOdontologica.Codigo;
-						}
-
-
-
-						//guardar el odontograma
-						Odontograma odont = new Odontograma();
-						Int64 maxCodigo = 0;
-						maxCodigo = Convert.ToInt64(_context.Odontograma.Max(f => f.Codigo));
-						maxCodigo += 1;
-
-						odont.Codigo = maxCodigo.ToString("D8");
-						odont.CodigoCitaOdontologica = odontograma[0].CodigoCitaOdontologica;
-						odont.FechaActualizacion = fecha;
-						odont.Observaciones = null; 
-						odont.Estado = "I";
-
-						_context.Odontograma.Add(odont);
-
-						//guardar odontogramaDetalle
-						Int64 maxCodigoOd = 0;
-						maxCodigoOd = Convert.ToInt64(_context.OdontogramaDetalle.Max(f => f.Codigo));
-						foreach (var detalle in odontograma[0].OdontogramaDetalle)
-						{
-
-							OdontogramaDetalle odontDetalle = new OdontogramaDetalle();
-							maxCodigoOd += 1;
-							odontDetalle.Codigo = maxCodigoOd.ToString("D8");
-							odontDetalle.CodigoOdontograma = odont.Codigo;
-							odontDetalle.Pieza = detalle.Pieza;
-							odontDetalle.Region = detalle.Region;
-							odontDetalle.Enfermedad = detalle.Enfermedad;
-							odontDetalle.Valor = detalle.Valor;
-							odontDetalle.Diagnostico = detalle.Diagnostico;
-							_context.OdontogramaDetalle.Add(odontDetalle);
-
-						}
-
-						await _context.SaveChangesAsync();
-						transaction.Commit();
-						await _auditoria.GuardarLogAuditoria(fecha, i.Name, "Odontograma", odont.Codigo, "I");
-						ViewBag.Message = "Save";
-						
-				return "Save";					
-					
 				}
-				catch (Exception e)
-				{
-					string mensaje = e.Message;
-					if (e.InnerException != null)
-						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
 
-					ViewBag.Message = mensaje;
+				await _context.SaveChangesAsync();
 
-					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
-					Personal.Insert(0, vacio);
-					ViewData["CodigoPersonal"] = Personal;
+				await _auditoria.GuardarLogAuditoria(fecha, i.Name, "Odontograma", odont.Codigo, "I");
+				//ViewBag.Message = "Guardado";
 
-					List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
-					Paciente.Insert(0, vacio);
-					ViewData["CodigoPaciente"] = Paciente;
+				return "Guardado";
+			}
+			catch (Exception e)
+			{
+				string mensaje = e.Message;
+				if (e.InnerException != null)
+					mensaje = MensajesError.UniqueKey(e.InnerException.Message);
 
-					return mensaje;//e.InnerException.ToString();
-				}
-			
+				//ViewBag.Message = mensaje;
+
+				return mensaje;
+			}
 		}
 
 		public string ObtenerDatosOdontogramaDetalle(string codigoOdontograma)
 		{
 			string codigoD = Encriptacion.Decrypt(codigoOdontograma);
 
-			Odontograma odontograma = _context.Odontograma.Include(a => a.OdontogramaDetalle)				
+			Odontograma odontograma = _context.Odontograma.Include(a => a.OdontogramaDetalle)
 				.SingleOrDefault(f => f.Codigo == codigoD);
 
 			List<OdontogramaDetalle> listaDetalle = new List<OdontogramaDetalle>();
@@ -353,13 +295,13 @@ namespace HC_Odontologicas.Controllers
 							var transaction = _context.Database.BeginTransaction();
 							//actualizar odontograma
 							odontograma[0].Codigo = Encriptacion.Decrypt(odontograma[0].Codigo);
-							Odontograma odontogramaAntiguo = _context.Odontograma.SingleOrDefault(p => p.Codigo == odontograma[0].Codigo);							
+							Odontograma odontogramaAntiguo = _context.Odontograma.SingleOrDefault(p => p.Codigo == odontograma[0].Codigo);
 							odontogramaAntiguo.Codigo = odontograma[0].Codigo;
 							odontogramaAntiguo.CodigoCitaOdontologica = odontograma[0].CodigoCitaOdontologica;
 							odontogramaAntiguo.FechaActualizacion = fecha;
 							odontogramaAntiguo.Observaciones = null;
 							odontogramaAntiguo.Estado = "A";
-							
+
 
 							var tipoComprobantesImpuesto = _context.OdontogramaDetalle.Where(a => a.CodigoOdontograma == odontograma[0].Codigo).ToList();
 							foreach (var item in tipoComprobantesImpuesto)
@@ -436,7 +378,7 @@ namespace HC_Odontologicas.Controllers
 		}
 
 		// POST: Odontogramas/Delete/5
-		[HttpPost]		
+		[HttpPost]
 		public async Task<string> DeleteConfirmed(string codigo)
 		{
 			try

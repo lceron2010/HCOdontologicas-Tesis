@@ -6,14 +6,14 @@
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 		<form id="formAtenderCitaOdontologica" asp-action="Create" class="wizard-big">
-			
+
 			<h1>Datos Informativos</h1>
 			<fieldset>
 				<div class="row">
 					<div class="col-lg-12">
 						<div class="m-b-md">
 							<h4>@ViewBag.Nombre</h4>
-							<input type="hidden" value="@ViewBag.Codigo" asp-for="Codigo" id="Codigo" name="Codigo" />
+							<input type="hidden" value="@ViewBag.CodigoCitaOdontologica" asp-for="Codigo" id="Codigo" name="Codigo" />
 							<br />
 							<br />
 						</div>
@@ -66,164 +66,133 @@
 			<h1>Anamnesis</h1>
 			<fieldset>
 				<div class="row">
-					<div class="col-lg-12">
-						<div id="ibox" class="ibox">
-							<div class="ibox-title">
-								<div class="row">
-									<h5 style="padding-left: 20px;">Anamnesis</h5>
-									<div class="ibox-tools">
-										<a class="collapse-link">
-											<i class="fa fa-chevron-up"></i>
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="ibox-content">
-								<div class="row">
-									<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-										<div class="form-group">
-											<label class="control-label">Motivo de Consulta*</label>
-											<input asp-for="MotivoConsulta" class="form-control" maxlength="512" />
-											<span asp-for="MotivoConsulta" class="text-danger"></span>
-										</div>
-									</div>
-									<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-										<div class="form-group">
-											<label asp-for="Alerta" class="control-label">Alerta</label>
-											<input asp-for="Alerta" class="form-control" maxlength="512" />
-											<span asp-validation-for="Alerta" class="text-danger"></span>
-										</div>
-									</div>
-									<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" id="data_1">
-										<div class="form-group">
-											<label class="font-normal">Ultima Visita al Odontólogo</label>
-											<div class="input-group date">
-												<span class="input-group-addon"></span>
-												<input type="text" asp-for="UltimaVisitaOdontologo" class="form-control">
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
+					<div class="col-lg-8 col-md-8 col-xs-12">
+						<div class="form-group">
+							<label class="control-label">Motivo de Consulta*</label>
+							<input asp-for="MotivoConsulta" class="form-control" maxlength="512" required="" />
+							<span asp-validation-for="MotivoConsulta" class="text-danger"></span>
 						</div>
 					</div>
 				</div>
-
 				<div class="row">
-					<div class="col-lg-12">
-						<div id="ibox" class="ibox">
-							<div class="ibox-title">
-								<div class="row">
-									<h5 style="padding-left: 20px;">Antecedentes</h5>
-									<div class="ibox-tools">
-										<a class="collapse-link">
-											<i class="fa fa-chevron-up"></i>
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="ibox-content">
-								<div class="row">
-									<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-										<div class="form-group">
-											<label id="AnamnesisEnfermedad" class="control-label">Enfermedades</label>
-											<select class="select2_demo_2 form-control" multiple="multiple" name="enfermedades[]" id="enfermedades" asp-items="ViewBag.AnamnesisEnfermedad">
-											</select>
-										</div>
-									</div>
-
-									<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-										<div class="form-group">
-											<label id="AntecedentesQuirurgicos" class="control-label">Antecedentes Quirúrgicos</label>
-											<input id="AntecedentesQuirurgicos" class="form-control" maxlength="512" />
-											<span id="AntecedentesQuirurgicos" class="text-danger"></span>
-										</div>
-									</div>
-									<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-										<div class="form-group">
-											<label id="Alergico" class="control-label">Alérgico</label>
-											<input id="Alergico" class="form-control" maxlength="512" />
-											<span id="Alergico" class="text-danger"></span>
-										</div>
-									</div>
-									<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-										<div class="form-group">
-											<label id="Medicamentos" class="control-label">Medicamentos</label>
-											<input id="Medicamentos" class="form-control" maxlength="512" />
-											<span id="Medicamentos" class="text-danger"></span>
-										</div>
-									</div>
-									<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-										<div class="form-group">
-											<label id="Habitos" class="control-label">Hábitos</label>
-											<input id="Habitos" class="form-control" maxlength="512" />
-											<span id="Habitos" class="text-danger"></span>
-										</div>
-									</div>
-									<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-										<div class="form-group">
-											<label id="AntecedentesFamiliares" class="control-label">Antecedentes Familiares</label>
-											<input id="AntecedentesFamiliares" class="form-control" maxlength="512" />
-											<span id="AntecedentesFamiliares" class="text-danger"></span>
-										</div>
-									</div>
-									<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-										<div class="form-group">
-											<label id="Endocrino" class="control-label">Endocrino</label>
-											<input id="Endocrino" class="form-control" maxlength="128" />
-											<span id="Endocrino" class="text-danger"></span>
-										</div>
-									</div>
-									<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-										<div class="form-group">
-											<label id="Traumatologico" class="control-label">Traumatológico</label>
-											<input id="Traumatologico" class="form-control" maxlength="128" />
-											<span id="Traumatologico" class="text-danger"></span>
-										</div>
-									</div>
-								</div>
-							</div>
+					<div class="col-lg-8 col-md-8 col-xs-12">
+						<div class="form-group">
+							<label asp-for="Alerta" class="control-label">Alerta</label>
+							<input asp-for="Alerta" class="form-control" maxlength="512" />
+							<span asp-validation-for="Alerta" class="text-danger"></span>
 						</div>
 					</div>
 				</div>
-
 				<div class="row">
-					<div class="col-lg-12">
-						<div id="ibox" class="ibox">
-							<div class="ibox-title">
-								<div class="row">
-									<h5 style="padding-left: 20px;">Información Adicional</h5>
-									<div class="ibox-tools">
-										<a class="collapse-link">
-											<i class="fa fa-chevron-up"></i>
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="ibox-content">
-								<div class="row">
-									<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-										<div class="form-group">
-											<b>¿Fuma? </b>
-											<label>
-												<input type="checkbox" id="Fuma" class="i-checks" />
-											</label>
-										</div>
-									</div>
-									<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-										<div class="form-group">
-											<b>¿Embarazada? </b>
-											<label>
-												<input type="checkbox" id="Embarazada" class="i-checks" />
-											</label>
-										</div>
-									</div>
-								</div>
-							</div>
+					<div class="col-lg-8 col-md-8 col-xs-12">
+						<div class="form-group">
+							<label asp-for="EnfermedadActual" class="control-label">Enfermedad Actual</label>
+							<input asp-for="EnfermedadActual" class="form-control" maxlength="512" />
+							<span asp-validation-for="EnfermedadActual" class="text-danger"></span>
 						</div>
 					</div>
 				</div>
-
+				@*<div class="row">
+			<div class="col-lg-8 col-md-8 col-xs-12" id="data_1">
+					<div class="input-group date">
+						<label>Última Visita al Odontólogo</label>
+						<input type="text" asp-for="UltimaVisitaOdontologo" class="form-control" required="">
+					</div>
+			</div>
+		</div>*@
+				<div class="form-group" id="data_1">
+					<label class="font-normal">Última Visita al Odontólogo</label>
+					<div class="input-group date">
+						<span class="input-group-addon"></span>
+						<input type="text" class="form-control" required asp-for="UltimaVisitaOdontologo">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-8 col-md-8 col-xs-12">
+						<label id="AnamnesisEnfermedad" class="control-label">Enfermedades</label>
+						<select class="select2_demo_2 form-control" multiple="multiple" name="enfermedades[]" id="enfermedades" asp-items="ViewBag.AnamnesisEnfermedad">
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-8 col-md-8 col-xs-12">
+						<div class="form-group">
+							<label id="AntecedentesQuirurgicos" class="control-label">Antecedentes Quirúrgicos</label>
+							<input id="AntecedentesQuirurgicos" class="form-control" maxlength="512" asp-for="AntecedentesQuirurgicos" />
+							<span id="AntecedentesQuirurgicos" class="text-danger"></span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-8 col-md-8 col-xs-12">
+						<div class="form-group">
+							<label id="Alergico" class="control-label">Alérgico</label>
+							<input id="Alergico" class="form-control" maxlength="512" asp-for="Alergico" />
+							<span id="Alergico" class="text-danger"></span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-8 col-md-8 col-xs-12">
+						<div class="form-group">
+							<label id="Medicamentos" class="control-label">Medicamentos</label>
+							<input id="Medicamentos" class="form-control" maxlength="512" asp-for="Medicamentos" />
+							<span id="Medicamentos" class="text-danger"></span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-8 col-md-8 col-xs-12">
+						<div class="form-group">
+							<label id="Habitos" class="control-label">Hábitos</label>
+							<input id="Habitos" class="form-control" maxlength="512" asp-for="Habitos" />
+							<span id="Habitos" class="text-danger"></span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-8 col-md-8 col-xs-12">
+						<div class="form-group">
+							<label id="AntecedentesFamiliares" class="control-label">Antecedentes Familiares</label>
+							<input id="AntecedentesFamiliares" class="form-control" maxlength="512" asp-for="AntecedentesFamiliares" />
+							<span id="AntecedentesFamiliares" class="text-danger"></span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-8 col-md-8 col-xs-12">
+						<div class="form-group">
+							<label id="Endocrino" class="control-label">Endocrino</label>
+							<input id="Endocrino" class="form-control" maxlength="128" asp-for="Endocrino" />
+							<span id="Endocrino" class="text-danger"></span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-8 col-md-8 col-xs-12">
+						<div class="form-group">
+							<label id="Traumatologico" class="control-label">Traumatológico</label>
+							<input id="Traumatologico" class="form-control" maxlength="128" asp-for="Traumatologico" />
+							<span id="Traumatologico" class="text-danger"></span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-8 col-md-8 col-xs-12">
+						<div class="form-group">
+							<label>¿Fuma? </label>
+							<input type="checkbox" id="Fuma" class="i-checks" asp-for="Fuma" />
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-8 col-md-8 col-xs-12">
+						<div class="form-group">
+							<label>¿Embarazada? </label>
+							<input type="checkbox" id="Embarazada" class="i-checks" asp-for="Embarazada" />
+						</div>
+					</div>
+				</div>
 			</fieldset>
 			<h1>Odontograma</h1>
 			<fieldset>
@@ -283,7 +252,7 @@
 									  id="path6"
 									  inkscape:connector-curvature="0"
 									  style="fill:#ffffff;stroke-width:0.54221141" />
-								<g id="g48" onclick="abrir();"
+								<g id="g48"
 								   inkscape:label="g48">
 									<path style="stroke-width:0.54221141"
 										  inkscape:connector-curvature="0"
@@ -2824,6 +2793,7 @@
 					<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 						<div class="form-group">
 							<div class="form-group">
+								<input asp-for="Descripcion" type="hidden" value="@ViewBag.Descripcion"/>
 								<label asp-for="Descripcion" class="control-label">Descripción*</label>
 								<label asp-for="Descripcion" style="text-align:justify">@ViewBag.Descripcion</label>
 								<span asp-validation-for="Descripcion" class="text-danger"></span>
@@ -2835,9 +2805,9 @@
 					<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 						<div class="form-group">
 							<div class="form-group">
-								<label asp-for="Firma" class="control-label"></label>
-								<textarea asp-for="Firma" class="form-control">hola</textarea>
-								<span asp-validation-for="Firma" class="text-danger"></span>
+								<label asp-for="FirmaConcentimiento" class="control-label">Firma *</label>
+								<textarea asp-for="FirmaConcentimiento" class="form-control"></textarea>
+								<span asp-validation-for="FirmaConcentimiento" class="text-danger"></span>
 							</div>
 						</div>
 					</div>
@@ -2882,11 +2852,26 @@
 </div>
 
 
+@if (ViewBag.Message != null)
+{
+	<script type="text/javascript">
+        window.onload = function () {
+            if ("@ViewBag.Message" === "Save") {
+                SuccessAlert("Guardados","/../CitasOdontologicas");
+            }
+            else {
+                ErrorAlert("@ViewBag.Message");
+            }
+        };
+	</script>
+}
+
+
 @section Scripts {
 	<environment names="Development,Staging,Production">
 		<script src="~/lib/steps/jquery.steps.min.js"></script>
 		<script src="~/lib/validate/jquery.validate.min.js"></script>
-		
+
 	</environment>
 
 
@@ -2898,46 +2883,38 @@
 				onStepChanging: function (event, currentIndex, newIndex) {
 					var claseActual = "";
 
-					if (newIndex === 1) {
-						claseActual = $("#formAtenderCitaOdontologica")[0].className;//classList[0];
-						$("#formAtenderCitaOdontologica").removeClass(claseActual);
-						$("#formAtenderCitaOdontologica").addClass("wizard-bigA wizard clearfix");
-					}
-
-					if (newIndex === 2) {
-						claseActual = $("#formAtenderCitaOdontologica")[0].className;//classList[1];
-						$("#formAtenderCitaOdontologica").removeClass(claseActual);
-						$("#formAtenderCitaOdontologica").addClass("wizard-bigO wizard clearfix");
-
-					}
-
-					if (newIndex === 3) {
-						claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[2];
-						$("#formAtenderCitaOdontologica").removeClass(claseActual);
-						$("#formAtenderCitaOdontologica").addClass("wizard-bigC wizard clearfix");
-
-					}
-
 					// Always allow going backward even if the current step contains invalid fields!
 					if (currentIndex > newIndex) {
 						if (newIndex === 1) {
-							claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[0];
-							$("#formAtenderCitaOdontologica").removeClass(claseActual);
-							$("#formAtenderCitaOdontologica").addClass("wizard-bigA wizard clearfix");
+							console.log("1");
+							const error = $(".body:eq(" + 0 + ") label.error", $("#formAtenderCitaOdontologica")).length;
+							if (error === 0) {
+								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[0];
+								$("#formAtenderCitaOdontologica").removeClass(claseActual);
+								$("#formAtenderCitaOdontologica").addClass("wizard-bigA wizard clearfix");
+							}
 						}
 
 						if (newIndex === 2) {
-							claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[1];
-							$("#formAtenderCitaOdontologica").removeClass(claseActual);
-							$("#formAtenderCitaOdontologica").addClass("wizard-bigO wizard clearfix");
+							console.log("2")
+							const error = $(".body:eq(" + 1 + ") label.error", $("#formAtenderCitaOdontologica")).length;
+							console.log('error', error);
+							if (error === 0) {
+								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[1];
+								$("#formAtenderCitaOdontologica").removeClass(claseActual);
+								$("#formAtenderCitaOdontologica").addClass("wizard-bigO wizard clearfix");
+							}
 
 						}
 
 						if (newIndex === 3) {
-
-							claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[2];
-							$("#formAtenderCitaOdontologica").removeClass(claseActual);
-							$("#formAtenderCitaOdontologica").addClass("wizard-bigC wizard clearfix");
+							console.log("3");
+							const error = $(".body:eq(" + 2 + ") label.error", $("#formAtenderCitaOdontologica")).length;
+							if (error === 0) {
+								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[2];
+								$("#formAtenderCitaOdontologica").removeClass(claseActual);
+								$("#formAtenderCitaOdontologica").addClass("wizard-bigC wizard clearfix");
+							}
 						}
 						return true;
 					}
@@ -2954,6 +2931,41 @@
 						$(".body:eq(" + newIndex + ") label.error", form).remove();
 						$(".body:eq(" + newIndex + ") .error", form).removeClass("error");
 
+
+						if (newIndex === 1) {
+							console.log("1");
+							const error = $(".body:eq(" + 0 + ") label.error", $("#formAtenderCitaOdontologica")).length;
+							if (error === 0) {
+								claseActual = $("#formAtenderCitaOdontologica")[0].className;//classList[0];
+								$("#formAtenderCitaOdontologica").removeClass(claseActual);
+								$("#formAtenderCitaOdontologica").addClass("wizard-bigA wizard clearfix");
+							}
+						}
+
+						if (newIndex === 2) {
+
+							console.log("2");
+							const error = $(".body:eq(" + 1 + ") label.error", $("#formAtenderCitaOdontologica")).length;
+							console.log('error', error);
+							if (error === 0) {
+								claseActual = $("#formAtenderCitaOdontologica")[0].className;//classList[1];
+								$("#formAtenderCitaOdontologica").removeClass(claseActual);
+								$("#formAtenderCitaOdontologica").addClass("wizard-bigO wizard clearfix");
+							}
+
+						}
+
+						if (newIndex === 3) {
+							console.log("3");
+							var error = $(".body:eq(" + 2 + ") label.error", $("#formAtenderCitaOdontologica")).length;
+							if (error === 0) {
+								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[2];
+								$("#formAtenderCitaOdontologica").removeClass(claseActual);
+								$("#formAtenderCitaOdontologica").addClass("wizard-bigC wizard clearfix");
+							}
+
+						}
+
 					}
 
 					// Disable validation on fields that are disabled or hidden.
@@ -2964,16 +2976,14 @@
 				},
 				onStepChanged: function (event, currentIndex, priorIndex) {
 					// Suppress (skip) "Warning" step if the user is old enough.
-					if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-						//console.log("onStepChange");
-						//console.log($(this));
+					if (currentIndex === 2 && Number($("#age").val()) >= 18) {					
 						$(this).steps("next");
 					}
 
 					// Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-					if (currentIndex === 2 && priorIndex === 3) {
-						$(this).steps("previous");
-					}
+					//if (currentIndex === 2 && priorIndex === 3) {
+					//	$(this).steps("previous");
+					//}
 				},
 				onFinishing: function (event, currentIndex) {
 					var form = $(this);
@@ -3041,8 +3051,6 @@
 				theme: 'bootstrap4',
 			});
 
-
-
 			var div = document.getElementById('menu');
 			//la funcion que oculta y muestra
 			function showHide(e) {
@@ -3105,8 +3113,7 @@
 					}
 				}
 			}
-			//console.log('prueba:');
-			//console.log(prueba);
+
 			//funcion para cualquier clic en el documento
 			document.addEventListener("click", function (e) {
 				//obtiendo informacion del DOM para

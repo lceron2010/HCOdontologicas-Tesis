@@ -400,7 +400,7 @@ namespace HC_Odontologicas.Controllers
 						try
 						{
 							var transaction = _context.Database.BeginTransaction();
-							//actualizar tipocomprobante
+							//actualizar anamnesis
 							anamnesis.Codigo = Encriptacion.Decrypt(anamnesis.Codigo);
 							Anamnesis anamnesisAntiguo = _context.Anamnesis.SingleOrDefault(p =>p.Codigo == anamnesis.Codigo);
 							anamnesisAntiguo.Codigo= anamnesis.Codigo;							
@@ -421,8 +421,8 @@ namespace HC_Odontologicas.Controllers
 							anamnesisAntiguo.Traumatologico = anamnesis.Traumatologico;
 							anamnesisAntiguo.Fecha = fecha;
 													   							
-							var tipoComprobantesImpuesto = _context.AnamnesisEnfermedad.Where(a => a.CodigoAnamnesis == anamnesis.Codigo).ToList();
-							foreach (var item in tipoComprobantesImpuesto)
+							var anamnesisEnf = _context.AnamnesisEnfermedad.Where(a => a.CodigoAnamnesis == anamnesis.Codigo).ToList();
+							foreach (var item in anamnesisEnf)
 								_context.AnamnesisEnfermedad.Remove(item);
 							_context.SaveChanges();
 

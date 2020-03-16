@@ -114,12 +114,12 @@ function cargarDatosReceta(PlantillaReceta) {
 		success: function (response) {
 			console.log(response);
 			if (response !== undefined) {				
-				$("#Descripcion").val(response.descripcion);
+				//$("#Descripcion").val(response.descripcion);
 				$("#DescripcionReceta").val(response.descripcion);				
 
 			}
 			else {	
-				$("#Descripcion").val(response.descripcion);
+				//$("#Descripcion").val(response.descripcion);
 				$("#DescripcionReceta").val("");
 				$("#Indicaciones").val("");
 			}
@@ -543,8 +543,6 @@ function GuardarDatosOdontograma(accion) {
 						pieza = dato.id.substring(2, 4);
 						region = dato.id.substring(0, 1);						
 							enfermedad = dato.attributes.enfermedad.value.substring(0, dato.attributes.enfermedad.value.length - 1);
-						
-						
 					}
 					else {
 						pieza = dato.id.split("-")[1];
@@ -605,20 +603,20 @@ function guardarOdontogramaController(url, odontograma) {
 		data: { odontograma },
 		success: function (c) {
 			console.log("response: ", c);
-			respuesta(c);
+			//respuesta(c);
 		}
 	});
 
 }
 
-function respuesta(c) {
-	if (c === "Save") {
-		SuccessAlert("Guardados", "/../Odontogramas");
-	}
-	else {
-		ErrorAlert(c);
-	}
-}
+//function respuesta(c) {
+//	if (c === "Save") {
+//		SuccessAlert("Guardados", "/../Odontogramas");
+//	}
+//	else {
+//		ErrorAlert(c);
+//	}
+//}
 
 ///////////////////////////////////////////////////////////PRUEBAS////////////////////77
 

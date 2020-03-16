@@ -15,10 +15,12 @@ namespace HC_Odontologicas.Controllers
 	{
 		private readonly HCOdontologicasContext _context;
 		SelectListItem vacio = new SelectListItem(value: "0", text: "Seleccione...");
+		private readonly AuditoriaController _auditoria;
 
 		public CitasOdontologicasController(HCOdontologicasContext context)
 		{
 			_context = context;
+			_auditoria = new AuditoriaController(context);
 		}
 
 		// GET: CitasOdontologicas
@@ -119,6 +121,7 @@ namespace HC_Odontologicas.Controllers
 			ViewData["Telefono"] = paciente.Celular;
 			ViewData["Facultad"] = paciente.Facultad.Nombre;
 			ViewData["Carrera"] = paciente.Carrera.Nombre;
+			ViewData["CodigoCitaOdontologica"] = Codigo;
 
 			//paciente
 			List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
@@ -179,28 +182,152 @@ namespace HC_Odontologicas.Controllers
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]		
-		public async Task<IActionResult> Create(CitaOdontologica citaOdontologica)
+		public async Task<IActionResult> Create(CitaOdontologica citaOdontologica, List<string> enfermedades)
 		{
-			if (ModelState.IsValid)
+			var i = (ClaimsIdentity)User.Identity;
+			if (i.IsAuthenticated)
 			{
-				_context.Add(citaOdontologica);
-				await _context.SaveChangesAsync();
-				return RedirectToAction(nameof(Index));
+				try
+				{
+
+					if (ModelState.IsValid)
+					{
+						DateTime fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+						//anamnesis
+						Anamnesis anamnesis = new Anamnesis();
+						Int64 maxCodigoAnamnesis = 0;
+						maxCodigoAnamnesis = Convert.ToInt64(_context.Anamnesis.Max(f => f.Codigo));
+						maxCodigoAnamnesis += 1;
+						//anm.Codigo = maxCodigo.ToString("D8");
+						anamnesis.Codigo = maxCodigoAnamnesis.ToString("D8");
+						anamnesis.CodigoCitaOdontologica = citaOdontologica.Codigo;
+						anamnesis.MotivoConsulta = citaOdontologica.MotivoConsulta;
+						anamnesis.EnfermedadActual = citaOdontologica.EnfermedadActual;
+						anamnesis.Alerta = citaOdontologica.Alerta;
+						anamnesis.Alergico = citaOdontologica.Alergico;
+						anamnesis.AntecedentesQuirurgicos = citaOdontologica.AntecedentesQuirurgicos;
+						anamnesis.Alergico = citaOdontologica.Alergico;
+						anamnesis.Medicamentos = citaOdontologica.Medicamentos;
+						anamnesis.Habitos = citaOdontologica.Habitos;
+						anamnesis.AntecedentesFamiliares = citaOdontologica.AntecedentesFamiliares;
+						anamnesis.Fuma = citaOdontologica.Fuma;
+						anamnesis.Embarazada = citaOdontologica.Embarazada;
+						anamnesis.UltimaVisitaOdontologo = citaOdontologica.UltimaVisitaOdontologo;
+						anamnesis.Endocrino = citaOdontologica.Endocrino;
+						anamnesis.Traumatologico = citaOdontologica.Traumatologico;
+						anamnesis.Fecha = fecha;
+						_context.Anamnesis.Add(anamnesis);
+
+						var anamnesisEnf = _context.AnamnesisEnfermedad.Where(a => a.CodigoAnamnesis == anamnesis.Codigo).ToList();
+						foreach (var item in anamnesisEnf)
+							_context.AnamnesisEnfermedad.Remove(item);
+						
+						_context.SaveChanges();
+
+						//guardar AnamenesisEnefermedad
+						Int64 maxCodigoAe = 0;
+						maxCodigoAe = Convert.ToInt64(_context.AnamnesisEnfermedad.Max(f => f.Codigo));
+
+						foreach (var enf in enfermedades)
+						{
+							AnamnesisEnfermedad anamnesisEnfermedad = new AnamnesisEnfermedad();
+							maxCodigoAe += 1;
+							anamnesisEnfermedad.Codigo = maxCodigoAe.ToString("D8");
+							anamnesisEnfermedad.CodigoAnamnesis = anamnesis.Codigo;
+							anamnesisEnfermedad.CodigoEnfermedad = enf;
+							_context.AnamnesisEnfermedad.Add(anamnesisEnfermedad);
+						}
+
+						_context.SaveChanges();
+
+						//diagnostico
+						Diagnostico diagnostico = new Diagnostico();
+						Int64 maxCodigoDiag = 0;
+						maxCodigoDiag = Convert.ToInt64(_context.Diagnostico.Max(f => f.Codigo));
+						maxCodigoDiag += 1;
+						diagnostico.Codigo = maxCodigoDiag.ToString("D8");
+						diagnostico.CodigoCitaOdontologica = citaOdontologica.Codigo;
+						diagnostico.Fecha = fecha;
+						diagnostico.Pieza = citaOdontologica.Pieza;
+						diagnostico.Observacion = citaOdontologica.Observacion;
+						diagnostico.Firma = citaOdontologica.Firma;
+						diagnostico.Recomendacion = citaOdontologica.Recomendacion;
+						_context.Diagnostico.Add(diagnostico);
+
+						var diagnosticoCie10 = _context.DiagnosticoCie10.Where(a => a.CodigoDiagnostico == diagnostico.Codigo).ToList();
+						foreach (var item in diagnosticoCie10)
+							_context.DiagnosticoCie10.Remove(item);
+						_context.SaveChanges();
+
+						//guardar diagnosticoCie10
+						Int64 maxCodigoCie = 0;
+						maxCodigoCie = Convert.ToInt64(_context.DiagnosticoCie10.Max(f => f.Codigo));
+						maxCodigoCie += 1;
+						DiagnosticoCie10 diagCie10 = new DiagnosticoCie10();
+						diagCie10.Codigo = maxCodigoCie.ToString("D8");
+						diagCie10.CodigoDiagnostico = diagnostico.Codigo;
+						diagCie10.CodigoCie10 = citaOdontologica.CodigoDiagnosticoCie10;
+						_context.DiagnosticoCie10.Add(diagCie10);
+						_context.SaveChanges();
+
+						//consentimiento informado
+						ConsentimientoInformado consentimientoInformado = new ConsentimientoInformado();
+						Int64 maxCodigoCi = 0;
+						maxCodigoCi = Convert.ToInt64(_context.ConsentimientoInformado.Max(f => f.Codigo));
+						maxCodigoCi += 1;
+						consentimientoInformado.Codigo = maxCodigoCi.ToString("D8");
+						consentimientoInformado.CodigoCitaOdontologica = citaOdontologica.Codigo;
+						consentimientoInformado.Descripcion = citaOdontologica.Descripcion;
+						consentimientoInformado.Firma = citaOdontologica.FirmaConcentimiento;
+						consentimientoInformado.Fecha = fecha;
+						_context.Add(consentimientoInformado);
+						_context.SaveChanges();
+
+						//receta medica
+						RecetaMedica recetaMedica = new RecetaMedica();
+						Int64 maxCodigoR = 0;
+						maxCodigoR = Convert.ToInt64(_context.RecetaMedica.Max(f => f.Codigo));
+						maxCodigoR += 1;
+						recetaMedica.Codigo = maxCodigoR.ToString("D8");
+						recetaMedica.CodigoCitaOdontologica = citaOdontologica.Codigo;
+						recetaMedica.Descripcion = citaOdontologica.DescripcionReceta;
+						recetaMedica.Fecha = fecha;
+						recetaMedica.CodigoPlantillaRecetaMedica = citaOdontologica.CodigoPlantillaRecetaMedica;
+						recetaMedica.Indicaciones = citaOdontologica.Indicaciones;
+						_context.Add(recetaMedica);
+						_context.SaveChanges();
+
+						//_context.Add(citaOdontologica);								
+						//await _context.SaveChangesAsync();
+						await _auditoria.GuardarLogAuditoria(recetaMedica.Fecha, i.Name, "RecetaMedica", recetaMedica.Codigo, "I");
+
+						ViewBag.Message = "Save";
+
+						//return View();
+
+						return Redirect("../CitasOdontologicas/Index");
+					}
+
+					return View();
+
+				}
+				catch (Exception e)
+				{
+					string mensaje = e.Message;
+					if (e.InnerException != null)
+						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
+
+					ViewBag.Message = mensaje;
+					
+					return Redirect("../CitasOdontologicas/Index");
+				}
 			}
-			ViewData["CodigoPaciente"] = new SelectList(_context.Paciente, "Codigo", "Codigo", citaOdontologica.CodigoPaciente);
-			ViewData["CodigoPersonal"] = new SelectList(_context.Personal, "Codigo", "Codigo", citaOdontologica.CodigoPersonal);
-			return View(citaOdontologica);
+			else
+			{
+				return Redirect("../Identity/Account/Login");
+			}
 		}
 		
-
-		//[TempData]
-		//public string CodigoCitaAlAtender { get; set; }
-		//public void AtenderCita(string codigo)
-		//{
-		//	CodigoCitaAlAtender = $"codigo cita para atender {codigo} added";
-		//}
-
-
 		// POST: CitasOdontologicas/Edit/5
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.

@@ -139,8 +139,6 @@ namespace HC_Odontologicas.Models
         [NotMapped]
         public string DescripcionReceta { get; set; }
         [NotMapped]
-        public DateTime FechaReceta { get; set; }
-        [NotMapped]
         public string CodigoPlantillaRecetaMedica { get; set; }
         [NotMapped]
         public string Indicaciones { get; set; }
