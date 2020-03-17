@@ -52,7 +52,7 @@ namespace HC_Odontologicas.Controllers
 					var fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 					var fechaInicioDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 00, 00, 00);
 					var fechaInicioFinDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 23, 59, 59);
-					
+
 					var citaOdontologica = from c in _context.CitaOdontologica.Include(a => a.Personal).Include(a => a.Paciente).Where(a => a.FechaInicio > fechaInicioDia && a.FechaInicio < fechaInicioFinDia).OrderBy(p => p.FechaInicio) select c; //Include(h => h.Paciente).Include(hc => hc.Personal)
 
 
@@ -84,31 +84,13 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-		// GET: CitasOdontologicas/Edit/5
-		public async Task<IActionResult> Edit(string id)
-		{
-			if (id == null)
-			{
-				return NotFound();
-			}
 
-			var citaOdontologica = await _context.CitaOdontologica.FindAsync(id);
-			if (citaOdontologica == null)
-			{
-				return NotFound();
-			}
-			ViewData["CodigoPaciente"] = new SelectList(_context.Paciente, "Codigo", "Codigo", citaOdontologica.CodigoPaciente);
-			ViewData["CodigoPersonal"] = new SelectList(_context.Personal, "Codigo", "Codigo", citaOdontologica.CodigoPersonal);
-			return View(citaOdontologica);
-			//Anamnesis anamnesis = new Anamnesis();
-			//return View(anamnesis);
-		}
 		public async Task<IActionResult> AtenderCitaOdontologica(string Codigo)
 		{
 			Codigo = Encriptacion.Decrypt(Codigo);
 
 			var citaOdontologica = await _context.CitaOdontologica.FindAsync(Codigo);
-			
+
 
 			//var cita = _context.CitaOdontologica.Where(c => c.Codigo == codigo).SingleOrDefault();
 			var paciente = _context.Paciente.Where(p => p.Codigo == citaOdontologica.CodigoPaciente).Include(p => p.Facultad).Include(p => p.Carrera).SingleOrDefault();
@@ -157,7 +139,7 @@ namespace HC_Odontologicas.Controllers
 		// GET: CitasOdontologicas/Details/5
 		public async Task<IActionResult> Details()
 		{
-			
+
 			var citaOdontologica = await _context.CitaOdontologica
 				.Include(c => c.Paciente)
 				.Include(c => c.Personal)
@@ -181,7 +163,7 @@ namespace HC_Odontologicas.Controllers
 		// POST: CitasOdontologicas/Create
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-		[HttpPost]		
+		[HttpPost]
 		public async Task<IActionResult> Create(CitaOdontologica citaOdontologica, List<string> enfermedades)
 		{
 			var i = (ClaimsIdentity)User.Identity;
@@ -190,6 +172,118 @@ namespace HC_Odontologicas.Controllers
 				try
 				{
 
+					if (ModelState.IsValid)
+					{
+						//await _context.CitaOdontologica;
+						return View();
+
+						//return Redirect("../CitasOdontologicas/Index");
+					}
+
+					return View();
+
+				}
+				catch (Exception e)
+				{
+					string mensaje = e.Message;
+					if (e.InnerException != null)
+						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
+
+					ViewBag.Message = mensaje;
+
+					return View();
+					//return Redirect("../CitasOdontologicas/Index");
+				}
+			}
+			else
+			{
+				return Redirect("../Identity/Account/Login");
+			}
+		}
+
+		// GET: CitasOdontologicas/Edit/5
+		public async Task<IActionResult> Edit(string Codigo)
+		{
+
+			var i = (ClaimsIdentity)User.Identity;
+			if (i.IsAuthenticated)
+			{
+				var permisos = i.Claims.Where(c => c.Type == "Anamnesis").Select(c => c.Value).SingleOrDefault().Split(";");
+				Codigo = Encriptacion.Decrypt(Codigo);
+				if (Convert.ToBoolean(permisos[2]))
+				{
+					if (Codigo == null)
+						return NotFound();
+
+					var citaOdontologica = await _context.CitaOdontologica.FindAsync(Codigo);
+
+					if (citaOdontologica == null)
+						return NotFound();
+
+					//var cita = _context.CitaOdontologica.Where(c => c.Codigo == codigo).SingleOrDefault();
+					var paciente = _context.Paciente.Where(p => p.Codigo == citaOdontologica.CodigoPaciente).Include(p => p.Facultad).Include(p => p.Carrera).SingleOrDefault();
+
+					//datos del paciente
+					ViewData["Cedula"] = paciente.Identificacion;
+					ViewData["Nombre"] = paciente.NombreCompleto;
+					ViewData["Direccion"] = paciente.Direccion;
+					ViewData["Correo"] = paciente.MailEpn;
+					ViewData["Telefono"] = paciente.Celular;
+					ViewData["Facultad"] = paciente.Facultad.Nombre;
+					ViewData["Carrera"] = paciente.Carrera.Nombre;
+					ViewData["CodigoCitaOdontologica"] = Codigo;
+
+					//paciente
+					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
+					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
+
+					List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
+					Facultad.Insert(0, vacio);
+					ViewData["CodigoFacultad"] = Facultad;
+
+					//anamnesis
+
+					List<SelectListItem> Enfermedades = null;
+					Enfermedades = new SelectList(_context.Enfermedad.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
+					ViewData["AnamnesisEnfermedad"] = Enfermedades;
+
+					//diagnostico
+					List<SelectListItem> Cie10 = new SelectList(_context.Cie10.OrderBy(f => f.CodigoInterno), "Codigo", "CodigoNombre").ToList();//.Where(f => f.Nombre.StartsWith("C")).ToList(); //QUITAR LUEGO					;
+					Cie10.Insert(0, vacio);
+					ViewData["CIE10"] = Cie10;
+
+					//concentimiento informado
+					var PlantillaCI = _context.PlantillaConsentimientoInformado.Where(c => c.Nombre.Contains("Consentimiento Informado")).SingleOrDefault();
+					ViewData["Descripcion"] = PlantillaCI.Descripcion;
+
+					//receta medica
+					List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList();
+					PlantillaRM.Insert(0, vacio);
+					ViewData["CodigoPlantillaReceta"] = PlantillaRM;
+					return View();
+				}
+				else
+					return Redirect("../Anamnesis");
+			}
+			else
+			{
+				return Redirect("../Identity/Account/Login");
+			}
+
+		}
+
+		// POST: CitasOdontologicas/Edit/5
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+
+		public async Task<IActionResult> Edit(CitaOdontologica citaOdontologica, List<string> enfermedades)
+		{
+			var i = (ClaimsIdentity)User.Identity;			
+			if (i.IsAuthenticated)
+			{
+				try
+				{
 					if (ModelState.IsValid)
 					{
 						DateTime fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
@@ -221,7 +315,7 @@ namespace HC_Odontologicas.Controllers
 						var anamnesisEnf = _context.AnamnesisEnfermedad.Where(a => a.CodigoAnamnesis == anamnesis.Codigo).ToList();
 						foreach (var item in anamnesisEnf)
 							_context.AnamnesisEnfermedad.Remove(item);
-						
+
 						_context.SaveChanges();
 
 						//guardar AnamenesisEnefermedad
@@ -297,19 +391,40 @@ namespace HC_Odontologicas.Controllers
 						_context.Add(recetaMedica);
 						_context.SaveChanges();
 
-						//_context.Add(citaOdontologica);								
-						//await _context.SaveChangesAsync();
-						await _auditoria.GuardarLogAuditoria(recetaMedica.Fecha, i.Name, "RecetaMedica", recetaMedica.Codigo, "I");
 
+						citaOdontologica.Codigo = Encriptacion.Decrypt(citaOdontologica.Codigo);
+						CitaOdontologica citaAntigua = _context.CitaOdontologica.SingleOrDefault(p => p.Codigo == citaOdontologica.Codigo);
+						citaAntigua.Codigo = citaOdontologica.Codigo;
+						citaAntigua.CodigoPaciente = citaOdontologica.CodigoPaciente;
+						citaAntigua.CodigoPersonal = citaOdontologica.CodigoPersonal;
+						citaAntigua.FechaCreacion = citaOdontologica.FechaCreacion;						
+						citaAntigua.Observaciones = citaOdontologica.Observaciones;
+						citaAntigua.Estado = "A";
+						citaAntigua.FechaInicio = citaOdontologica.FechaInicio;
+						citaAntigua.FechaFin = citaOdontologica.FechaFin;
+						citaAntigua.HoraInicio = citaOdontologica.HoraInicio;
+						citaAntigua.HoraFin = citaOdontologica.HoraFin;
+						citaAntigua.UsuarioCreacion = i.Name;
+						
+						
+
+						_context.Update(citaAntigua);
+
+						_context.SaveChanges();						
+						
+						await _auditoria.GuardarLogAuditoria(fecha, i.Name, "Anamnesis", anamnesis.Codigo, "U");
+					//	await _auditoria.GuardarLogAuditoria(fecha, i.Name, "Odontograma", odontograma.Codigo, "I");
+						await _auditoria.GuardarLogAuditoria(fecha, i.Name, "Diagnostico", diagnostico.Codigo, "I");
+						await _auditoria.GuardarLogAuditoria(fecha, i.Name, "ConsentmientoInformado", consentimientoInformado.Codigo, "I");
+						await _auditoria.GuardarLogAuditoria(fecha, i.Name, "CitaOdontologica", citaOdontologica.Codigo, "I");
+						
 						ViewBag.Message = "Save";
 
-						//return View();
+						return View(citaOdontologica);
 
-						return Redirect("../CitasOdontologicas/Index");
 					}
 
-					return View();
-
+					return View(citaOdontologica);
 				}
 				catch (Exception e)
 				{
@@ -317,88 +432,16 @@ namespace HC_Odontologicas.Controllers
 					if (e.InnerException != null)
 						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
 
-					ViewBag.Message = mensaje;
-					
-					return Redirect("../CitasOdontologicas/Index");
+
+					return View(citaOdontologica);
 				}
 			}
 			else
 			{
 				return Redirect("../Identity/Account/Login");
 			}
-		}
-		
-		// POST: CitasOdontologicas/Edit/5
-		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(string id, [Bind("Codigo,CodigoPaciente,CodigoPersonal,FechaCreacion,Observaciones,Estado,FechaInicio,FechaFin,HoraInicio,HoraFin,UsuarioCreacion")] CitaOdontologica citaOdontologica)
-		{
-			if (id != citaOdontologica.Codigo)
-			{
-				return NotFound();
-			}
 
-			if (ModelState.IsValid)
-			{
-				try
-				{
-					_context.Update(citaOdontologica);
-					await _context.SaveChangesAsync();
-				}
-				catch (DbUpdateConcurrencyException)
-				{
-					if (!CitaOdontologicaExists(citaOdontologica.Codigo))
-					{
-						return NotFound();
-					}
-					else
-					{
-						throw;
-					}
-				}
-				return RedirectToAction(nameof(Index));
-			}
-			ViewData["CodigoPaciente"] = new SelectList(_context.Paciente, "Codigo", "Codigo", citaOdontologica.CodigoPaciente);
-			ViewData["CodigoPersonal"] = new SelectList(_context.Personal, "Codigo", "Codigo", citaOdontologica.CodigoPersonal);
-			return View(citaOdontologica);
-		}
 
-		// GET: CitasOdontologicas/Delete/5
-		public async Task<IActionResult> Delete(string id)
-		{
-			if (id == null)
-			{
-				return NotFound();
-			}
-
-			var citaOdontologica = await _context.CitaOdontologica
-				.Include(c => c.Paciente)
-				.Include(c => c.Personal)
-				.FirstOrDefaultAsync(m => m.Codigo == id);
-			if (citaOdontologica == null)
-			{
-				return NotFound();
-			}
-
-			return View(citaOdontologica);
-		}
-
-		// POST: CitasOdontologicas/Delete/5
-		[HttpPost, ActionName("Delete")]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> DeleteConfirmed(string id)
-		{
-			var citaOdontologica = await _context.CitaOdontologica.FindAsync(id);
-			_context.CitaOdontologica.Remove(citaOdontologica);
-			await _context.SaveChangesAsync();
-			return RedirectToAction(nameof(Index));
-		}
-
-		private bool CitaOdontologicaExists(string id)
-		{
-			return _context.CitaOdontologica.Any(e => e.Codigo == id);
 		}
 	}
 }

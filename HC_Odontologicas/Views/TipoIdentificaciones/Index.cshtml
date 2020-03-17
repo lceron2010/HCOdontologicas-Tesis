@@ -1,11 +1,11 @@
-﻿@model IEnumerable<HC_Odontologicas.Models.TipoIdentificacion>
+﻿@model Paginacion<HC_Odontologicas.Models.TipoIdentificacion>
 @using HC_Odontologicas.FuncionesGenerales;
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-    <h3>Tipos de Identificaciones</h3>
+<h3>Tipos de Identificaciones</h3>
 
 @if ((bool)ViewData["Crear"])
 {
@@ -24,10 +24,10 @@
     <thead>
         <tr>
             <th>
-              Nombre
+                Nombre
             </th>
             <th>
-               Descripción
+                Descripción
             </th>
             <th>Acciones</th>
         </tr>
@@ -50,9 +50,33 @@
                     @if ((bool)ViewData["Eliminar"])
                     {
                         <a onclick="eliminar('@item.Codigo','../TipoIdentificaciones/DeleteConfirmed','/../TipoIdentificaciones')" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Eliminar"><i class="fa fa-trash"></i> Eliminar</a>
-					}
-                    </td>
+                    }
+                </td>
             </tr>
         }
     </tbody>
 </table>
+<br />
+@* Paginación *@
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+<a asp-action="Index" asp-route-sortOrden="@ViewData["CurrentSort"]" asp-route-page="@(Model.PageIndex-1)" asp-route-filter="@ViewData["Filter"]" class="btn btn-sm btn-default @prevDisabled">Anterior</a>
+@for (int i = 1; i <= Model.TotalPages; i++)
+{
+    if (Model.PageIndex == i)
+    {
+        <a asp-action="Index" asp-route-sortOrden="@ViewData["CurrentSort"]" asp-route-page="@i" asp-route-filter="@ViewData["Filter"]" class="btn btn-sm btn-default active">@i</a>
+    }
+    else
+    {
+        <a asp-action="Index" asp-route-sortOrden="@ViewData["CurrentSort"]" asp-route-page="@i" asp-route-filter="@ViewData["Filter"]" class="btn btn-sm btn-default ">@i</a>
+    }
+}
+
+<a asp-action="Index" asp-route-sortOrden="@ViewData["CurrentSort"]" asp-route-page="@(Model.PageIndex+1)" asp-route-filter="@ViewData["Filter"]" class="btn btn-sm btn-default @nextDisabled">Siguiente</a>
+
+<div class="pull-right">
+    Registros: @Model.TotalR
+</div>

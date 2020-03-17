@@ -100,13 +100,15 @@
 					</div>
 			</div>
 		</div>*@
-				<div class="form-group" id="data_1">
+			<div class="row">
+				<div class="col-lg-8 col-md-8 col-xs-12" id="data_1">
 					<label class="font-normal">Última Visita al Odontólogo</label>
 					<div class="input-group date">
 						<span class="input-group-addon"></span>
 						<input type="text" class="form-control" required asp-for="UltimaVisitaOdontologo">
 					</div>
 				</div>
+			</div>
 				<div class="row">
 					<div class="col-lg-8 col-md-8 col-xs-12">
 						<label id="AnamnesisEnfermedad" class="control-label">Enfermedades</label>
@@ -3050,6 +3052,14 @@
 			$(".select2_demo_2").select2({
 				theme: 'bootstrap4',
 			});
+
+			$(".select2_demo_3").select2({
+			theme: 'bootstrap4',			
+			allowClear: false,
+
+			});
+
+
 
 			var div = document.getElementById('menu');
 			//la funcion que oculta y muestra

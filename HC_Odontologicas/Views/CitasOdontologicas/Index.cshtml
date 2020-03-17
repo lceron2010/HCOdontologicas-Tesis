@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Citas Odontologicas</h1>
+<h4>Citas Odontologicas</h4>
 
 <br />
 @if ((bool)ViewData["Crear"])
@@ -32,48 +32,45 @@
             <th>
                 Paciente
             </th>
+
             <th>
-                Doctor
+                Fecha
             </th>
-            <th>
-               Fecha Inicio
-            </th>
-            <th>
-                Fecha Fin
-            </th>
+
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Paciente.NombreCompleto)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Personal.NombreCompleto)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaInicio)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaFin)
-            </td>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Paciente.NombreCompleto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaInicio)
+                </td>
 
-            <td>
-                @*<a class="btn btn-white" style="border: 1px solid #007bff;" onclick="regresar('../CitaOdontologica','');">Atender</a>*@
-                @*<a asp-controller="Anamnesis" asp-action="Create" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white" data-toggle="tooltip" title="Editar">Crear</a>*@
-
-            <td>
-                <a asp-action="AtenderCitaOdontologica" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" >Atender</a> |
-                <a asp-action="Details" asp-route-id="@item.Codigo">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Codigo">Delete</a>
-                <a asp-action="Edit" asp-route-id="@item.Codigo">Editar</a>
-            </td>
+                <td>
+                    @*<a class="btn btn-white" style="border: 1px solid #007bff;" onclick="regresar('../CitaOdontologica','');">Atender</a>*@
+                    @*<a asp-controller="Anamnesis" asp-action="Create" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white" data-toggle="tooltip" title="Editar">Crear</a>*@
 
 
-            
-        </tr>
+                    @*<td>
+                            <a asp-action="AtenderCitaOdontologica" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" >Atender</a> |
+                            <a asp-action="Details" asp-route-id="@item.Codigo">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Codigo">Delete</a>
+                            <a asp-action="Edit" asp-route-id="@item.Codigo">Editar</a>
+                        </td>*@
+                <td>
+                    @if ((bool)ViewData["Editar"])
+                    {
+                        <a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Registrar Cita Odontológica"><i class="fa fa-stethoscope"></i>Registrar</a>
+                    }
+
+                </td>
+
+
+            </tr>
         }
     </tbody>
 </table>
@@ -97,6 +94,7 @@
 
 <a asp-action="Index" asp-route-sortOrden="@ViewData["CurrentSort"]" asp-route-page="@(Model.PageIndex+1)" asp-route-filter="@ViewData["Filter"]" class="btn btn-sm btn-default @nextDisabled">Siguiente</a>
 <br />
-<div>
+
+<div class="pull-right">
     Registros: @Model.TotalR
 </div>

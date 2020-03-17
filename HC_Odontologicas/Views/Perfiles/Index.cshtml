@@ -6,27 +6,20 @@
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Perfiles de Seguridad</h2>
+<h3>Perfiles de Seguridad</h3>
 
 <p>
 	@if ((bool)ViewData["Crear"])
 	{
 		<a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> Nuevo</a>
 	}
-	@if ((bool)ViewData["Exportar"])
-	{
-		<a asp-action="GetExcel" class="btn btn-primary"><i class="fa fa-download"></i> Exportar</a>
-	}
+	
 </p>
 @* Buscar *@
-<form asp-action="Index" method="get">
-	<div class="input-group col-lg-3 col-md-4 col-sm-6 col-xs-10 pull-right">
-		<input class="form-control" type="search" name="search" placeholder="Buscar..." value="@ViewData["Filter"]" />
-		<div class="input-group-btn">
-			<button type="submit" class="btn btn-sm btn-primary" title="Buscar">Buscar</button>
-			<a asp-action="Index" class="btn btn-sm btn-danger" title="Limpiar filtro">Limpiar</a>
-		</div>
-	</div>
+<form class="form-inline" asp-action="Index" method="get">
+	<input class="form-control mr-sm-2" type="search" name="search" placeholder="Buscar..." value="@ViewData["Filter"]">
+	<button class="btn btn-sm btn-primary" type="submit">Buscar</button>
+	<a asp-action="Index" class="btn btn-sm btn-danger" title="Limpiar filtro">Limpiar</a>
 </form>
 <br />
 <table class="table">
@@ -34,7 +27,7 @@
 		<tr>
 			<th>
 				<a asp-action="Index" asp-route-sortOrder="@ViewData["NombreSortParam"]" asp-route-filter="@ViewData["Filter"]">Nombre</a>
-			</th>		
+			</th>
 			<th></th>
 		</tr>
 	</thead>
@@ -44,14 +37,21 @@
 			<tr>
 				<td>
 					@Html.DisplayFor(modelItem => item.Nombre)
-				</td>				
-				<td>
-					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white" data-toggle="tooltip" title="Editar">Editar</a>
-					<a onclick="eliminar('@item.Codigo','../Perfiles/DeleteConfirmed','/../Perfiles')" class="btn btn-white" data-toggle="tooltip" title="Eliminar">Eliminar</a>
-
 				</td>
+				<td>
+					@if ((bool)ViewData["Editar"])
+					{
+						<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Editar"><i class="fa fa-edit"></i> Editar</a>
+					}
+					@if ((bool)ViewData["Eliminar"])
+					{
+						<a onclick="eliminar('@item.Codigo','../Perfiles/DeleteConfirmed','/../Perfiles')" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Eliminar"><i class="fa fa-trash"></i> Eliminar</a>
+					}
+
+					</td>
 			</tr>
 		}
+
 	</tbody>
 </table>
 <br />

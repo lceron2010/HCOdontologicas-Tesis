@@ -59,8 +59,8 @@
 					@Html.DisplayFor(modelItem => item.Fecha)
 				</td>*@				
 				<td>
-					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-outline-warning" data-toggle="tooltip" title="Editar">Editar</a>
-					<a onclick="eliminar('@item.Codigo','../Anamnesis/DeleteConfirmed','/../Anamnesis')" class="btn btn-outline-danger" data-toggle="tooltip" title="Eliminar">Eliminar</a>
+					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-outline-warning" data-toggle="tooltip" title="Editar"><i class="fa fa-edit"></i>Editar</a>
+					<a onclick="eliminar('@item.Codigo','../Anamnesis/DeleteConfirmed','/../Anamnesis')" class="btn btn-outline-danger" data-toggle="tooltip" title="Eliminar"><i class="fa fa-trash"></i>Eliminar</a>
 					
 				</td>
 			</tr>

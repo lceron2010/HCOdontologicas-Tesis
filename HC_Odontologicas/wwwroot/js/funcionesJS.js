@@ -805,6 +805,10 @@ function limpiarDatos() {
 
 function mostrarCamposSegunSeleccionado(response) {
 	var sure = $(response).find("option:selected").val();
+	console.log('sure', sure);
+	if (sure === undefined) {
+		sure = $('#tipoPaciente')[0].value;
+	}
 	//var sure = $('#tipoPaciente')[0].selectedOptions[0].value;
 	console.log(sure);
 	if (sure === "0") {

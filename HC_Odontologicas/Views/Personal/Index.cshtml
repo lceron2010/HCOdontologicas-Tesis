@@ -66,8 +66,19 @@
 				<td>
 					@Html.DisplayFor(modelItem => item.Cargo.Nombre)
 				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Estado)
+				<td class="project-status">
+					@if (item.Estado)
+					{
+						<span class="label labelActivo-primary">Activo</span>
+					}
+					else
+					{
+						<span class="label labelActivo-secundaria">Desactivo</span>
+
+
+
+					}
+					
 				</td>
 				<td>
 					@if ((bool)ViewData["Editar"])

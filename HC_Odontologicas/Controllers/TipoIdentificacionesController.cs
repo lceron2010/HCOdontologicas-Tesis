@@ -61,9 +61,9 @@ namespace HC_Odontologicas.Controllers
                             break;
 
                     }
-                    //int pageSize = 10;
-                    // return View(await Paginacion<Anamnesis>.CreateAsync(cie10, page ?? 1, pageSize));
-                    return View(tipoIdentificacion);
+                    int pageSize = 10;
+                    return View(await Paginacion<TipoIdentificacion>.CreateAsync(tipoIdentificacion, page ?? 1, pageSize));
+                    
                 }
                 else
                 {
