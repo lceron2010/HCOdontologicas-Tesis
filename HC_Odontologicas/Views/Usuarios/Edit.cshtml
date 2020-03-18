@@ -23,6 +23,14 @@
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
+                        <label asp-for="CodigoPersonal" class="control-label">Personal *</label>
+                        <select asp-for="CodigoPersonal" class="form-control" asp-items="ViewBag.CodigoPersonal" required></select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                    <div class="form-group">
                         <label asp-for="NombreUsuario" class="control-label">Nombre Usuario *</label>
                         <input asp-for="NombreUsuario" class="form-control" required maxlength="64" />
                         <span asp-validation-for="NombreUsuario" class="text-danger"></span>

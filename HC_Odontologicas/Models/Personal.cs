@@ -9,6 +9,7 @@ namespace HC_Odontologicas.Models
         public Personal()
         {           
 			CitaOdontologica = new HashSet<CitaOdontologica>();
+            Usuario = new HashSet<Usuario>();
         }
 
         public string Codigo { get; set; }
@@ -34,7 +35,7 @@ namespace HC_Odontologicas.Models
 		
 		public virtual Cargo Cargo { get; set; }		
 		public virtual TipoIdentificacion TipoIdentificacion { get; set; }
-		     
+        public virtual ICollection<Usuario> Usuario { get; set; }
         public virtual ICollection<CitaOdontologica> CitaOdontologica { get; set; }
     }
 }

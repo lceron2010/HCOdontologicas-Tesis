@@ -7,6 +7,8 @@
 {
 	var i = (ClaimsIdentity)User.Identity;
 	var name = i.Claims.Where(c => c.Type == "NombreCompleto").Select(c => c.Value).SingleOrDefault();
+
+
 	<form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
 		<div>
 			<ul id="login" class="navbar-nav">

@@ -1016,11 +1016,22 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(64)
 					.IsUnicode(false);
 
+				entity.Property(e => e.CodigoPersonal)
+					.HasMaxLength(8)
+					.IsUnicode(false);
+
+
 				entity.HasOne(d => d.Perfil)
 					.WithMany(p => p.Usuario)
 					.HasForeignKey(d => d.CodigoPerfil)
 					.OnDelete(DeleteBehavior.ClientSetNull)
 					.HasConstraintName("FK_Usuario_Perfil");
+
+				entity.HasOne(d => d.Personal)
+					.WithMany(p => p.Usuario)
+					.HasForeignKey(d => d.CodigoPersonal)
+					.HasConstraintName("FK_Usuario_Personal");
+
 			});
 
 			modelBuilder.Entity<UsuarioLogin>(entity =>

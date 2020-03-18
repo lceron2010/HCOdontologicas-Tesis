@@ -13,7 +13,9 @@ namespace HC_Odontologicas.Models
         public string Contrasenia { get; set; }
         [Required(ErrorMessage = "Campo requerido.")]
         public string CorreoElectronico { get; set; }
-        
+        public string CodigoPersonal { get; set; }
+
         public virtual Perfil Perfil { get; set; }
+        public virtual Personal Personal { get; set; }
     }
 }

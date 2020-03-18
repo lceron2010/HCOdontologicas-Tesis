@@ -49,7 +49,7 @@ namespace HC_Odontologicas.Controllers
 					ViewData["Filter"] = search;
 					ViewData["CurrentSort"] = sortOrder;
 
-					var usuario = from c in _context.Usuario.Include(u=>u.Perfil) select c;
+					var usuario = from c in _context.Usuario.Include(u=>u.Perfil).Include(u => u.Personal) select c;
 					if (!String.IsNullOrEmpty(search))
 						usuario = usuario.Where(s => s.NombreUsuario.Contains(search) || s.CorreoElectronico.Contains(search));
 
@@ -92,6 +92,10 @@ namespace HC_Odontologicas.Controllers
 					Perfil.Insert(0, vacio);
 					ViewData["CodigoPerfil"] = Perfil;
 
+					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(f => f.NombreCompleto), "Codigo", "NombreCompleto").ToList();
+					Personal.Insert(0, vacio);
+					ViewData["CodigoPersonal"] = Personal;
+
 					return View();
 				}
 				else
@@ -111,6 +115,7 @@ namespace HC_Odontologicas.Controllers
 		{
 			var i = (ClaimsIdentity)User.Identity;
 			List<SelectListItem> Perfil = new SelectList(_context.Perfil.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
+			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(f => f.NombreCompleto), "Codigo", "NombreCompleto").ToList();
 			if (i.IsAuthenticated)
 			{
 				try
@@ -128,6 +133,9 @@ namespace HC_Odontologicas.Controllers
 						Perfil.Insert(0, vacio);
 						ViewData["CodigoPerfil"] = Perfil;
 
+						Personal.Insert(0, vacio);
+						ViewData["CodigoPersonal"] = Personal;
+
 						ViewBag.Message = "Save";
 						return View(usuario);
 					}
@@ -142,6 +150,9 @@ namespace HC_Odontologicas.Controllers
 
 					Perfil.Insert(0, vacio);
 					ViewData["CodigoPerfil"] = Perfil;
+
+					Personal.Insert(0, vacio);
+					ViewData["CodigoPersonal"] = Personal;
 
 					return View(usuario);
 				}
@@ -174,6 +185,10 @@ namespace HC_Odontologicas.Controllers
 					Perfil.Insert(0, vacio);
 					ViewData["CodigoPerfil"] = Perfil;
 
+					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(f => f.NombreCompleto), "Codigo", "NombreCompleto", usuario.CodigoPersonal).ToList();
+					Personal.Insert(0, vacio);
+					ViewData["CodigoPersonal"] = Personal;
+
 					return View(usuario);
 				}
 				else
@@ -192,6 +207,7 @@ namespace HC_Odontologicas.Controllers
 		{
 			var i = (ClaimsIdentity)User.Identity;
 			List<SelectListItem> Perfil = new SelectList(_context.Perfil.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
+			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(f => f.NombreCompleto), "Codigo", "NombreCompleto").ToList();
 			if (i.IsAuthenticated)
 			{
 				try
@@ -210,6 +226,9 @@ namespace HC_Odontologicas.Controllers
 							Perfil.Insert(0, vacio);
 							ViewData["CodigoPerfil"] = Perfil;
 
+							Personal.Insert(0, vacio);
+							ViewData["CodigoPersonal"] = Personal;
+
 							return View(usuario);
 						}
 						catch (DbUpdateConcurrencyException)
@@ -221,6 +240,9 @@ namespace HC_Odontologicas.Controllers
 					Perfil.Insert(0, vacio);
 					ViewData["CodigoPerfil"] = Perfil;
 
+					Personal.Insert(0, vacio);
+					ViewData["CodigoPersonal"] = Personal;
+
 					return View(usuario);
 				}
 				catch (Exception e)
@@ -231,6 +253,9 @@ namespace HC_Odontologicas.Controllers
 
 					Perfil.Insert(0, vacio);
 					ViewData["CodigoPerfil"] = Perfil;
+
+					Personal.Insert(0, vacio);
+					ViewData["CodigoPersonal"] = Personal;
 
 					ViewBag.Message = mensaje;
 

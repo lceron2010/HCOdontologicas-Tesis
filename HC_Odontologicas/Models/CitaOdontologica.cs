@@ -12,7 +12,7 @@ namespace HC_Odontologicas.Models
             Anamnesis = new HashSet<Anamnesis>();
             ConsentimientoInformado = new HashSet<ConsentimientoInformado>();
             Diagnostico = new HashSet<Diagnostico>();
-            Odontograma = new HashSet<Odontograma>();            
+            Odontograma = new HashSet<Odontograma>();
             RecetaMedica = new HashSet<RecetaMedica>();
         }
 
@@ -22,11 +22,11 @@ namespace HC_Odontologicas.Models
         public DateTime FechaCreacion { get; set; }
         public string Observaciones { get; set; }
         public string Estado { get; set; }
-		public DateTime FechaInicio { get; set; }
-		public DateTime FechaFin { get; set; }
-		public TimeSpan HoraInicio { get; set; }
-		public TimeSpan HoraFin { get; set; }
-		public string UsuarioCreacion { get; set; }
+        public DateTime FechaInicio { get; set; }
+        public DateTime FechaFin { get; set; }
+        public TimeSpan HoraInicio { get; set; }
+        public TimeSpan HoraFin { get; set; }
+        public string UsuarioCreacion { get; set; }
 
 
 
@@ -41,7 +41,7 @@ namespace HC_Odontologicas.Models
         public string Identificacion { get; set; }
         [NotMapped]
         public DateTime FechaNacimiento { get; set; }
-        [NotMapped] 
+        [NotMapped]
         public string Genero { get; set; }
         [NotMapped]
         public string Direccion { get; set; }
@@ -103,8 +103,12 @@ namespace HC_Odontologicas.Models
         public string Traumatologico { get; set; }
         [NotMapped]
         public DateTime Fecha { get; set; }
+        [NotMapped]
+        public List<String> enfermedades { get; set; }
 
-        //odontograma      
+        //odontograma     
+        [NotMapped]
+        public List<Odontograma> ListaOdontogramas {get;set;}
         [NotMapped]
         public DateTime FechaActualizacion { get; set; }
         [NotMapped]

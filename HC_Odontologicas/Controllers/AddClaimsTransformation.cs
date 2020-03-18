@@ -26,10 +26,12 @@ namespace HC_Odontologicas.Controllers
 			try
 			{
 				var identity = (ClaimsIdentity)principal.Identity;
-				var user = _context.Usuario.SingleOrDefault(p => p.CorreoElectronico == identity.Name);
-
+				var user = _context.Usuario.Include(u => u.Perfil).SingleOrDefault(p => p.CorreoElectronico == identity.Name);
+				
 				identity.AddClaim(new Claim("CodigoPerfil", user.CodigoPerfil));
 				identity.AddClaim(new Claim("NombreCompleto", user.NombreUsuario));
+				identity.AddClaim(new Claim("NombrePerfil", user.Perfil.Nombre));
+
 				var perfilDetalle = _context.PerfilDetalle.Include(p => p.Menu).Where(p => p.CodigoPerfil == user.CodigoPerfil).ToList();
 				List<Claim> perfilDetalles = new List<Claim>();
 				foreach (var item in perfilDetalle)

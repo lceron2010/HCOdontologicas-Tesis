@@ -589,8 +589,12 @@ function GuardarDatosOdontograma(accion) {
 	else {
 		url = '/../Odontogramas/Edit';
 	}
-	console.log(odontograma);
-	guardarOdontogramaController(url, odontograma);
+	console.log('datos odontograma antes de return en funciones.js', odontograma);
+
+	return odontograma;
+
+
+	//guardarOdontogramaController(url, odontograma);
 
 }
 

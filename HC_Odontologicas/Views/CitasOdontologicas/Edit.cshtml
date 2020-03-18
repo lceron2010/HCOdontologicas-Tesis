@@ -18,18 +18,17 @@
 							<input type="hidden" asp-for="Codigo" />
 							<input type="hidden" asp-for="CodigoPersonal" />
 							<input type="hidden" asp-for="CodigoPaciente" />
-							<input type="hidden" asp-for="FechaCreacion" />
 							<input type="hidden" asp-for="Observaciones" />
 							<input type="hidden" asp-for="Estado" />
 							<input type="hidden" asp-for="FechaCreacion" />
 							<input type="hidden" asp-for="FechaInicio" />
 							<input type="hidden" asp-for="FechaFin" />
 							<input type="hidden" asp-for="HoraInicio" />
-							<input type="hidden" asp-for="HoraFin"/>
-							<input type="hidden" asp-for="UsuarioCreacion"/>
+							<input type="hidden" asp-for="HoraFin" />
+							<input type="hidden" asp-for="UsuarioCreacion" />
+							<input type="hidden" id="ListaOdontogramas" name="ListaOdontogramas" asp-for="ListaOdontogramas" />
 
 							<h4>@ViewBag.Nombre</h4>
-							<input type="hidden" value="@ViewBag.CodigoCitaOdontologica" asp-for="Codigo" id="Codigo" name="Codigo" />
 							<br />
 							<br />
 						</div>
@@ -89,6 +88,9 @@
 							<span asp-validation-for="MotivoConsulta" class="text-danger"></span>
 						</div>
 					</div>
+
+
+
 				</div>
 				<div class="row">
 					<div class="col-lg-8 col-md-8 col-xs-12">
@@ -121,14 +123,14 @@
 						<label class="font-normal">Última Visita al Odontólogo</label>
 						<div class="input-group date">
 							<span class="input-group-addon"></span>
-							<input type="text" class="form-control" asp-for="UltimaVisitaOdontologo">
+							<input type="text" class="form-control" asp-for="UltimaVisitaOdontologo" required>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-lg-8 col-md-8 col-xs-12">
 						<label id="AnamnesisEnfermedad" class="control-label">Enfermedades</label>
-						<select class="select2_demo_2 form-control" multiple="multiple" name="enfermedades[]" id="enfermedades" asp-items="ViewBag.AnamnesisEnfermedad">
+						<select class="select2_demo_2 form-control" multiple="multiple" name="enfermedades[]" id="enfermedades" asp-items="ViewBag.AnamnesisEnfermedad" asp-for="enfermedades">
 						</select>
 					</div>
 				</div>
@@ -2763,7 +2765,7 @@
 					<div class="col-lg-8 col-sm-8 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Pieza" class="control-label"></label>
-							<input asp-for="Pieza" class="form-control" />
+							<input asp-for="Pieza" class="form-control" required />
 							<span asp-validation-for="Pieza" class="text-danger"></span>
 						</div>
 					</div>
@@ -2772,7 +2774,7 @@
 					<div class="col-lg-8 col-sm-8 col-xs-12">
 						<div class="form-group">
 							<label asp-for="CodigoDiagnosticoCie10" class="control-label">Cie10*</label>
-							<select asp-for="CodigoDiagnosticoCie10" class="select2_demo_3 form-control" asp-items="ViewBag.CIE10"></select>
+							<select asp-for="CodigoDiagnosticoCie10" class="select2_demo_3 form-control" asp-items="ViewBag.CIE10" required></select>
 							<span asp-validation-for="CodigoDiagnosticoCie10" class="text-danger"></span>
 						</div>
 					</div>
@@ -2781,7 +2783,7 @@
 					<div class="col-lg-8 col-sm-8 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Observacion" class="control-label">Observación</label>
-							<input asp-for="Observacion" class="form-control" />
+							<input asp-for="Observacion" class="form-control" maxlength="512" />
 							<span asp-validation-for="Observacion" class="text-danger"></span>
 						</div>
 					</div>
@@ -2790,8 +2792,8 @@
 					<div class="col-lg-8 col-sm-8 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Recomendacion" class="control-label">Recomendación</label>
-							<input asp-for="Recomendacion" class="form-control" />
-							<span asp-validation-for="Recomendacion" class="text-danger"></span>
+							<input asp-for="Recomendacion" class="form-control" maxlength="512" />
+							<span asp-validation-for="Recomendacion" class="text-danger" ></span>
 						</div>
 					</div>
 				</div>
@@ -2799,7 +2801,7 @@
 					<div class="col-lg-8 col-sm-8 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Firma" class="control-label">Firma*</label>
-							<textarea asp-for="Firma" class="form-control"></textarea>
+							<textarea asp-for="Firma" class="form-control" maxlength="128" required></textarea>
 							<span asp-validation-for="Firma" class="text-danger"></span>
 						</div>
 					</div>
@@ -2863,7 +2865,11 @@
 					</div>
 				</div>
 			</fieldset>
-		</form>
+
+			
+
+			
+</form>
 
 	</div>
 
@@ -2877,7 +2883,7 @@
         window.onload = function () {
 			if ("@ViewBag.Message" === "Save") {
 				console.log("entro al if");
-                SuccessAlert("Guardados","/../CitasOdontologicas");
+                SuccessAlert("Guardados","/../CitasOdontologicas/Index");
             }
             else {
                 ErrorAlert("@ViewBag.Message");
@@ -3020,8 +3026,10 @@
 
 					// Submit form input
 					console.log("finish");
-					GuardarDatosOdontograma("crear");
-					console.log("despues de guardar odontograma");
+					var listaOdontogramas = GuardarDatosOdontograma("crear");
+					console.log(" datos odontograma", listaOdontogramas);
+					$("#ListaOdontogramas")[0].value = listaOdontogramas;
+					
 					form.submit();
 				}
 			}).validate({

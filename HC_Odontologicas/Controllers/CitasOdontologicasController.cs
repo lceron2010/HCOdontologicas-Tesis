@@ -215,8 +215,8 @@ namespace HC_Odontologicas.Controllers
 					if (Codigo == null)
 						return NotFound();
 
-					var citaOdontologica = await _context.CitaOdontologica.FindAsync(Codigo);
-
+					var citaOdontologica = await _context.CitaOdontologica.SingleOrDefaultAsync(f => f.Codigo == Codigo);
+					
 					if (citaOdontologica == null)
 						return NotFound();
 
@@ -260,7 +260,8 @@ namespace HC_Odontologicas.Controllers
 					List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList();
 					PlantillaRM.Insert(0, vacio);
 					ViewData["CodigoPlantillaReceta"] = PlantillaRM;
-					return View();
+					
+					return View(citaOdontologica);
 				}
 				else
 					return Redirect("../Anamnesis");
@@ -277,7 +278,7 @@ namespace HC_Odontologicas.Controllers
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 
-		public async Task<IActionResult> Edit(CitaOdontologica citaOdontologica, List<string> enfermedades)
+		public async Task<IActionResult> Edit(CitaOdontologica citaOdontologica, List<string> enfermedades, List<Odontograma> ListaOdontogramas)
 		{
 			var i = (ClaimsIdentity)User.Identity;			
 			if (i.IsAuthenticated)
@@ -287,6 +288,7 @@ namespace HC_Odontologicas.Controllers
 					if (ModelState.IsValid)
 					{
 						DateTime fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+						citaOdontologica.Codigo = Encriptacion.Decrypt(citaOdontologica.Codigo);
 						//anamnesis
 						Anamnesis anamnesis = new Anamnesis();
 						Int64 maxCodigoAnamnesis = 0;
@@ -392,12 +394,12 @@ namespace HC_Odontologicas.Controllers
 						_context.SaveChanges();
 
 
-						citaOdontologica.Codigo = Encriptacion.Decrypt(citaOdontologica.Codigo);
+						
 						CitaOdontologica citaAntigua = _context.CitaOdontologica.SingleOrDefault(p => p.Codigo == citaOdontologica.Codigo);
 						citaAntigua.Codigo = citaOdontologica.Codigo;
 						citaAntigua.CodigoPaciente = citaOdontologica.CodigoPaciente;
 						citaAntigua.CodigoPersonal = citaOdontologica.CodigoPersonal;
-						citaAntigua.FechaCreacion = citaOdontologica.FechaCreacion;						
+						citaAntigua.FechaCreacion = citaOdontologica.FechaCreacion;
 						citaAntigua.Observaciones = citaOdontologica.Observaciones;
 						citaAntigua.Estado = "A";
 						citaAntigua.FechaInicio = citaOdontologica.FechaInicio;
@@ -405,26 +407,31 @@ namespace HC_Odontologicas.Controllers
 						citaAntigua.HoraInicio = citaOdontologica.HoraInicio;
 						citaAntigua.HoraFin = citaOdontologica.HoraFin;
 						citaAntigua.UsuarioCreacion = i.Name;
-						
-						
+
+
 
 						_context.Update(citaAntigua);
 
-						_context.SaveChanges();						
-						
+						_context.SaveChanges();
+
 						await _auditoria.GuardarLogAuditoria(fecha, i.Name, "Anamnesis", anamnesis.Codigo, "U");
-					//	await _auditoria.GuardarLogAuditoria(fecha, i.Name, "Odontograma", odontograma.Codigo, "I");
+						//	await _auditoria.GuardarLogAuditoria(fecha, i.Name, "Odontograma", odontograma.Codigo, "I");
 						await _auditoria.GuardarLogAuditoria(fecha, i.Name, "Diagnostico", diagnostico.Codigo, "I");
 						await _auditoria.GuardarLogAuditoria(fecha, i.Name, "ConsentmientoInformado", consentimientoInformado.Codigo, "I");
 						await _auditoria.GuardarLogAuditoria(fecha, i.Name, "CitaOdontologica", citaOdontologica.Codigo, "I");
-						
+
 						ViewBag.Message = "Save";
 
 						return View(citaOdontologica);
 
 					}
+					else
+					{
+						ViewBag.Message = "Algo salio mal";
 
-					return View(citaOdontologica);
+						return View(citaOdontologica);
+					}
+					
 				}
 				catch (Exception e)
 				{
