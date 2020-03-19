@@ -42,7 +42,7 @@ namespace HC_Odontologicas.Controllers
 				if (Convert.ToBoolean(permisos[0]))
 				{
 					ViewData["NombreSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
-
+					ViewData["FechaSortParam"] = sortOrder == "fecha_desc" ? "fecha_asc" : "fecha_desc";
 					//permite mantener la busqueda introducida en el filtro de busqueda
 					if (search != null)
 						page = 1;
@@ -53,15 +53,28 @@ namespace HC_Odontologicas.Controllers
 					ViewData["CurrentSort"] = sortOrder;
 					var receta = from c in _context.RecetaMedica.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente).Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal) select c;
 					if (!String.IsNullOrEmpty(search))
-						receta = receta.Where(s => s.Descripcion.Contains(search));
+						receta = from c in _context.RecetaMedica.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente)
+									.Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal)
+									.OrderBy(c => c.CitaOdontologica.Paciente.NombreCompleto)
+									.Where(s => s.CitaOdontologica.Paciente.Nombres.Contains(search)
+									|| s.CitaOdontologica.Paciente.Apellidos.Contains(search)
+									|| s.CitaOdontologica.Paciente.NombreCompleto.Contains(search)
+									|| s.CitaOdontologica.Paciente.Identificacion.Contains(search))
+								 select c;
 
 					switch (sortOrder)
 					{
 						case "nombre_desc":
-							receta = receta.OrderByDescending(s => s.Descripcion);
+							receta = receta.OrderByDescending(s => s.CitaOdontologica.Paciente.NombreCompleto);
+							break;
+						case "fecha_asc":
+							receta = receta.OrderBy(s => s.Fecha);
+							break;
+						case "fecha_desc":
+							receta = receta.OrderByDescending(s => s.Fecha);
 							break;
 						default:
-							receta = receta.OrderBy(s => s.Descripcion);
+							receta = receta.OrderBy(s => s.CitaOdontologica.Paciente.NombreCompleto);
 							break;
 
 					}

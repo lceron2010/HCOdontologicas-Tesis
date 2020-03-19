@@ -29,11 +29,11 @@
 	<thead>
 		<tr>
 			<th>
-				Paciente
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["NombreSortParam"]" asp-route-filter="@ViewData["Filter"]">Paciente</a>
 			</th>
-			@*<th>
-					Nombre
-				</th>*@
+			<th>
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["FechaSortParam"]" asp-route-filter="@ViewData["Filter"]">Fecha</a>
+			</th>
 
 			<th>Acciones</th>
 		</tr>
@@ -46,15 +46,19 @@
 				<td>
 					@Html.DisplayFor(modelItem => item.CitaOdontologica.Paciente.NombreCompleto)
 				</td>
-				@*<td>
-						@Html.DisplayFor(modelItem => item.Nombre)
-					</td>*@
-				@*<td>
-						@Html.DisplayFor(modelItem => item.Fecha)
-					</td>*@
+
 				<td>
-					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white" data-toggle="tooltip" title="Editar">Editar</a>
-					<a onclick="eliminar('@item.Codigo','../ConsentimientoInformado/DeleteConfirmed','/../ConsentimientoInformado')" class="btn btn-white" data-toggle="tooltip" title="Eliminar">Eliminar</a>
+					@Html.DisplayFor(modelItem => item.Fecha)
+				</td>
+				<td>
+					@if ((bool)ViewData["Editar"])
+					{
+						<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Editar"><i class="fa fa-edit"></i> Editar</a>
+					}
+					@if ((bool)ViewData["Eliminar"])
+					{
+						<a onclick="eliminar('@item.Codigo','../ConsentimientoInformado/DeleteConfirmed','/../ConsentimientoInformado')" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Eliminar"><i class="fa fa-trash"></i> Eliminar</a>
+					}
 
 				</td>
 			</tr>

@@ -24,7 +24,7 @@ namespace HC_Odontologicas.Controllers
 		}
 
 		// GET: CitasOdontologicas
-		public async Task<IActionResult> Index(string sortOrder, string Filter, int? page, string search)
+		public async Task<IActionResult> Index(string Filter, int? page, string search)
 		{
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
@@ -37,9 +37,7 @@ namespace HC_Odontologicas.Controllers
 				ViewData["Exportar"] = Convert.ToBoolean(permisos[4]);
 
 				if (Convert.ToBoolean(permisos[0]))
-				{
-
-					ViewData["NombreSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
+				{				
 
 					//permite mantener la busqueda introducida en el filtro de busqueda
 					if (search != null)
@@ -48,27 +46,24 @@ namespace HC_Odontologicas.Controllers
 						search = Filter;
 
 					ViewData["Filter"] = search;
-					ViewData["CurrentSort"] = sortOrder;
+					
 					var fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 					var fechaInicioDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 00, 00, 00);
 					var fechaInicioFinDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 23, 59, 59);
 
-					var citaOdontologica = from c in _context.CitaOdontologica.Include(a => a.Personal).Include(a => a.Paciente).Where(a => a.FechaInicio > fechaInicioDia && a.FechaInicio < fechaInicioFinDia).OrderBy(p => p.FechaInicio) select c; //Include(h => h.Paciente).Include(hc => hc.Personal)
+					var citaOdontologica = from c in _context.CitaOdontologica.Include(a => a.Personal).Include(a => a.Paciente)
+										   .Where(a => a.FechaInicio > fechaInicioDia && a.FechaInicio < fechaInicioFinDia)
+										   .OrderBy(p => p.FechaInicio) select c; 
 
 
 					if (!String.IsNullOrEmpty(search))
-						citaOdontologica = citaOdontologica.Where(s => s.Paciente.NombreCompleto.Contains(search) || s.Paciente.NombreCompleto.Contains(search));
+						citaOdontologica = citaOdontologica
+							.Where(s => s.Paciente.NombreCompleto.Contains(search) 
+							|| s.Paciente.Nombres.Contains(search)
+							|| s.Paciente.Apellidos.Contains(search)
+							|| s.Paciente.Identificacion.Contains(search));
 
-					switch (sortOrder)
-					{
-						case "nombre_desc":
-							citaOdontologica = citaOdontologica.OrderByDescending(s => s.FechaInicio);
-							break;
-						default:
-							citaOdontologica = citaOdontologica.OrderBy(s => s.FechaInicio);
-							break;
-
-					}
+					
 					int pageSize = 10;
 
 					return View(await Paginacion<CitaOdontologica>.CreateAsync(citaOdontologica, page ?? 1, pageSize)); // page devuelve valor si lo tiene caso contrario devuelve 1
@@ -85,86 +80,35 @@ namespace HC_Odontologicas.Controllers
 		}
 
 
-		public async Task<IActionResult> AtenderCitaOdontologica(string Codigo)
-		{
-			Codigo = Encriptacion.Decrypt(Codigo);
-
-			var citaOdontologica = await _context.CitaOdontologica.FindAsync(Codigo);
-
-
-			//var cita = _context.CitaOdontologica.Where(c => c.Codigo == codigo).SingleOrDefault();
-			var paciente = _context.Paciente.Where(p => p.Codigo == citaOdontologica.CodigoPaciente).Include(p => p.Facultad).Include(p => p.Carrera).SingleOrDefault();
-
-			//datos del paciente
-			ViewData["Cedula"] = paciente.Identificacion;
-			ViewData["Nombre"] = paciente.NombreCompleto;
-			ViewData["Direccion"] = paciente.Direccion;
-			ViewData["Correo"] = paciente.MailEpn;
-			ViewData["Telefono"] = paciente.Celular;
-			ViewData["Facultad"] = paciente.Facultad.Nombre;
-			ViewData["Carrera"] = paciente.Carrera.Nombre;
-			ViewData["CodigoCitaOdontologica"] = Codigo;
-
-			//paciente
-			List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
-			ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
-
-			List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
-			Facultad.Insert(0, vacio);
-			ViewData["CodigoFacultad"] = Facultad;
-
-			//anamnesis
-
-			List<SelectListItem> Enfermedades = null;
-			Enfermedades = new SelectList(_context.Enfermedad.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
-			ViewData["AnamnesisEnfermedad"] = Enfermedades;
-
-			//diagnostico
-			List<SelectListItem> Cie10 = new SelectList(_context.Cie10.OrderBy(f => f.CodigoInterno), "Codigo", "CodigoNombre").ToList();//.Where(f => f.Nombre.StartsWith("C")).ToList(); //QUITAR LUEGO					;
-			Cie10.Insert(0, vacio);
-			ViewData["CIE10"] = Cie10;
-
-			//concentimiento informado
-			var PlantillaCI = _context.PlantillaConsentimientoInformado.Where(c => c.Nombre.Contains("Consentimiento Informado")).SingleOrDefault();
-			ViewData["Descripcion"] = PlantillaCI.Descripcion;
-
-			//receta medica
-			List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList();
-			PlantillaRM.Insert(0, vacio);
-			ViewData["CodigoPlantillaReceta"] = PlantillaRM;
-
-			return View();
-		}
-
-		// GET: CitasOdontologicas/Details/5
-		public async Task<IActionResult> Details()
-		{
-
-			var citaOdontologica = await _context.CitaOdontologica
-				.Include(c => c.Paciente)
-				.Include(c => c.Personal)
-				.FirstOrDefaultAsync();
-			if (citaOdontologica == null)
-			{
-				return NotFound();
-			}
-
-			return View(citaOdontologica);
-		}
-
 		// GET: CitasOdontologicas/Create
 		public IActionResult Create()
 		{
-			ViewData["CodigoPaciente"] = new SelectList(_context.Paciente, "Codigo", "Codigo");
-			ViewData["CodigoPersonal"] = new SelectList(_context.Personal, "Codigo", "Codigo");
-			return View();
+			var i = (ClaimsIdentity)User.Identity;
+			if (i.IsAuthenticated)
+			{
+				var permisos = i.Claims.Where(c => c.Type == "CitasOdontologicas").Select(c => c.Value).SingleOrDefault().Split(";");
+
+				if (Convert.ToBoolean(permisos[1]))
+				{
+					ViewData["CodigoPaciente"] = new SelectList(_context.Paciente, "Codigo", "Codigo");
+					ViewData["CodigoPersonal"] = new SelectList(_context.Personal, "Codigo", "Codigo");
+					return View();
+				}
+				else
+					return Redirect("../CitasOdontologicas");
+			}
+			else
+			{
+				return Redirect("../Identity/Account/Login");
+			}			
+
 		}
 
 		// POST: CitasOdontologicas/Create
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
-		public async Task<IActionResult> Create(CitaOdontologica citaOdontologica, List<string> enfermedades)
+		public async Task<IActionResult> Create(CitaOdontologica citaOdontologica)
 		{
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
@@ -172,15 +116,16 @@ namespace HC_Odontologicas.Controllers
 				try
 				{
 
+
 					if (ModelState.IsValid)
 					{
-						//await _context.CitaOdontologica;
-						return View();
-
-						//return Redirect("../CitasOdontologicas/Index");
+						_context.Add(citaOdontologica);
+						await _context.SaveChangesAsync();
+						return RedirectToAction(nameof(Index));
 					}
-
-					return View();
+					ViewData["CodigoPaciente"] = new SelectList(_context.Paciente, "Codigo", "Codigo");
+					ViewData["CodigoPersonal"] = new SelectList(_context.Personal, "Codigo", "Codigo");
+					return View(citaOdontologica);
 
 				}
 				catch (Exception e)
@@ -192,7 +137,7 @@ namespace HC_Odontologicas.Controllers
 					ViewBag.Message = mensaje;
 
 					return View();
-					//return Redirect("../CitasOdontologicas/Index");
+
 				}
 			}
 			else
@@ -208,7 +153,7 @@ namespace HC_Odontologicas.Controllers
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
-				var permisos = i.Claims.Where(c => c.Type == "Anamnesis").Select(c => c.Value).SingleOrDefault().Split(";");
+				var permisos = i.Claims.Where(c => c.Type == "CitasOdontologicas").Select(c => c.Value).SingleOrDefault().Split(";");
 				Codigo = Encriptacion.Decrypt(Codigo);
 				if (Convert.ToBoolean(permisos[2]))
 				{
@@ -216,7 +161,7 @@ namespace HC_Odontologicas.Controllers
 						return NotFound();
 
 					var citaOdontologica = await _context.CitaOdontologica.SingleOrDefaultAsync(f => f.Codigo == Codigo);
-					
+
 					if (citaOdontologica == null)
 						return NotFound();
 
@@ -229,8 +174,17 @@ namespace HC_Odontologicas.Controllers
 					ViewData["Direccion"] = paciente.Direccion;
 					ViewData["Correo"] = paciente.MailEpn;
 					ViewData["Telefono"] = paciente.Celular;
-					ViewData["Facultad"] = paciente.Facultad.Nombre;
-					ViewData["Carrera"] = paciente.Carrera.Nombre;
+					if (paciente.Facultad == null)
+					{
+						ViewData["Facultad"] = "";
+						ViewData["Carrera"] = "";
+					}
+					else
+					{
+						ViewData["Facultad"] = paciente.Facultad.Nombre;
+						ViewData["Carrera"] = paciente.Carrera.Nombre;
+					}
+
 					ViewData["CodigoCitaOdontologica"] = Codigo;
 
 					//paciente
@@ -260,7 +214,7 @@ namespace HC_Odontologicas.Controllers
 					List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList();
 					PlantillaRM.Insert(0, vacio);
 					ViewData["CodigoPlantillaReceta"] = PlantillaRM;
-					
+
 					return View(citaOdontologica);
 				}
 				else
@@ -280,7 +234,7 @@ namespace HC_Odontologicas.Controllers
 
 		public async Task<IActionResult> Edit(CitaOdontologica citaOdontologica, List<string> enfermedades, List<Odontograma> ListaOdontogramas)
 		{
-			var i = (ClaimsIdentity)User.Identity;			
+			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
 				try
@@ -394,7 +348,7 @@ namespace HC_Odontologicas.Controllers
 						_context.SaveChanges();
 
 
-						
+
 						CitaOdontologica citaAntigua = _context.CitaOdontologica.SingleOrDefault(p => p.Codigo == citaOdontologica.Codigo);
 						citaAntigua.Codigo = citaOdontologica.Codigo;
 						citaAntigua.CodigoPaciente = citaOdontologica.CodigoPaciente;
@@ -431,7 +385,7 @@ namespace HC_Odontologicas.Controllers
 
 						return View(citaOdontologica);
 					}
-					
+
 				}
 				catch (Exception e)
 				{

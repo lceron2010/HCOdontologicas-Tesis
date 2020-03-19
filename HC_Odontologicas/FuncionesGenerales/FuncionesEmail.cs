@@ -37,22 +37,16 @@ namespace HC_Odontologicas.FuncionesGenerales
 		public static String CambiarContrasenia(String mensaje, String nombreCompleto, String usuario, String contrasenia, String callbackUrl)
 		{
 			mensaje = mensaje.Replace("\r\n\r\n", "<br/><br/>").Replace("[#strong]", "<strong>").Replace("[#/strong]", "</strong>");
-			mensaje = mensaje.Replace("[@NombreCompleto]", nombreCompleto).Replace("[@NombreUsuario]", usuario).Replace("[@Contrasenia]", contrasenia).Replace("[@Url]", "<a href=" + callbackUrl + ">Aquí</a>");
+			mensaje = mensaje.Replace("[@NombreCompleto]", nombreCompleto).Replace("[@NombreUsuario]", usuario).Replace("[@Contrasenia]", contrasenia);
 			return mensaje;
 		}
-		public static String RecuperarContrasenia(String mensaje, String nombreCompleto, String usuario, String contrasenia, String callbackUrl)
+		public static String RecuperarContrasenia(String mensaje, String nombreCompleto, String usuario, String contrasenia)
 		{
 			mensaje = mensaje.Replace("\r\n\r\n", "<br/><br/>").Replace("[#strong]", "<strong>").Replace("[#/strong]", "</strong>");
-			mensaje = mensaje.Replace("[@NombreCompleto]", nombreCompleto).Replace("[@NombreUsuario]", usuario).Replace("[@Contrasenia]", contrasenia).Replace("[@Url]", "<a href=" + callbackUrl + ">Aquí</a>");
+			mensaje = mensaje.Replace("[@NombreCompleto]", nombreCompleto).Replace("[@NombreUsuario]", usuario).Replace("[@Contrasenia]", contrasenia);
 			return mensaje;
 		}
-		public static String AsuntoReembolsoAprobado(String asunto, String solicitante)
-		{
-			asunto = asunto.Replace("[@Solictante]", solicitante);
-			return asunto;
-		}
-	
-
+		
 		public static string RecuperarMensaje(string mensaje)
 		{
 			StringBuilder str = new StringBuilder();

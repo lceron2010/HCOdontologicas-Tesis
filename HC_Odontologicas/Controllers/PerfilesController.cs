@@ -32,7 +32,7 @@ namespace HC_Odontologicas.Controllers
 			if (i.IsAuthenticated)
 			{
 				//Permisos de usuario
-				var permisos = i.Claims.Where(c => c.Type == "Perfil").Select(c => c.Value).SingleOrDefault().Split(";");
+				var permisos = i.Claims.Where(c => c.Type == "Perfiles").Select(c => c.Value).SingleOrDefault().Split(";");
 				ViewData["Crear"] = Convert.ToBoolean(permisos[1]);
 				ViewData["Editar"] = Convert.ToBoolean(permisos[2]);
 				ViewData["Eliminar"] = Convert.ToBoolean(permisos[3]);
@@ -84,7 +84,7 @@ namespace HC_Odontologicas.Controllers
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
-				var permisos = i.Claims.Where(c => c.Type == "Perfil").Select(c => c.Value).SingleOrDefault().Split(";");
+				var permisos = i.Claims.Where(c => c.Type == "Perfiles").Select(c => c.Value).SingleOrDefault().Split(";");
 				
 				if (Convert.ToBoolean(permisos[1]))
 				{
@@ -209,7 +209,7 @@ namespace HC_Odontologicas.Controllers
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
-				var permisos = i.Claims.Where(c => c.Type == "Perfil").Select(c => c.Value).SingleOrDefault().Split(";");
+				var permisos = i.Claims.Where(c => c.Type == "Perfiles").Select(c => c.Value).SingleOrDefault().Split(";");
 				var CodigoCompania = i.Claims.Where(c => c.Type == "CodigoCompania").Select(c => c.Value).SingleOrDefault();
 				codigo = Encriptacion.Decrypt(codigo);
 				if (Convert.ToBoolean(permisos[2]))
@@ -309,7 +309,7 @@ namespace HC_Odontologicas.Controllers
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
-				var permisos = i.Claims.Where(c => c.Type == "Perfil").Select(c => c.Value).SingleOrDefault().Split(",");
+				var permisos = i.Claims.Where(c => c.Type == "Perfiles").Select(c => c.Value).SingleOrDefault().Split(",");
 				try
 				{
 					if (perfil.Codigo == null)

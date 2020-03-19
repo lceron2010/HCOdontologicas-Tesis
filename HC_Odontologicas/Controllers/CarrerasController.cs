@@ -39,7 +39,11 @@ namespace HC_Odontologicas.Controllers
 
 				if (Convert.ToBoolean(permisos[0]))
 				{
+					ViewData["NombreSortParam"] = string.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
+					ViewData["FacultadSortParam"] = sortOrder == "fac_asc" ? "fac_desc" : "fac_asc";					
+
 					//permite mantener la busqueda introducida en el filtro de busqueda
+
 					if (search != null)
 						page = 1;
 					else
@@ -50,13 +54,19 @@ namespace HC_Odontologicas.Controllers
 
 					var carrera = from c in _context.Carrera.Include(c => c.Facultad) select c;
 					if (!String.IsNullOrEmpty(search))
-						carrera = carrera.Where(s => s.Nombre.Contains(search));
+						carrera = carrera.Where(s => s.Nombre.Contains(search) || s.Facultad.Nombre.Contains(search));
 
 					switch (sortOrder)
 					{
 						case "nombre_desc":
 							carrera = carrera.OrderByDescending(s => s.Nombre);
 							break;
+						case "fac_asc":
+							carrera = carrera.OrderBy(s => s.Facultad.Nombre);
+							break;
+						case "fac_desc":
+							carrera = carrera.OrderByDescending(s => s.Facultad.Nombre);
+							break;																
 						default:
 							carrera = carrera.OrderBy(s => s.Nombre);
 							break;

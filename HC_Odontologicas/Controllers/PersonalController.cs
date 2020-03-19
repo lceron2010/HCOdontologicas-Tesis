@@ -40,7 +40,7 @@ namespace HC_Odontologicas.Controllers
 				if (Convert.ToBoolean(permisos[0]))
 				{
 					ViewData["NombreSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
-
+					ViewData["CargoSortParam"] = sortOrder == "carg_asc" ? "carg_desc" : "carg_asc";
 					//permite mantener la busqueda introducida en el filtro de busqueda
 					if (search != null)
 						page = 1;
@@ -53,12 +53,19 @@ namespace HC_Odontologicas.Controllers
 					//var personal = from c in _context.Personal select c;
 
 					if (!String.IsNullOrEmpty(search))
-						personal = personal.Include(p => p.Cargo).Where(s => s.NombreCompleto.Contains(search));
+						personal = personal.Include(p => p.Cargo).Where(s => s.NombreCompleto.Contains(search)
+						|| s.Nombres.Contains(search) || s.Apellidos.Contains(search) || s.Identificacion.Contains(search));
 
 					switch (sortOrder)
 					{
 						case "nombre_desc":
 							personal = personal.OrderByDescending(s => s.NombreCompleto);
+							break;
+						case "carg_asc":
+							personal = personal.OrderBy(s => s.Cargo.Nombre);
+							break;
+						case "carg_desc":
+							personal = personal.OrderByDescending(s => s.Cargo.Nombre);
 							break;
 						default:
 							personal = personal.OrderBy(s => s.NombreCompleto);

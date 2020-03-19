@@ -10,17 +10,22 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using HC_Odontologicas.Models;
+using HC_Odontologicas.FuncionesGenerales;
+using System.Linq;
 
 namespace HC_Odontologicas.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class ForgotPasswordModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<UsuarioLogin> _userManager;
         private readonly IEmailSender _emailSender;
+        private readonly HCOdontologicasContext _context;
 
-        public ForgotPasswordModel(UserManager<IdentityUser> userManager, IEmailSender emailSender)
+        public ForgotPasswordModel(UserManager<UsuarioLogin> userManager, IEmailSender emailSender, HCOdontologicasContext context)
         {
+            _context = context;
             _userManager = userManager;
             _emailSender = emailSender;
         }
@@ -30,8 +35,9 @@ namespace HC_Odontologicas.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Ingrese su correo electrónico")]
+            [EmailAddress(ErrorMessage = "Ingrese un correo electrónico valido")]
+            [Display(Name = "Correo electrónico*")]
             public string Email { get; set; }
         }
 
@@ -40,28 +46,24 @@ namespace HC_Odontologicas.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(Input.Email);
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                if (user != null)
                 {
-                    // Don't reveal that the user does not exist or is not confirmed
+                    var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                   
+                    PlantillaCorreoElectronico correo = new PlantillaCorreoElectronico();
+                    correo = _context.PlantillaCorreoElectronico.SingleOrDefault(p => p.Asunto.Contains("Recuperar Contrasenia"));
+                    string cuerpo = FuncionesEmail.RecuperarContrasenia(correo.Cuerpo, user.NombreCompleto, user.UserName, user.Password);
+                    string message = await FuncionesEmail.EnviarEmail(_emailSender, Input.Email, correo.Asunto, cuerpo);
+
+                    ModelState.AddModelError(string.Empty, message);
                     return RedirectToPage("./ForgotPasswordConfirmation");
                 }
-
-                // For more information on how to enable account confirmation and password reset please 
-                // visit https://go.microsoft.com/fwlink/?LinkID=532713
-                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Page(
-                    "/Account/ResetPassword",
-                    pageHandler: null,
-                    values: new { area = "Identity", code },
-                    protocol: Request.Scheme);
-
-                await _emailSender.SendEmailAsync(
-                    Input.Email,
-                    "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                return RedirectToPage("./ForgotPasswordConfirmation");
+                else
+                {
+                    string message = "Correo electrónico no registrado.";
+                    ModelState.AddModelError(string.Empty, message);
+                    return Page();
+                }
             }
 
             return Page();

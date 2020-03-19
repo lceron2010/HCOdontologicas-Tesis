@@ -2765,7 +2765,7 @@
 					<div class="col-lg-8 col-sm-8 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Pieza" class="control-label"></label>
-							<input asp-for="Pieza" class="form-control" required />
+							<input asp-for="Pieza" class="form-control" required r/>
 							<span asp-validation-for="Pieza" class="text-danger"></span>
 						</div>
 					</div>
@@ -2774,7 +2774,7 @@
 					<div class="col-lg-8 col-sm-8 col-xs-12">
 						<div class="form-group">
 							<label asp-for="CodigoDiagnosticoCie10" class="control-label">Cie10*</label>
-							<select asp-for="CodigoDiagnosticoCie10" class="select2_demo_3 form-control" asp-items="ViewBag.CIE10" required></select>
+							<select asp-for="CodigoDiagnosticoCie10" class="select2_demo_3 form-control" asp-items="ViewBag.CIE10" required matches="1"></select>
 							<span asp-validation-for="CodigoDiagnosticoCie10" class="text-danger"></span>
 						</div>
 					</div>
@@ -2826,7 +2826,7 @@
 						<div class="form-group">
 							<div class="form-group">
 								<label asp-for="FirmaConcentimiento" class="control-label">Firma *</label>
-								<textarea asp-for="FirmaConcentimiento" class="form-control"></textarea>
+								<textarea asp-for="FirmaConcentimiento" class="form-control" required></textarea>
 								<span asp-validation-for="FirmaConcentimiento" class="text-danger"></span>
 							</div>
 						</div>

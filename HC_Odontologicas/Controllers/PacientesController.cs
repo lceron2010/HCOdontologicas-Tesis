@@ -46,6 +46,7 @@ namespace HC_Odontologicas.Controllers
 				ViewData["Editar"] = Convert.ToBoolean(permisos[2]);
 				ViewData["Eliminar"] = Convert.ToBoolean(permisos[3]);
 				ViewData["Exportar"] = Convert.ToBoolean(permisos[4]);
+				ViewData["Importar"] = Convert.ToBoolean(permisos[5]);
 
 				if (Convert.ToBoolean(permisos[0]))
 				{
@@ -62,7 +63,8 @@ namespace HC_Odontologicas.Controllers
 					var pacientes = from c in _context.Paciente.OrderBy(p => p.NombreCompleto) select c;
 
 					if (!String.IsNullOrEmpty(search)) //para no mostrar nada al iniciar
-						pacientes = pacientes.Where(s => s.NombreCompleto.Contains(search) || s.Identificacion.Contains(search) || s.NumeroUnico.Contains(search));
+						pacientes = pacientes.Where(s => s.NombreCompleto.Contains(search) || s.Identificacion.Contains(search) 
+						|| s.NumeroUnico.Contains(search) || s.Nombres.Contains(search) || s.Apellidos.Contains(search));
 
 					switch (sortOrder)
 					{

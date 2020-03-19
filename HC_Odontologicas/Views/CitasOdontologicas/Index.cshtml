@@ -51,27 +51,13 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.FechaInicio)
                 </td>
-
-               
-                    @*<a class="btn btn-white" style="border: 1px solid #007bff;" onclick="regresar('../CitaOdontologica','');">Atender</a>*@
-                    @*<a asp-controller="Anamnesis" asp-action="Create" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white" data-toggle="tooltip" title="Editar">Crear</a>*@
-
-
-                    @*<td>
-                            <a asp-action="AtenderCitaOdontologica" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" >Atender</a> |
-                            <a asp-action="Details" asp-route-id="@item.Codigo">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.Codigo">Delete</a>
-                            <a asp-action="Edit" asp-route-id="@item.Codigo">Editar</a>
-                        </td>*@
                 <td>
                     @if ((bool)ViewData["Editar"])
                     {
-                        <a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Registrar Cita Odontológica"><i class="fa fa-stethoscope"></i>Registrar</a>
+                        <a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Registrar Cita Odontológica"><i class="fa fa-stethoscope"></i> Registrar</a>
                     }
 
                 </td>
-
-
             </tr>
         }
     </tbody>

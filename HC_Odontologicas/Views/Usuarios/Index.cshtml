@@ -23,10 +23,10 @@
     <thead>
         <tr>
             <th>
-                Perfil
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PerfilSortParam"]" asp-route-filter="@ViewData["Filter"]">Perfil</a>
             </th>
             <th>
-                Nombre Usuario
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NombreSortParam"]" asp-route-filter="@ViewData["Filter"]">Nombre Usuario</a>                
             </th>
             <th>
                 Correo Electrónico

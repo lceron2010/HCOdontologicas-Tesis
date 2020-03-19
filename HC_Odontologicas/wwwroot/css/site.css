@@ -69,3 +69,28 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+/*recuperar password*/
+
+.page-wrap {
+    position: relative;
+    width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+.login.responsive {
+    height: 50%;
+    min-width: 270px;
+    max-width: 500px;
+}
+
+.panel {
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+    padding: 15px;
+}

@@ -42,8 +42,8 @@ namespace HC_Odontologicas.Controllers
 
 				if (Convert.ToBoolean(permisos[0]))
 				{
-					//ViewData["NombreSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
-
+					ViewData["NombreSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
+					ViewData["FechaSortParam"] = sortOrder == "fecha_desc" ? "fecha_asc" : "fecha_desc";
 					//permite mantener la busqueda introducida en el filtro de busqueda
 					if (search != null)
 						page = 1;
@@ -53,18 +53,31 @@ namespace HC_Odontologicas.Controllers
 					ViewData["Filter"] = search;
 					ViewData["CurrentSort"] = sortOrder;
 					//var personal = from c in _context.Personal.Include(a => a.Cargo).OrderBy(p => p.NombreCompleto) select c;
-					var anamnesis = from c in _context.Anamnesis.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente).Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal) select c;
+					var anamnesis = from c in _context.Anamnesis.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente).Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal).OrderBy(c => c.CitaOdontologica.Paciente.NombreCompleto) select c;
 
-					if (!String.IsNullOrEmpty(search))
-						//anamnesis = anamnesis.Where(s => s.Nombres.Contains(search));
-
+					if (!String.IsNullOrEmpty(search))	
+						anamnesis = from c in _context.Anamnesis.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente)
+									.Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal)
+									.OrderBy(c => c.CitaOdontologica.Paciente.NombreCompleto)
+									.Where(s => s.CitaOdontologica.Paciente.Nombres.Contains(search)
+									|| s.CitaOdontologica.Paciente.Apellidos.Contains(search)
+									|| s.CitaOdontologica.Paciente.NombreCompleto.Contains(search)
+									|| s.CitaOdontologica.Paciente.Identificacion.Contains(search)) select c;
+					
 						switch (sortOrder)
 						{
-							case "nombre_desc":
-								anamnesis = anamnesis.OrderByDescending(s => s.MotivoConsulta);
+						
+						case "nombre_desc":
+								anamnesis = anamnesis.OrderByDescending(s => s.CitaOdontologica.Paciente.NombreCompleto);
 								break;
-							default:
-								anamnesis = anamnesis.OrderBy(s => s.MotivoConsulta);
+						case "fecha_asc":
+								anamnesis = anamnesis.OrderBy(s => s.Fecha);
+							break;
+						case "fecha_desc":
+								anamnesis = anamnesis.OrderByDescending(s => s.Fecha);
+							break;
+						default:
+								anamnesis = anamnesis.OrderBy(s => s.CitaOdontologica.Paciente.NombreCompleto);
 								break;
 
 						}

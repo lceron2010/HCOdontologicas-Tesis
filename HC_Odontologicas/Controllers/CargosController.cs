@@ -38,6 +38,7 @@ namespace HC_Odontologicas.Controllers
 
                 if (Convert.ToBoolean(permisos[0]))
                 {
+                    ViewData["NombreSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
                     //permite mantener la busqueda introducida en el filtro de busqueda
                     if (search != null)
                         page = 1;

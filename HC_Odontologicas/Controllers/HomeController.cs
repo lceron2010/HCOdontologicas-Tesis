@@ -28,7 +28,7 @@ namespace HC_Odontologicas.Controllers
 				var perfil = i.Claims.Where(c => c.Type == "NombrePerfil").Select(c => c.Value).SingleOrDefault();
 				if (perfil.Contains("Doctor"))
 				{
-					return Redirect("../CitasOdontologicas/Index");
+					return Redirect("/../CitasOdontologicas");
 				}
 
 				return View();

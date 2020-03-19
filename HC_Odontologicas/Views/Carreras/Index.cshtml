@@ -24,10 +24,10 @@
     <thead>
         <tr>
             <th>
-                Facultad
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["FacultadSortParam"]" asp-route-filter="@ViewData["Filter"]">Facultad</a>
             </th>
             <th>
-                Nombre
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NombreSortParam"]" asp-route-filter="@ViewData["Filter"]">Nombre</a>
             </th>
             <th>
                 Descripción

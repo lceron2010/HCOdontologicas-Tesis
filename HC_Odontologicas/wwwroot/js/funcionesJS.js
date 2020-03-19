@@ -1,5 +1,6 @@
-﻿function obtenerMenu() {
-	$('#config').remove();
+﻿//Carga el Menu
+function obtenerMenu() {
+	//$('#config').remove();
 	$.ajax({
 		type: "POST",
 		url: '/../Menu/_Menu',
@@ -7,21 +8,24 @@
 		success: function (response) {
 			$.each(response, function (key, registro) {
 				var text;
+				console.log(registro);
 				if (registro.subMenu.length === 0) {
-					text = "<li><a href='" + registro.accion + "'>" + registro.nombre + "</a>";
+					text = "<li class='nav-item dropdown'><a href='" + registro.accion + "'>" + registro.nombre + "</a>";
 				}
 				else {
-					text = "<li class='dropdown'>"
-						+ "<a href='" + registro.accion + "' class='dropdown-toggle a-header' data-toggle='dropdown'>" + registro.nombre + " <span class='" + registro.icono + "'></span></a>"
-						+ "<ul class='dropdown-menu'>";
+					console.log(registro.accion);
+					console.log(registro.nombre);
+					text = "<li class='nav-item dropdown'>"
+						+ "<a class='nav-link dropdown-toggle' id='navbarDropdownMenuLink' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false' href='" + registro.accion + "'>" + registro.nombre + " </a>"
+						+ "<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>";
 					$.each(registro.subMenu, function (key1, child) {
-						text += "<li>"
-							+ "<a class='menu' dir='/" + child.accion + "'><div class='col-lg-10 col-md-10 col-sm-10 col-xs-11 pull-right' style='margin:0; padding-left:0' > " + child.nombre + "</div><span class='" + child.icono + "'></span></a>"
-							+ "</li>";
+						text += "<a class='dropdown-item' href='/" + child.accion + "' asp-controller='" + child.accion + "' asp-action='Index'>" + child.nombre + "</a>";
+							
 					});
-					text += "</ul>";
+					text += "</div></li>";
 				}
-				$("ul[id='menu']").append("</li>" + text);
+				console.log(text);
+				$("ul[id='menuPrincipal']").append("</li>" + text);
 			});
 		}
 	});
@@ -77,10 +81,6 @@ function eliminar(Codigo, url, urlRet) {
 		}
 	});
 }
-
-//step
-
-
 
 /// cargarDatosConsentimiento
 
@@ -145,12 +145,6 @@ function cargarDatosCarrera(Facultad) {
 		}
 	});
 
-}
-
-
-function abrir() {
-	var div = document.getElementById('menu');
-	div.style.display === "block";
 }
 
 //odontograma

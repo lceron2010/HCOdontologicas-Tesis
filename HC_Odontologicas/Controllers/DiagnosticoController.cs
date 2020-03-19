@@ -42,8 +42,8 @@ namespace HC_Odontologicas.Controllers
 
 				if (Convert.ToBoolean(permisos[0]))
 				{
-					//ViewData["NombreSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
-
+					ViewData["NombreSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
+					ViewData["FechaSortParam"] = sortOrder == "fecha_desc" ? "fecha_asc" : "fecha_desc";
 					//permite mantener la busqueda introducida en el filtro de busqueda
 					if (search != null)
 						page = 1;
@@ -52,18 +52,32 @@ namespace HC_Odontologicas.Controllers
 
 					ViewData["Filter"] = search;
 					ViewData["CurrentSort"] = sortOrder;
-					//var personal = from c in _context.Personal.Include(a => a.Cargo).OrderBy(p => p.NombreCompleto) select c;
-					var diagnostico = from c in _context.Diagnostico.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente).Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal) select c;
+					
+					var diagnostico = from c in _context.Diagnostico.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente).Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal).Include(c => c.DiagnosticoCie10).ThenInclude(c => c.Cie10) select c;
 
 					if (!String.IsNullOrEmpty(search))
-						//dianostico = diagnostico.Where(s => s.Nombres.Contains(search));
+						diagnostico = from c in _context.Diagnostico.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente)
+									.Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal)
+									.Include(c => c.DiagnosticoCie10).ThenInclude(c => c.Cie10)
+									.OrderBy(c => c.CitaOdontologica.Paciente.NombreCompleto)
+									.Where(s => s.CitaOdontologica.Paciente.Nombres.Contains(search)
+									|| s.CitaOdontologica.Paciente.Apellidos.Contains(search)
+									|| s.CitaOdontologica.Paciente.NombreCompleto.Contains(search)
+									|| s.CitaOdontologica.Paciente.Identificacion.Contains(search))
+									 select c;
 
-						switch (sortOrder)
+					switch (sortOrder)
 						{
 							case "nombre_desc":
 								diagnostico = diagnostico.OrderByDescending(s => s.Fecha);
 								break;
-							default:
+						case "fecha_asc":
+							diagnostico = diagnostico.OrderBy(s => s.Fecha);
+							break;
+						case "fecha_desc":
+							diagnostico = diagnostico.OrderByDescending(s => s.Fecha);
+							break;
+						default:
 								diagnostico = diagnostico.OrderBy(s => s.Fecha);
 								break;
 

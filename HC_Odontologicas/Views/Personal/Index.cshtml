@@ -29,7 +29,7 @@
 	<thead>
 		<tr>
 			<th>
-				Nombres
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["NombreSortParam"]" asp-route-filter="@ViewData["Filter"]">Nombre</a>
 			</th>
 			<th>
 				IdentificaciÓn
@@ -38,7 +38,7 @@
 				Correo Electrónico
 			</th>
 			<th>
-				Cargo
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["CargoSortParam"]" asp-route-filter="@ViewData["Filter"]">Cargo</a>
 			</th>
 			<th>
 				Estado
@@ -74,9 +74,7 @@
 					else
 					{
 						<span class="label labelActivo-secundaria">Desactivo</span>
-
-
-
+									   
 					}
 					
 				</td>

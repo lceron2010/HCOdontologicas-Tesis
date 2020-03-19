@@ -41,8 +41,8 @@ namespace HC_Odontologicas.Controllers
 
 				if (Convert.ToBoolean(permisos[0]))
 				{
-					ViewData["NombreSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
-
+					ViewData["NombreSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";					
+					ViewData["FechaSortParam"] = sortOrder == "fecha_desc" ? "fecha_asc" : "fecha_desc";
 					//permite mantener la busqueda introducida en el filtro de busqueda
 					if (search != null)
 						page = 1;
@@ -52,19 +52,31 @@ namespace HC_Odontologicas.Controllers
 					ViewData["Filter"] = search;
 					ViewData["CurrentSort"] = sortOrder;
 					var consentimiento = from c in _context.ConsentimientoInformado.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente).Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal) select c;
-					//if (!String.IsNullOrEmpty(search))
-					//	consentimiento = consentimiento.Where(s => s.Nombre.Contains(search));
+					if (!String.IsNullOrEmpty(search))
+						 consentimiento = from c in _context.ConsentimientoInformado
+									.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente)
+									.Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal)
+									.Where(s => s.CitaOdontologica.Paciente.Nombres.Contains(search)
+									|| s.CitaOdontologica.Paciente.Apellidos.Contains(search)
+									|| s.CitaOdontologica.Paciente.NombreCompleto.Contains(search)
+									|| s.CitaOdontologica.Paciente.Identificacion.Contains(search)) select c;
 
-					//switch (sortOrder)
-					//{
-					//	case "nombre_desc":
-					//		consentimiento = consentimiento.OrderByDescending(s => s.Nombre);
-					//		break;
-					//	default:
-					//		consentimiento = consentimiento.OrderBy(s => s.Nombre);
-					//		break;
+					switch (sortOrder)
+					{
+						case "nombre_desc":
+							consentimiento = consentimiento.OrderByDescending(s => s.CitaOdontologica.Paciente.NombreCompleto);
+							break;
+						case "fecha_asc":
+							consentimiento = consentimiento.OrderBy(s => s.Fecha);
+							break;
+						case "fecha_desc":
+							consentimiento = consentimiento.OrderByDescending(s => s.Fecha);
+							break;
+						default:
+							consentimiento = consentimiento.OrderBy(s => s.CitaOdontologica.Paciente.NombreCompleto);
+							break;
 
-					//}
+					}
 					int pageSize = 10;
 					return View(await Paginacion<ConsentimientoInformado>.CreateAsync(consentimiento, page ?? 1, pageSize)); // page devuelve valor si lo tiene caso contrario devuelve 1
 				}

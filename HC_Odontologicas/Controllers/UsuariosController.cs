@@ -40,6 +40,10 @@ namespace HC_Odontologicas.Controllers
 
 				if (Convert.ToBoolean(permisos[0]))
 				{
+					ViewData["NombreSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
+					ViewData["PerfilSortParam"] = sortOrder == "per_asc" ? "per_desc" : "per_asc";
+
+
 					//permite mantener la busqueda introducida en el filtro de busqueda
 					if (search != null)
 						page = 1;
@@ -57,6 +61,12 @@ namespace HC_Odontologicas.Controllers
 					{
 						case "nombre_desc":
 							usuario = usuario.OrderByDescending(s => s.NombreUsuario);
+							break;
+						case "per_asc":
+							usuario = usuario.OrderBy(s => s.Perfil.Nombre);
+							break;
+						case "per_desc":
+							usuario = usuario.OrderByDescending(s => s.Perfil.Nombre);
 							break;
 						default:
 							usuario = usuario.OrderBy(s => s.NombreUsuario);
@@ -125,7 +135,7 @@ namespace HC_Odontologicas.Controllers
 						Int64 maxCodigo = 0;
 						maxCodigo = Convert.ToInt64(_context.Usuario.Max(f => f.Codigo));
 						maxCodigo += 1;
-						usuario.Codigo = maxCodigo.ToString("D8");
+						usuario.Codigo = maxCodigo.ToString("D4");
 						_context.Add(usuario);
 						await _context.SaveChangesAsync();
 						await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Usuario", usuario.Codigo, "I");
