@@ -209,12 +209,11 @@ namespace HC_Odontologicas.Controllers
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
-				var permisos = i.Claims.Where(c => c.Type == "Perfiles").Select(c => c.Value).SingleOrDefault().Split(";");
-				var CodigoCompania = i.Claims.Where(c => c.Type == "CodigoCompania").Select(c => c.Value).SingleOrDefault();
+				var permisos = i.Claims.Where(c => c.Type == "Perfiles").Select(c => c.Value).SingleOrDefault().Split(";");				
 				codigo = Encriptacion.Decrypt(codigo);
 				if (Convert.ToBoolean(permisos[2]))
 				{
-					if (CodigoCompania == null && codigo == null)
+					if (codigo == null)
 					{
 						return NotFound();
 					}

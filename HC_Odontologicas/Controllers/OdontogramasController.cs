@@ -102,39 +102,39 @@ namespace HC_Odontologicas.Controllers
 				if (Convert.ToBoolean(permisos[1]))
 				{
 
-					Odontograma odontograma = new Odontograma();
+					//Odontograma odontograma = new Odontograma();
 
-					//llenar combos de paciente y doctor select * from citaodontologica where HoraInicio >= '9:00' and HoraFin <= '10:30'
+					////llenar combos de paciente y doctor select * from citaodontologica where HoraInicio >= '9:00' and HoraFin <= '10:30'
 
-					//TimeSpan intInicial = new TimeSpan(fecha.Hour, fecha.Minute, 00);
-					TimeSpan intInicial = new TimeSpan(19, 30, 00);
-					TimeSpan intFinal = new TimeSpan(22, 30, 00);
+					////TimeSpan intInicial = new TimeSpan(fecha.Hour, fecha.Minute, 00);
+					//TimeSpan intInicial = new TimeSpan(19, 30, 00);
+					//TimeSpan intFinal = new TimeSpan(22, 30, 00);
 
-					//ver estos condiciones.
-					var c = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date);
-					c = c.Where(ci => ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal);
-					CitaOdontologica cita = c.FirstOrDefault();
-					//CitaOdontologica cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal).SingleOrDefault();
-					//-- fin ver las condiciones
-					List<SelectListItem> Personal = null;
-					List<SelectListItem> Paciente = null;
-					if (cita == null)
-					{
-						Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
-						Personal.Insert(0, vacio);
-						Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
-						Paciente.Insert(0, vacio);
-						odontograma.CodigoCitaOdontologica = null;
-					}
-					else
-					{
-						Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", cita.CodigoPersonal).ToList();
-						Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", cita.CodigoPaciente).ToList();
-						odontograma.CodigoCitaOdontologica = cita.Codigo;
-					}
+					////ver estos condiciones.
+					//var c = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date);
+					//c = c.Where(ci => ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal);
+					//CitaOdontologica cita = c.FirstOrDefault();
+					////CitaOdontologica cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal).SingleOrDefault();
+					////-- fin ver las condiciones
+					//List<SelectListItem> Personal = null;
+					//List<SelectListItem> Paciente = null;
+					//if (cita == null)
+					//{
+					//	Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto").ToList();
+					//	Personal.Insert(0, vacio);
+					//	Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto").ToList();
+					//	Paciente.Insert(0, vacio);
+					//	odontograma.CodigoCitaOdontologica = null;
+					//}
+					//else
+					//{
+					//	Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", cita.CodigoPersonal).ToList();
+					//	Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", cita.CodigoPaciente).ToList();
+					//	odontograma.CodigoCitaOdontologica = cita.Codigo;
+					//}
 
-					ViewData["CodigoPersonal"] = Personal;
-					ViewData["CodigoPaciente"] = Paciente;
+					//ViewData["CodigoPersonal"] = Personal;
+					//ViewData["CodigoPaciente"] = Paciente;
 
 
 					return View();

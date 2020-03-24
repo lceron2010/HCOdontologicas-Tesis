@@ -55,7 +55,6 @@
 
 					</div>
 					<div class="col-lg-6" id="cluster_info">
-
 						<dl class="row mb-0">
 							<div class="col-sm-4 text-sm-right">
 								<dt>Facultad:</dt>
@@ -72,11 +71,8 @@
 								<dd class="mb-1">@ViewBag.Carrera</dd>
 							</div>
 						</dl>
-
 					</div>
 				</div>
-
-
 			</fieldset>
 			<h1>Anamnesis</h1>
 			<fieldset>
@@ -88,9 +84,6 @@
 							<span asp-validation-for="MotivoConsulta" class="text-danger"></span>
 						</div>
 					</div>
-
-
-
 				</div>
 				<div class="row">
 					<div class="col-lg-8 col-md-8 col-xs-12">
@@ -120,18 +113,23 @@
 					</div>*@
 				<div class="row">
 					<div class="col-lg-8 col-md-8 col-xs-12" id="data_1">
-						<label class="font-normal">Última Visita al Odontólogo</label>
-						<div class="input-group date">
-							<span class="input-group-addon"></span>
-							<input type="text" class="form-control" asp-for="UltimaVisitaOdontologo" required>
-						</div>
+						<div class="form-group">
+							<label class="font-normal">Última Visita al Odontólogo *</label>
+							<div class="input-group date">
+								<span class="input-group-addon"></span>
+								<input type="text" class="form-control" asp-for="UltimaVisitaOdontologo" required>
+							</div>
+						</div>						
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-lg-8 col-md-8 col-xs-12">
-						<label id="AnamnesisEnfermedad" class="control-label">Enfermedades</label>
-						<select class="select2_demo_2 form-control" multiple="multiple" name="enfermedades[]" id="enfermedades" asp-items="ViewBag.AnamnesisEnfermedad" asp-for="enfermedades">
-						</select>
+						<div class="=form-group">
+							<label id="AnamnesisEnfermedad" class="control-label">Enfermedades</label>
+							<select class="select2_demo_2 form-control" multiple="multiple" name="enfermedades[]" id="enfermedades" asp-items="ViewBag.AnamnesisEnfermedad" asp-for="enfermedades">
+							</select>
+						</div>
+						
 					</div>
 				</div>
 				<div class="row">
@@ -2764,8 +2762,8 @@
 				<div class="row">
 					<div class="col-lg-8 col-sm-8 col-xs-12">
 						<div class="form-group">
-							<label asp-for="Pieza" class="control-label"></label>
-							<input asp-for="Pieza" class="form-control" required r/>
+							<label asp-for="Pieza" class="control-label">Pieza *</label>
+							<input asp-for="Pieza" class="form-control" required min="11"/>
 							<span asp-validation-for="Pieza" class="text-danger"></span>
 						</div>
 					</div>
@@ -2870,7 +2868,6 @@
 
 			
 </form>
-
 	</div>
 
 </div>
@@ -2893,6 +2890,8 @@
 }
 
 
+
+
 @section Scripts {
 	<environment names="Development,Staging,Production">
 		<script src="~/lib/steps/jquery.steps.min.js"></script>
@@ -2908,13 +2907,16 @@
 				bodyTag: "fieldset",
 				onStepChanging: function (event, currentIndex, newIndex) {
 					var claseActual = "";
-
+					console.log("cuI", currentIndex);
+					console.log("neI", newIndex);
 					// Always allow going backward even if the current step contains invalid fields!
 					if (currentIndex > newIndex) {
 						if (newIndex === 1) {
 							console.log("1");
-							const error = $(".body:eq(" + 0 + ") label.error", $("#formAtenderCitaOdontologica")).length;
-							if (error === 0) {
+							//const error = $(".body:eq(" + 0 + ") label.error", $("#formAtenderCitaOdontologica")).length;
+							var error = $("#formAtenderCitaOdontologica").valid();
+							console.log('error',error);
+							if (error) {
 								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[0];
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
 								$("#formAtenderCitaOdontologica").addClass("wizard-bigA wizard clearfix");
@@ -2923,9 +2925,11 @@
 
 						if (newIndex === 2) {
 							console.log("2")
-							const error = $(".body:eq(" + 1 + ") label.error", $("#formAtenderCitaOdontologica")).length;
-							console.log('error', error);
-							if (error === 0) {
+							//const error = $(".body:eq(" + 1 + ") label.error", $("#formAtenderCitaOdontologica")).length;
+							//console.log('error', error);
+							var error = $("#formAtenderCitaOdontologica").valid();
+							console.log('error',error);
+							if (error) {
 								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[1];
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
 								$("#formAtenderCitaOdontologica").addClass("wizard-bigO wizard clearfix");
@@ -2935,8 +2939,9 @@
 
 						if (newIndex === 3) {
 							console.log("3");
-							const error = $(".body:eq(" + 2 + ") label.error", $("#formAtenderCitaOdontologica")).length;
-							if (error === 0) {
+							var error = $("#formAtenderCitaOdontologica").valid();
+							console.log('error',error);
+							if (error) {
 								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[2];
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
 								$("#formAtenderCitaOdontologica").addClass("wizard-bigC wizard clearfix");
@@ -2960,8 +2965,9 @@
 
 						if (newIndex === 1) {
 							console.log("1");
-							const error = $(".body:eq(" + 0 + ") label.error", $("#formAtenderCitaOdontologica")).length;
-							if (error === 0) {
+							var error = $("#formAtenderCitaOdontologica").valid();
+							console.log('error',error);
+							if (error) { 
 								claseActual = $("#formAtenderCitaOdontologica")[0].className;//classList[0];
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
 								$("#formAtenderCitaOdontologica").addClass("wizard-bigA wizard clearfix");
@@ -2971,9 +2977,9 @@
 						if (newIndex === 2) {
 
 							console.log("2");
-							const error = $(".body:eq(" + 1 + ") label.error", $("#formAtenderCitaOdontologica")).length;
-							console.log('error', error);
-							if (error === 0) {
+							var error = $("#formAtenderCitaOdontologica").valid();
+							console.log('error',error);
+							if (error) {
 								claseActual = $("#formAtenderCitaOdontologica")[0].className;//classList[1];
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
 								$("#formAtenderCitaOdontologica").addClass("wizard-bigO wizard clearfix");
@@ -2983,8 +2989,9 @@
 
 						if (newIndex === 3) {
 							console.log("3");
-							var error = $(".body:eq(" + 2 + ") label.error", $("#formAtenderCitaOdontologica")).length;
-							if (error === 0) {
+							var error = $("#formAtenderCitaOdontologica").valid();
+							console.log('error',error);
+							if (error) {
 								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[2];
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
 								$("#formAtenderCitaOdontologica").addClass("wizard-bigC wizard clearfix");
@@ -3026,9 +3033,7 @@
 
 					// Submit form input
 					console.log("finish");
-					var listaOdontogramas = GuardarDatosOdontograma("crear");
-					console.log(" datos odontograma", listaOdontogramas);
-					$("#ListaOdontogramas")[0].value = listaOdontogramas;
+					GuardarDatosOdontograma("crear");			
 					
 					form.submit();
 				}
@@ -3168,3 +3173,4 @@
 
 	</script>
 }
+

@@ -52,7 +52,7 @@ namespace HC_Odontologicas.Controllers
 					var fechaInicioFinDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 23, 59, 59);
 
 					var citaOdontologica = from c in _context.CitaOdontologica.Include(a => a.Personal).Include(a => a.Paciente)
-										   .Where(a => a.FechaInicio > fechaInicioDia && a.FechaInicio < fechaInicioFinDia)
+										   .Where(a => a.FechaInicio > fechaInicioDia && a.FechaInicio < fechaInicioFinDia && (a.Estado=="C" || a.Estado=="M"))
 										   .OrderBy(p => p.FechaInicio) select c; 
 
 
@@ -333,22 +333,25 @@ namespace HC_Odontologicas.Controllers
 						_context.Add(consentimientoInformado);
 						_context.SaveChanges();
 
-						//receta medica
-						RecetaMedica recetaMedica = new RecetaMedica();
-						Int64 maxCodigoR = 0;
-						maxCodigoR = Convert.ToInt64(_context.RecetaMedica.Max(f => f.Codigo));
-						maxCodigoR += 1;
-						recetaMedica.Codigo = maxCodigoR.ToString("D8");
-						recetaMedica.CodigoCitaOdontologica = citaOdontologica.Codigo;
-						recetaMedica.Descripcion = citaOdontologica.DescripcionReceta;
-						recetaMedica.Fecha = fecha;
-						recetaMedica.CodigoPlantillaRecetaMedica = citaOdontologica.CodigoPlantillaRecetaMedica;
-						recetaMedica.Indicaciones = citaOdontologica.Indicaciones;
-						_context.Add(recetaMedica);
-						_context.SaveChanges();
-
-
-
+						var codigoReceta = "";
+						if (!(string.IsNullOrEmpty(citaOdontologica.Descripcion) && string.IsNullOrEmpty(citaOdontologica.Indicaciones)))
+						{
+							//receta medica
+							RecetaMedica recetaMedica = new RecetaMedica();
+							Int64 maxCodigoR = 0;
+							maxCodigoR = Convert.ToInt64(_context.RecetaMedica.Max(f => f.Codigo));
+							maxCodigoR += 1;
+							recetaMedica.Codigo = maxCodigoR.ToString("D8");
+							recetaMedica.CodigoCitaOdontologica = citaOdontologica.Codigo;
+							recetaMedica.Descripcion = citaOdontologica.DescripcionReceta;
+							recetaMedica.Fecha = fecha;
+							recetaMedica.CodigoPlantillaRecetaMedica = citaOdontologica.CodigoPlantillaRecetaMedica;
+							recetaMedica.Indicaciones = citaOdontologica.Indicaciones;
+							codigoReceta = recetaMedica.Codigo;
+							_context.Add(recetaMedica);
+							_context.SaveChanges();
+						}
+																		
 						CitaOdontologica citaAntigua = _context.CitaOdontologica.SingleOrDefault(p => p.Codigo == citaOdontologica.Codigo);
 						citaAntigua.Codigo = citaOdontologica.Codigo;
 						citaAntigua.CodigoPaciente = citaOdontologica.CodigoPaciente;
@@ -361,17 +364,20 @@ namespace HC_Odontologicas.Controllers
 						citaAntigua.HoraInicio = citaOdontologica.HoraInicio;
 						citaAntigua.HoraFin = citaOdontologica.HoraFin;
 						citaAntigua.UsuarioCreacion = i.Name;
-
-
-
+						
 						_context.Update(citaAntigua);
 
 						_context.SaveChanges();
 
-						await _auditoria.GuardarLogAuditoria(fecha, i.Name, "Anamnesis", anamnesis.Codigo, "U");
-						//	await _auditoria.GuardarLogAuditoria(fecha, i.Name, "Odontograma", odontograma.Codigo, "I");
+						await _auditoria.GuardarLogAuditoria(fecha, i.Name, "Anamnesis", anamnesis.Codigo, "I");
+						
 						await _auditoria.GuardarLogAuditoria(fecha, i.Name, "Diagnostico", diagnostico.Codigo, "I");
 						await _auditoria.GuardarLogAuditoria(fecha, i.Name, "ConsentmientoInformado", consentimientoInformado.Codigo, "I");
+						if (!string.IsNullOrEmpty(codigoReceta))
+						{
+							await _auditoria.GuardarLogAuditoria(fecha, i.Name, "Receta", codigoReceta, "I");
+						}
+						
 						await _auditoria.GuardarLogAuditoria(fecha, i.Name, "CitaOdontologica", citaOdontologica.Codigo, "I");
 
 						ViewBag.Message = "Save";

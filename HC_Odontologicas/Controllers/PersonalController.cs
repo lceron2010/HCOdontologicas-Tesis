@@ -315,11 +315,33 @@ namespace HC_Odontologicas.Controllers
 		[HttpGet]
 		public async Task<List<SelectListItem>> CargarDoctores()
 		{
+			var i = (ClaimsIdentity)User.Identity;
+			var perfil = i.Claims.Where(c => c.Type == "NombrePerfil").Select(c => c.Value).SingleOrDefault();
+			var codigoPersonal = "";
 			List<SelectListItem> list = new List<SelectListItem>();
-			var Doctores = await _context.Personal.OrderBy(f => f.NombreCompleto).Where(p => p.Estado == true && p.Cargo.Nombre=="Doctor").ToListAsync();
-			list.Insert(0, new SelectListItem("Seleccione...", "0"));
-			foreach (Personal item in Doctores.ToList())
-				list.Add(new SelectListItem(item.NombreCompleto, item.Codigo));
+			var Doctores = await _context.Personal.OrderBy(f => f.NombreCompleto).Where(p => p.Estado == true && p.Cargo.Nombre == "Doctor").ToListAsync();
+			
+			if (perfil.Contains("Doctor"))
+			{
+				codigoPersonal = i.Claims.Where(c => c.Type == "CodigoPersonal").Select(c => c.Value).SingleOrDefault();
+				var personalN = _context.Personal.Where(p => p.Estado == true && p.Codigo== codigoPersonal).SingleOrDefault().NombreCompleto;
+				list.Insert(0, new SelectListItem(personalN, codigoPersonal, true));
+				foreach (Personal item in Doctores.ToList())
+				{
+					if (item.Codigo != codigoPersonal)
+					{
+						list.Add(new SelectListItem(item.NombreCompleto, item.Codigo));
+					}
+				}
+			}
+			else
+			{
+				list.Insert(0, new SelectListItem("Seleccione...", "0"));
+				foreach (Personal item in Doctores.ToList())
+					list.Add(new SelectListItem(item.NombreCompleto, item.Codigo));
+			}
+
+
 			return list;
 		}
 

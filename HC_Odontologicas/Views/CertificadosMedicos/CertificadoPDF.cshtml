@@ -1,0 +1,51 @@
+﻿@model CertificadoMedicoPdf
+@{
+	ViewData["Title"] = "CertificadoPDF";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+	#logo-container {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+</style>
+
+<div>
+	<div align="center">
+		<img src="~/imagen/logoEPN.jpg" width="200px" height="100px" />
+	</div>
+	<br />
+	<h5 style="text-align: center">CENTRO MEDICO DE DBP- ÁREA DE ODONTOLOGÍA</h5>
+	<h4 style="text-align: center">CERTIFICADO DE ASISTENCIA / REPOSO</h4>
+	<br />
+	<br />
+	<br />
+	<br />
+	<span>Quito, @Model.FechaActual</span>
+	<br />
+	<br />
+	<span style="text-align:justify">@Model.Contenido</span>
+	 <br />
+	<br />
+	<br />
+	<span>Atentamente,</span>
+	<br />
+	<br />
+	<br />
+	<span>@Model.Odontologo</span>
+	<br />
+	<br />
+	<span>Odontólogo Instritucional dela Escuela Politécnica Nacional.</span>
+	<br />
+	<br />
+	<br />
+	<span>Direccion: Edificio N°20, Facultad de Sistemas, 1er piso Teléfono: 2976300 ext.1134. Ladrón de Guevara E11-253</span>
+
+</div>
+
+
+
+
+

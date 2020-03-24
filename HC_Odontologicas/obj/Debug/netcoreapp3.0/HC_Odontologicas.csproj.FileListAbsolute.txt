@@ -172,9 +172,6 @@ C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\Carreras\Create.cshtml.g.cs
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\Carreras\Edit.cshtml.g.cs
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\Carreras\Index.cshtml.g.cs
-C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\CertificadosMedicos\Create.cshtml.g.cs
-C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\CertificadosMedicos\DemoViewAsPdf.cshtml.g.cs
-C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\CertificadosMedicos\Details.cshtml.g.cs
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\CertificadosMedicos\Edit.cshtml.g.cs
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\CertificadosMedicos\Index.cshtml.g.cs
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\Cie10\Create.cshtml.g.cs
@@ -245,3 +242,4 @@ C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\CitasOdontologicas\Create.cshtml.g.cs
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\CitasOdontologicas\Edit.cshtml.g.cs
 C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\CitasOdontologicas\Index.cshtml.g.cs
+C:\Users\Laura\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.0\Razor\Views\CertificadosMedicos\CertificadoPDF.cshtml.g.cs

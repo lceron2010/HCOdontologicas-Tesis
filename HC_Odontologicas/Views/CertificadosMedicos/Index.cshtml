@@ -1,67 +1,56 @@
-﻿@model Paginacion<HC_Odontologicas.Models.PlantillaCertificadoMedico>
+﻿@*certificado medico*@
+@model Paginacion<HC_Odontologicas.Models.CitaOdontologica>
 @using HC_Odontologicas.FuncionesGenerales;
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Plantillas Certificados Médicos</h1>
+<h4>Citas Odontológicas</h4>
 
-<br />
-@if ((bool)ViewData["Crear"])
-{
-    <a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> Nuevo</a>
-}
-@if ((bool)ViewData["Exportar"])
-{
-    <a asp-action="DemoViewAsPdfTest" class="btn btn-primary"><i class="fa fa-download"></i> pdf prueba 2</a>
-}
-
-<a asp-action="DemoViewAsPdfTest" class="btn btn-primary"><i class="fa fa-download"></i> pdf prueba 2</a>
-<br />
-<br />
- Buscar 
-<form asp-action="Index" method="get">
-    <div class="input-group col-lg-3 col-md-4 col-sm-6 col-xs-10 pull-right">
-        <input class="form-control" type="search" name="search" placeholder="Buscar..." value="@ViewData["Filter"]" />
-        <div class="input-group-btn">
-            <button type="submit" class="btn btn-sm btn-primary" title="Buscar">Buscar</button>
-            <a asp-action="Index" class="btn btn-sm btn-danger" title="Limpiar filtro">Limpiar</a>
-        </div>
-    </div>
+@* Buscar *@
+<form class="form-inline" asp-action="Index" method="get">
+    <input class="form-control mr-sm-2" type="search" name="search" placeholder="Buscar por fecha..." value="@ViewData["Filter"]">
+    <button class="btn btn-sm btn-primary" type="submit">Buscar</button>
+    <a asp-action="Index" class="btn btn-sm btn-danger" title="Limpiar filtro">Limpiar</a>
 </form>
 <br />
 
 <table class="table">
     <thead>
         <tr>
-
             <th>
-                Nombre
+                Paciente
             </th>
-            <th></th>
+            <th>
+                Fecha
+            </th>
+            <th>
+                Acciones
+            </th>
         </tr>
     </thead>
-    <tbody>     
+    <tbody>
 
         @foreach (var item in Model)
         {
             <tr>
-
                 <td>
-                    @Html.DisplayFor(modelItem => item.Nombre)
+                    @Html.DisplayFor(modelItem => item.Paciente.NombreCompleto)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo.ToString())" class="btn btn-white" data-toggle="tooltip" title="Editar">Editar</a>
-                    <a onclick="eliminar('@item.Codigo','../CertificadosMedicos/DeleteConfirmed','/../CertificadosMedicos')" class="btn btn-white" data-toggle="tooltip" title="Eliminar">Eliminar</a>
-                    <a asp-action="DemoViewAsPdf" asp-route-Codigo="@item.Codigo" class="btn btn-primary"><i class="fa fa-download"></i> pdf</a>
+                    @Html.DisplayFor(modelItem => item.FechaInicio)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Ver Certificado Médico"><i class="fa fa-search"></i> Ver Certificado</a>
+
                 </td>
             </tr>
         }
     </tbody>
 </table>
 <br />
- Paginación 
+ Paginación
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
@@ -84,3 +73,16 @@
 <div class="pull-right">
     Registros: @Model.TotalR
 </div>
+
+<script>
+    $('#data_1 .input-group.date').datepicker({
+			language: 'es',
+			locale: "es",
+			todayBtn: "linked",
+			keyboardNavigation: false,
+			forceParse: false,
+			autoclose: true,
+			closeText: 'Cerrar',
+			maxDateNow: true,
+		});
+</script>

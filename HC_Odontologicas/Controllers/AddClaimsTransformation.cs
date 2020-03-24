@@ -31,6 +31,14 @@ namespace HC_Odontologicas.Controllers
 				identity.AddClaim(new Claim("CodigoPerfil", user.CodigoPerfil));
 				identity.AddClaim(new Claim("NombreCompleto", user.NombreUsuario));
 				identity.AddClaim(new Claim("NombrePerfil", user.Perfil.Nombre));
+				if (user.CodigoPersonal == null)
+				{
+					identity.AddClaim(new Claim("CodigoPersonal", ""));
+				}
+				else {
+					identity.AddClaim(new Claim("CodigoPersonal", user.CodigoPersonal));
+				}
+				
 
 				var perfilDetalle = _context.PerfilDetalle.Include(p => p.Menu).Where(p => p.CodigoPerfil == user.CodigoPerfil).ToList();
 				List<Claim> perfilDetalles = new List<Claim>();

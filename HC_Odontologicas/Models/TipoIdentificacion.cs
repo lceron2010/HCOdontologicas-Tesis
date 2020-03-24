@@ -22,5 +22,10 @@ namespace HC_Odontologicas.Models
 
 		public virtual ICollection<Paciente> Paciente { get; set; }
 		public virtual ICollection<Personal> Personal { get; set; }
+
+
+
+
 	}
+
 }

@@ -8,13 +8,13 @@ function obtenerMenu() {
 		success: function (response) {
 			$.each(response, function (key, registro) {
 				var text;
-				console.log(registro);
+				//console.log(registro);
 				if (registro.subMenu.length === 0) {
 					text = "<li class='nav-item dropdown'><a href='" + registro.accion + "'>" + registro.nombre + "</a>";
 				}
 				else {
-					console.log(registro.accion);
-					console.log(registro.nombre);
+					//console.log(registro.accion);
+					//console.log(registro.nombre);
 					text = "<li class='nav-item dropdown'>"
 						+ "<a class='nav-link dropdown-toggle' id='navbarDropdownMenuLink' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false' href='" + registro.accion + "'>" + registro.nombre + " </a>"
 						+ "<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>";
@@ -24,7 +24,7 @@ function obtenerMenu() {
 					});
 					text += "</div></li>";
 				}
-				console.log(text);
+				//console.log(text);
 				$("ul[id='menuPrincipal']").append("</li>" + text);
 			});
 		}
@@ -585,10 +585,10 @@ function GuardarDatosOdontograma(accion) {
 	}
 	console.log('datos odontograma antes de return en funciones.js', odontograma);
 
-	return odontograma;
+	//return odontograma;
 
 
-	//guardarOdontogramaController(url, odontograma);
+	guardarOdontogramaController(url, odontograma);
 
 }
 
@@ -840,6 +840,37 @@ function mostrarCamposSegunSeleccionado(response) {
 
 }
 
+
+//certificado medico
+
+function mostrarCamposReposo()
+{
+	var sure = $("#reposo")[0].checked;	
+	console.log(sure);
+	if (sure) {
+		$('#DatosReposo').show();	
+	}
+	else {
+		$('#DatosReposo').hide();
+		$('#FechaReincorporarse').val("");
+		$('#FechaFinReposo').val("");
+		$('#FechaInicioReposo').val("");
+	}	
+
+}
+
+function ejecutarPDF() {
+	console.log("inicio ejecutar");
+	$.ajax({
+		type: "GET",
+		url: "/../CertificadosMedicos/test",
+		data: {}		
+	});
+
+}
+
+
+
 //agenda
 
 function cargarPacientes() {
@@ -849,13 +880,13 @@ function cargarPacientes() {
 		url: "/../Pacientes/CargarPacientes",
 		data: {},
 		success: function (response) {
-			console.log(response);
+			//console.log(response);
 			$.each(response, function (key, registro) {
 				pacientes_opt.push({ key: registro.value, label: registro.text });
 			});
 		}
 	});
-	console.log(pacientes_opt);
+	//console.log(pacientes_opt);
 	return pacientes_opt;
 }
 
@@ -866,16 +897,42 @@ function cargarDoctores() {
 		url: "/../Personal/CargarDoctores",
 		data: {},
 		success: function (response) {
-			console.log(response);
+			//console.log(response);
 			$.each(response, function (key, registro) {
 				doctores_opt.push({ key: registro.value, label: registro.text });
 			});
 		}
 	});
-	console.log(doctores_opt);
+	//console.log(doctores_opt);
 	return doctores_opt;
 }
 
+function obtenerNombrePaciente(Identificacion, pantalla) {
+	var nombrePaciente = "";
+	console.log(Identificacion);
+	console.log(pantalla);
+	$.ajax({
+		type: "GET",
+		url: "/../Pacientes/CargarPacienteNombre",
+		data: { Identificacion },
+		success: function (response) {
+			nombrePaciente = response;				
+			if (pantalla === "Certificado") {
+				console.log('nombre del paciente desde JS:', nombrePaciente);		
+				$("#NombrePaciente").text(response);
+			}
+			else {
+				$("#idLabel").text(response);
+			}
+			
+		}
+	});
+	
 
+
+	//return nombrePaciente;
+
+
+}
 
 

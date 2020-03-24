@@ -643,5 +643,25 @@ namespace HC_Odontologicas.Controllers
 			return list;
 		}
 
+		[HttpGet]
+		public async Task<string> CargarPacienteNombre(string Identificacion)
+		{
+			if (!String.IsNullOrEmpty(Identificacion))
+			{
+				var paciente = await _context.Paciente.Where(p => p.Estado == true && p.Identificacion == Identificacion).SingleOrDefaultAsync();
+				if (paciente == null)
+				{
+					return "Paciente No Registrado o Inactivo";
+				}
+				else
+				{
+					return paciente.NombreCompleto;
+				}
+			}
+
+			return "";		
+			
+		}
+
 	}
 }
