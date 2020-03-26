@@ -17,6 +17,47 @@ namespace HC_Odontologicas.Controllers
 			_context = context;
 		}
 
+		
+		[AcceptVerbs("Get", "Post")]
+		public IActionResult VerificarCodigoFacultad(string CodigoFacultad)
+		{
+			return ValidarCodigo4(CodigoFacultad);
+		}
+		[AcceptVerbs("Get", "Post")]
+		public IActionResult VerificarCodigoCarrera(string CodigoCarrera)
+		{
+			return ValidarCodigo4(CodigoCarrera);
+		}
+		[AcceptVerbs("Get", "Post")]
+		public IActionResult VerificarEstadoCivil(string EstadoCivil)
+		{
+			return ValidarCodigoCero(EstadoCivil);
+		}
+		[AcceptVerbs("Get", "Post")]
+		public IActionResult VerificarGenero(string Genero)
+		{
+			return ValidarCodigoCero(Genero);
+		}
+
+
+		[AcceptVerbs("Get", "Post")]
+		public IActionResult VerificarFechaNac(string CodigoPerfil)
+		{
+			return ValidarCodigo4(CodigoPerfil);
+		}
+		
+		
+		[AcceptVerbs("Get", "Post")]
+		public IActionResult ValidarTipoPaciente(string TipoPaciente)
+		{
+			return ValidarCodigoCero(TipoPaciente);
+		}
+		[AcceptVerbs("Get", "Post")]
+		public IActionResult ValidarCodigoTipoIdentificacion(string CodigoTipoIdentificacion)
+		{
+			return ValidarCodigo4(CodigoTipoIdentificacion);
+		}
+
 		[AcceptVerbs("Get", "Post")]
 		public IActionResult VerifyCodigoPerfil(string CodigoPerfil)
 		{
@@ -174,6 +215,15 @@ namespace HC_Odontologicas.Controllers
 				return Json($"Campo requerido.");
 			}
 
+			return Json(true);
+		}
+
+		private IActionResult ValidarCodigoCero(string Codigo)
+		{
+			if (Codigo == "0")
+			{
+				return Json($"Campo requerido.");
+			}
 			return Json(true);
 		}
 	}

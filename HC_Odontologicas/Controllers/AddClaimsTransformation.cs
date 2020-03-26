@@ -29,7 +29,7 @@ namespace HC_Odontologicas.Controllers
 				var user = _context.Usuario.Include(u => u.Perfil).SingleOrDefault(p => p.CorreoElectronico == identity.Name);
 				
 				identity.AddClaim(new Claim("CodigoPerfil", user.CodigoPerfil));
-				identity.AddClaim(new Claim("NombreCompleto", user.NombreUsuario));
+				identity.AddClaim(new Claim("NombreCompleto", user.CorreoElectronico));
 				identity.AddClaim(new Claim("NombrePerfil", user.Perfil.Nombre));
 				if (user.CodigoPersonal == null)
 				{

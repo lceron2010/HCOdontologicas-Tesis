@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using HC_Odontologicas.Models;
 using System.Security.Claims;
 using HC_Odontologicas.FuncionesGenerales;
+using Microsoft.AspNetCore.Identity;
 
 namespace HC_Odontologicas.Controllers
 {
@@ -17,13 +18,15 @@ namespace HC_Odontologicas.Controllers
         private ValidacionesController validaciones;
         private readonly AuditoriaController _auditoria;
 		SelectListItem vacio = new SelectListItem(value: "0", text: "Seleccione...");
+		private readonly UserManager<UsuarioLogin> _userManager;
 
-		public UsuariosController(HCOdontologicasContext context)
+		public UsuariosController(HCOdontologicasContext context, UserManager<UsuarioLogin> userManager)
         {
             _context = context;
             validaciones = new ValidacionesController(_context);
             _auditoria = new AuditoriaController(context);
-        }
+			_userManager = userManager;
+		}
 
 		// GET: Usuario
 		public async Task<IActionResult> Index(string search, string Filter, string sortOrder, int? page)
@@ -55,12 +58,12 @@ namespace HC_Odontologicas.Controllers
 
 					var usuario = from c in _context.Usuario.Include(u=>u.Perfil).Include(u => u.Personal) select c;
 					if (!String.IsNullOrEmpty(search))
-						usuario = usuario.Where(s => s.NombreUsuario.Contains(search) || s.CorreoElectronico.Contains(search));
+						usuario = usuario.Where(s => s.CorreoElectronico.Contains(search) || s.CorreoElectronico.Contains(search));
 
 					switch (sortOrder)
 					{
 						case "nombre_desc":
-							usuario = usuario.OrderByDescending(s => s.NombreUsuario);
+							usuario = usuario.OrderByDescending(s => s.CorreoElectronico);
 							break;
 						case "per_asc":
 							usuario = usuario.OrderBy(s => s.Perfil.Nombre);
@@ -69,7 +72,7 @@ namespace HC_Odontologicas.Controllers
 							usuario = usuario.OrderByDescending(s => s.Perfil.Nombre);
 							break;
 						default:
-							usuario = usuario.OrderBy(s => s.NombreUsuario);
+							usuario = usuario.OrderBy(s => s.CorreoElectronico);
 							break;
 
 					}
@@ -136,6 +139,16 @@ namespace HC_Odontologicas.Controllers
 						maxCodigo = Convert.ToInt64(_context.Usuario.Max(f => f.Codigo));
 						maxCodigo += 1;
 						usuario.Codigo = maxCodigo.ToString("D4");
+
+						usuario.SecurityStamp = Guid.NewGuid().ToString();
+						var us = new UsuarioLogin { UserName = usuario.CorreoElectronico };
+						usuario.PasswordHash = _userManager.PasswordHasher.HashPassword(us, usuario.Contrasenia);
+
+						if (usuario.CodigoPersonal == "0")
+						{
+							usuario.CodigoPersonal = null;
+						}
+
 						_context.Add(usuario);
 						await _context.SaveChangesAsync();
 						await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Usuario", usuario.Codigo, "I");
@@ -163,6 +176,9 @@ namespace HC_Odontologicas.Controllers
 
 					Personal.Insert(0, vacio);
 					ViewData["CodigoPersonal"] = Personal;
+
+					ViewBag.Message = mensaje;
+
 
 					return View(usuario);
 				}
@@ -228,6 +244,17 @@ namespace HC_Odontologicas.Controllers
 						try
 						{
 							usuario.Codigo = Encriptacion.Decrypt(usuario.Codigo);
+
+							usuario.SecurityStamp = Guid.NewGuid().ToString();
+							var us = new UsuarioLogin { UserName = usuario.CorreoElectronico };
+							usuario.PasswordHash = _userManager.PasswordHasher.HashPassword(us, usuario.Contrasenia);
+
+
+							if (usuario.CodigoPersonal == "0")
+							{
+								usuario.CodigoPersonal = null;
+							}
+
 							_context.Update(usuario);
 							await _context.SaveChangesAsync();
 							await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Usuario", usuario.Codigo, "U");

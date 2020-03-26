@@ -52,7 +52,7 @@ namespace HC_Odontologicas.Areas.Identity.Pages.Account
                    
                     PlantillaCorreoElectronico correo = new PlantillaCorreoElectronico();
                     correo = _context.PlantillaCorreoElectronico.SingleOrDefault(p => p.Asunto.Contains("Recuperar Contrasenia"));
-                    string cuerpo = FuncionesEmail.RecuperarContrasenia(correo.Cuerpo, user.NombreCompleto, user.UserName, user.Password);
+                    string cuerpo = FuncionesEmail.RecuperarContrasenia(correo.Cuerpo, user.Email, user.UserName, user.Password);
                     string message = await FuncionesEmail.EnviarEmail(_emailSender, Input.Email, correo.Asunto, cuerpo);
 
                     ModelState.AddModelError(string.Empty, message);

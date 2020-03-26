@@ -18,14 +18,14 @@
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="CodigoPaciente" class="control-label">Paciente*</label>
-							<select asp-for="CodigoPaciente" class="form-control" asp-items="ViewBag.CodigoPaciente"></select>
+							<select asp-for="CodigoPaciente" class="form-control" asp-items="ViewBag.CodigoPaciente" disabled></select>
 							<span asp-validation-for="CodigoPaciente" class="text-danger"></span>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="CodigoPersonal" class="control-label">Personal*</label>
-							<select asp-for="CodigoPersonal" class="form-control" asp-items="ViewBag.CodigoPersonal"></select>
+							<select asp-for="CodigoPersonal" class="form-control" asp-items="ViewBag.CodigoPersonal" disabled></select>
 							<span asp-validation-for="CodigoPersonal" class="text-danger"></span>
 						</div>
 					</div>
@@ -49,7 +49,7 @@
 					<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Firma" class="control-label">Firma*</label>
-							<textarea asp-for="Firma" class="form-control"></textarea>
+							<textarea asp-for="Firma" class="form-control" disabled></textarea>
 							<span asp-validation-for="Firma" class="text-danger"></span>
 						</div>
 					</div>
@@ -59,7 +59,7 @@
 				<div class="col-lg-12">
 					<div class="form-group">
 						<a class="btn btn-white" style="border: 1px solid #007bff;"  onclick="regresar('../ConsentimientoInformado/Index','');">Regresar</a>
-						<button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
+						@*<button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>*@
 					</div>
 				</div>
 			</div>

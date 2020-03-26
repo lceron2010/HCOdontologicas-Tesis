@@ -1011,15 +1011,22 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(64)
 					.IsUnicode(false);
 
-				entity.Property(e => e.NombreUsuario)
-					.IsRequired()
-					.HasMaxLength(64)
-					.IsUnicode(false);
+				//entity.Property(e => e.NombreUsuario)
+				//	.IsRequired()
+				//	.HasMaxLength(64)
+				//	.IsUnicode(false);
 
 				entity.Property(e => e.CodigoPersonal)
 					.HasMaxLength(8)
 					.IsUnicode(false);
 
+				entity.Property(e => e.PasswordHash)
+				   .HasMaxLength(128)
+				   .IsUnicode(false);
+
+				entity.Property(e => e.SecurityStamp)
+					.HasMaxLength(128)
+					.IsUnicode(false);
 
 				entity.HasOne(d => d.Perfil)
 					.WithMany(p => p.Usuario)
@@ -1044,8 +1051,12 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(64)
 					.IsUnicode(false);
 
-				entity.Property(e => e.NombreCompleto)
-				.HasMaxLength(129);
+				entity.Property(e => e.Email)
+					.HasMaxLength(64)
+					.IsUnicode(false);
+
+				//entity.Property(e => e.NombreCompleto)
+				//.HasMaxLength(129);
 			});
 
 			modelBuilder.Entity<TipoIdentificacion>(entity =>

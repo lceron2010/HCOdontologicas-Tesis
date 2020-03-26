@@ -12,7 +12,7 @@ namespace HC_Odontologicas.Models
 				
 		public string CodigoPerfil { get; set; }
 		public string Password { get; set; }
-		public string NombreCompleto { get; set; }
+		public string Email { get; set; }
 	}
 	
 }

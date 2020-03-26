@@ -24,10 +24,7 @@
         <tr>
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["PerfilSortParam"]" asp-route-filter="@ViewData["Filter"]">Perfil</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NombreSortParam"]" asp-route-filter="@ViewData["Filter"]">Nombre Usuario</a>                
-            </th>
+            </th>          
             <th>
                 Correo Electrónico
             </th>
@@ -41,10 +38,7 @@
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Perfil.Nombre)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Personal.NombreCompleto)
-                </td>
+                </td>               
 
                 <td>
                     @Html.DisplayFor(modelItem => item.CorreoElectronico)

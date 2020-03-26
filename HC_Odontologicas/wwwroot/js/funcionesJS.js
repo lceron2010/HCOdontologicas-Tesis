@@ -816,6 +816,7 @@ function mostrarCamposSegunSeleccionado(response) {
 	if (sure === "E") {
 		$('#datosLaborales').hide();
 		$('#datosEstudiantiles').show();
+		$('#NumeroUnico').addClass("required");
 	}
 	if (sure === "EB") {
 		$('#datosLaborales').hide();
@@ -838,6 +839,15 @@ function mostrarCamposSegunSeleccionado(response) {
 		$('#datosEstudiantiles').hide();
 	}
 
+}
+
+function validarFecha() {
+	console.log("va a validar la fecha de nacimiento");
+	var fecha = $("#FechaNacimiento").val();
+	var actual = new Date();
+	if (fecha >= actual) {
+		$("#FechaActualS").val("La fecha debe ser menor que la actual");
+	}
 }
 
 
