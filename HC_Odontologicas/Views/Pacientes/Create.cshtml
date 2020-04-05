@@ -39,8 +39,8 @@
 					</div>
 					<div class="col-lg-6 col-sm-6 col-xs-12">
 						<div class="form-group">
-							<label asp-for="Identificacion" class="control-label">Identificación *</label>
-							<input asp-for="Identificacion" class="form-control" required maxlength="13" />
+							<label asp-for="Identificacion" class="control-label"></label>
+							<input asp-for="Identificacion" class="form-control" required maxlength="13" type="number" min="10"/>
 							<span asp-validation-for="Identificacion" class="text-danger"></span>
 						</div>
 					</div>					
@@ -49,7 +49,9 @@
 						<div class="input-group date">
 							<span class="input-group-addon"></span>
 							<input type="text" class="form-control" id="FechaNacimiento" required asp-for="FechaNacimiento" onchange="validarFecha();">
-							<span id="FechaNacimientoS" class="text-danger"></span>
+						</div>
+						<div>
+							<span asp-validation-for="FechaNacimiento" class="text-danger" id="FechaNacimientoS"></span>
 						</div>
 					</div>
 					<div class="col-lg-6 col-sm-6 col-xs-12">
@@ -146,7 +148,7 @@
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="NumeroUnico" class="control-label">Numero único*</label>
-							<input asp-for="NumeroUnico" class="form-control" maxlength="16" />
+							<input asp-for="NumeroUnico" class="form-control" maxlength="16" required/>
 							<span asp-validation-for="NumeroUnico" class="text-danger"></span>
 						</div>
 					</div>
@@ -180,7 +182,7 @@
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Cargo" class="control-label">Cargo *</label>
-							<input asp-for="Cargo" class="form-control" maxlength="64"/>
+							<input asp-for="Cargo" class="form-control" maxlength="64" required/>
 							<span asp-validation-for="Cargo" class="text-danger"></span>
 						</div>
 					</div>
@@ -238,6 +240,10 @@ $('#data_1 .input-group.date').datepicker({
 			});
 
 	});
+</script>
+
+<script>
+	window.onload = mostrarCamposSegunSeleccionado();
 </script>
 
 @if (ViewBag.Message != null)

@@ -16,7 +16,7 @@ namespace HC_Odontologicas.Controllers
 		private readonly HCOdontologicasContext _context;
 		private ValidacionesController validaciones;
 		private readonly AuditoriaController _auditoria;
-		SelectListItem vacio = new SelectListItem(value: "0", text: "Seleccione...");
+		SelectListItem vacio = new SelectListItem(value: "", text: "Seleccione...");
 		public CarrerasController(HCOdontologicasContext context)
 		{
 			_context = context;

@@ -14,8 +14,7 @@ namespace HC_Odontologicas.Models
         }
 
         public string Codigo { get; set; }
-		
-		[Required(ErrorMessage = "Campo requerido.")]
+				
 		[Display(Name = "Número Único")]
 		public string NumeroUnico { get; set; }
 		
@@ -30,8 +29,7 @@ namespace HC_Odontologicas.Models
 		public string Identificacion { get; set; }
 		
 		[Required(ErrorMessage = "Campo requerido.")]
-		[Display(Name = "Fecha Nacimiento")]
-		[Remote(action: "VerificarFechaNac", controller: "Validaciones")]
+		[Display(Name = "Fecha Nacimiento")]	
 		public DateTime FechaNacimiento { get; set; }
 		
 		[Required(ErrorMessage = "Campo requerido.")]
@@ -39,6 +37,7 @@ namespace HC_Odontologicas.Models
 		[Remote(action: "VerificarGenero", controller: "Validaciones")]
 		public string Genero { get; set; }
 
+		[Required(ErrorMessage = "Campo requerido.")]
 		[Display(Name = "Dirección")]
 		public string Direccion { get; set; }
 
@@ -63,9 +62,10 @@ namespace HC_Odontologicas.Models
 
 		[Display(Name = "Dependencia Donde Trabaja")]
 		public string DependenciaDondeTrabaja { get; set; }
-		
+	
 		public string Cargo { get; set; }
-        public string Procedencia { get; set; }
+        
+		public string Procedencia { get; set; }
 
 		[Remote(action: "ValidarTipoPaciente", controller: "Validaciones")]
 		[Display(Name = "Celular")]

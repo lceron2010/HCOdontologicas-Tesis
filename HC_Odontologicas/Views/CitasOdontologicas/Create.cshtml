@@ -62,7 +62,7 @@
 		scheduler.attachEvent("onEventSave", function (id, ev, is_new) {
 			if (ev.paciente != '') {
 				ev.text = "P";
-				console.log(ev.paciente);
+				//console.log(ev.paciente);
 				var arr = ev.paciente.split(',');
 				for (var i = 0; i < arr.length; i++) {
 					ev.text += (ev.text.length) ? (": " + getLabelPaciente(arr[i])) : (getLabelPaciente(arr[i]));
@@ -98,13 +98,12 @@
 		}
 		function obtenerColor(key) {
 			//llenar arreglo de colores.
-			var colores = [
-				{ key: 0, label: '#835134' },
-				{ key: 1, label: '#338A28' },
-				{ key: 2, label: '#BC61DA' },
-				{ key: 3, label: '#F3C13C' },
-				{ key: 4, label: '#98948B' },
-				{ key: 5, label: '#3AE7AB' }
+			var colores = [				
+				{ key: 0, label: '#338A28' },
+				{ key: 1, label: '#BC61DA' },
+				{ key: 2, label: '#F3C13C' },
+				{ key: 3, label: '#98948B' },
+				{ key: 4, label: '#3AE7AB' }
 			]
 
 			var coloresDoctor = [];

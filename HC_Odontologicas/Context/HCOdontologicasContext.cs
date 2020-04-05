@@ -50,7 +50,8 @@ namespace HC_Odontologicas.Models
 		{
 			if (!optionsBuilder.IsConfigured)
 			{
-				optionsBuilder.UseSqlServer("Server=DESKTOP-MMSTLC9\\SQLEXPRESS; Database=HCOdontologicas; Integrated Security=true");
+				//optionsBuilder.UseSqlServer("Server=DESKTOP-MMSTLC9\\SQLEXPRESS; Database=HCOdontologicas; Integrated Security=true");
+				optionsBuilder.UseSqlServer("Server=DESKTOP-IS80RJS\\SQLEXPRESS; Database=HCOdontologicas; Integrated Security=true");
 			}
 			optionsBuilder.ConfigureWarnings(warnings =>
 		  warnings.Default(WarningBehavior.Ignore));

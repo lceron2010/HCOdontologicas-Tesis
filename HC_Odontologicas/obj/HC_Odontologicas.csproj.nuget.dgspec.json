@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Laura\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC_Odontologicas\\HC_Odontologicas.csproj": {}
+    "C:\\Users\\Dario\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC_Odontologicas\\HC_Odontologicas.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Laura\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC_Odontologicas\\HC_Odontologicas.csproj": {
+    "C:\\Users\\Dario\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC_Odontologicas\\HC_Odontologicas.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Laura\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC_Odontologicas\\HC_Odontologicas.csproj",
+        "projectUniqueName": "C:\\Users\\Dario\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC_Odontologicas\\HC_Odontologicas.csproj",
         "projectName": "HC_Odontologicas",
-        "projectPath": "C:\\Users\\Laura\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC_Odontologicas\\HC_Odontologicas.csproj",
-        "packagesPath": "C:\\Users\\Laura\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Laura\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC_Odontologicas\\obj\\",
+        "projectPath": "C:\\Users\\Dario\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC_Odontologicas\\HC_Odontologicas.csproj",
+        "packagesPath": "C:\\Users\\Dario\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Dario\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC_Odontologicas\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Laura\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Dario\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -53,6 +53,10 @@
             "Microsoft.AspNetCore.Identity.UI": {
               "target": "Package",
               "version": "[3.0.0, )"
+            },
+            "Microsoft.AspNetCore.Mvc.Core": {
+              "target": "Package",
+              "version": "[2.2.5, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
@@ -104,7 +108,7 @@
             },
             {
               "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[3.0.2, 3.0.2]"
+              "version": "[3.0.3, 3.0.3]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
@@ -123,7 +127,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

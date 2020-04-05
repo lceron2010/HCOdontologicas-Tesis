@@ -103,24 +103,18 @@
 						</div>
 					</div>
 				</div>
-				@*<div class="row">
-						<div class="col-lg-8 col-md-8 col-xs-12" id="data_1">
-								<div class="input-group date">
-									<label>Última Visita al Odontólogo</label>
-									<input type="text" asp-for="UltimaVisitaOdontologo" class="form-control" required="">
-								</div>
-						</div>
-					</div>*@
 				<div class="row">
-					<div class="col-lg-8 col-md-8 col-xs-12" id="data_1">
-						<div class="form-group">
+					<div class="col-lg-8 col-md-8 col-xs-12" id="data_1">					
 							<label class="font-normal">Última Visita al Odontólogo *</label>
 							<div class="input-group date">
 								<span class="input-group-addon"></span>
 								<input type="text" class="form-control" asp-for="UltimaVisitaOdontologo" required>
 							</div>
-						</div>						
+							<div>
+								<span asp-validation-for="UltimaVisitaOdontologo" class="text-danger" id="UltimaVisita"></span>
+							</div>
 					</div>
+					
 				</div>
 				<div class="row">
 					<div class="col-lg-8 col-md-8 col-xs-12">
@@ -129,7 +123,7 @@
 							<select class="select2_demo_2 form-control" multiple="multiple" name="enfermedades[]" id="enfermedades" asp-items="ViewBag.AnamnesisEnfermedad" asp-for="enfermedades">
 							</select>
 						</div>
-						
+
 					</div>
 				</div>
 				<div class="row">

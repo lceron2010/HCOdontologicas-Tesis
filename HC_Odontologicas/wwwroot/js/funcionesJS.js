@@ -843,11 +843,28 @@ function mostrarCamposSegunSeleccionado(response) {
 
 function validarFecha() {
 	console.log("va a validar la fecha de nacimiento");
-	var fecha = $("#FechaNacimiento").val();
-	var actual = new Date();
+	var datoFecha = $("#FechaNacimiento").val();
+	console.log(datoFecha);
+	var dato = datoFecha.split("/");
+	var d = dato[0];
+	var m = dato[1];
+	var a = dato[2];
+	var fecha = new Date(a + "/" + m + "/" + d);
+	console.log(fecha);
+	var hoy = new Date();
+	var dd = hoy.getDate();
+	var mm = hoy.getMonth() + 1;
+	var yyyy = hoy.getFullYear();
+	var actual = new Date(yyyy + "/" + mm + "/" + dd);
+	console.log(fecha);
+	console.log(actual);
 	if (fecha >= actual) {
-		$("#FechaActualS").val("La fecha debe ser menor que la actual");
+		$("#FechaNacimientoS").text("La fecha debe ser menor a la actual.");
 	}
+	else {
+		$("#FechaNacimientoS").text("");
+	}
+
 }
 
 

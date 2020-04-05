@@ -6,16 +6,6 @@
 }
 <h4>Diagnostico</h4>
 <hr />
-
-@{
-	if (TempData["CodigoCitaAlAtender"] != null)
-	{
-		<h3>CodigoCitaAlAtender: @TempData["CodigoCitaAlAtender"]</h3>
-	}
-	TempData.Keep("CodigoCitaAlAtender");
-}
-
-
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 		<form asp-action="Edit">

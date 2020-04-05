@@ -92,11 +92,6 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-		[HttpGet]
-		public IActionResult DemoViewAsPdf()
-		{
-			return new ViewAsPdf("Details");
-		}
 		//MostrarCertificado
 		[HttpGet]
 		public IActionResult CertificadoReposo(string Codigo)

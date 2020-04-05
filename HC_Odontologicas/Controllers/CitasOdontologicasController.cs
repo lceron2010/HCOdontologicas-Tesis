@@ -90,8 +90,8 @@ namespace HC_Odontologicas.Controllers
 
 				if (Convert.ToBoolean(permisos[1]))
 				{
-					ViewData["CodigoPaciente"] = new SelectList(_context.Paciente, "Codigo", "Codigo");
-					ViewData["CodigoPersonal"] = new SelectList(_context.Personal, "Codigo", "Codigo");
+					//ViewData["CodigoPaciente"] = new SelectList(_context.Paciente, "Codigo", "Codigo");
+					//ViewData["CodigoPersonal"] = new SelectList(_context.Personal, "Codigo", "Codigo");
 					return View();
 				}
 				else

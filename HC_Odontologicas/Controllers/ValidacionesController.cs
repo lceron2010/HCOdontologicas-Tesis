@@ -41,13 +41,6 @@ namespace HC_Odontologicas.Controllers
 
 
 		[AcceptVerbs("Get", "Post")]
-		public IActionResult VerificarFechaNac(string CodigoPerfil)
-		{
-			return ValidarCodigo4(CodigoPerfil);
-		}
-		
-		
-		[AcceptVerbs("Get", "Post")]
 		public IActionResult ValidarTipoPaciente(string TipoPaciente)
 		{
 			return ValidarCodigoCero(TipoPaciente);

@@ -16,7 +16,7 @@ namespace HC_Odontologicas.Controllers
 		private readonly HCOdontologicasContext _context;
 		private ValidacionesController validaciones;
 		private readonly AuditoriaController _auditoria;
-		SelectListItem vacio = new SelectListItem(value: "0", text: "Seleccione...");
+		SelectListItem vacio = new SelectListItem(value: "", text: "Seleccione...");
 		public PersonalController(HCOdontologicasContext context)
 		{
 			_context = context;
@@ -336,7 +336,7 @@ namespace HC_Odontologicas.Controllers
 			}
 			else
 			{
-				list.Insert(0, new SelectListItem("Seleccione...", "0"));
+				//list.Insert(0, new SelectListItem("Seleccione...", "0"));
 				foreach (Personal item in Doctores.ToList())
 					list.Add(new SelectListItem(item.NombreCompleto, item.Codigo));
 			}

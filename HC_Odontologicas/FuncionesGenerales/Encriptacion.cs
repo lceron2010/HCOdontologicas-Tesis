@@ -51,6 +51,13 @@ namespace HC_Odontologicas.FuncionesGenerales
 
 		public static string Decrypt(string encryptedString)
 		{
+			//encryptedString = "+dPM0yb4j4vrnIWnWbxxTg==";
+			var primer = encryptedString.Substring(0,1);
+			if (primer.Equals(" "))
+			{
+				encryptedString = "+" + encryptedString;
+			}
+
 			string decryptedString = string.Empty;
 
 			byte[] encryptedBytes = Convert.FromBase64String(encryptedString);

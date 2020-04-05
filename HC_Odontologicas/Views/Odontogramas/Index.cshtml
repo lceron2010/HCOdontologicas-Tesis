@@ -6,7 +6,7 @@
 }
 
 <h3>Odontogramas</h3>
-<br />
+<hr />
 @if ((bool)ViewData["Crear"])
 {
 	<a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> Nuevo</a>
@@ -15,7 +15,6 @@
 {
 	@*<a asp-action="GetExcel" class="btn btn-primary"><i class="fa fa-download"></i> Exportar</a>*@
 }
-<br />
 <br />
 @* Buscar *@
 <form class="form-inline" asp-action="Index" method="get">
