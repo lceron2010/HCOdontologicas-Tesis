@@ -1,0 +1,88 @@
+﻿@*certificado medico*@
+@model Paginacion<HC_Odontologicas.Models.CitaOdontologica>
+@using HC_Odontologicas.FuncionesGenerales;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Citas Odontológicas</h4>
+
+@* Buscar *@
+<form class="form-inline" asp-action="Index" method="get">
+    <input class="form-control mr-sm-2" type="search" name="search" placeholder="Buscar por fecha..." value="@ViewData["Filter"]">
+    <button class="btn btn-sm btn-primary" type="submit">Buscar</button>
+    <a asp-action="Index" class="btn btn-sm btn-danger" title="Limpiar filtro">Limpiar</a>
+</form>
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Paciente
+            </th>
+            <th>
+                Fecha
+            </th>
+            <th>
+                Acciones
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Paciente.NombreCompleto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaInicio)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Ver Certificado Médico"><i class="fa fa-search"></i> Ver Certificado</a>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+ Paginación
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+<a asp-action="Index" asp-route-sortOrden="@ViewData["CurrentSort"]" asp-route-page="@(Model.PageIndex-1)" asp-route-filter="@ViewData["Filter"]" class="btn btn-sm btn-default @prevDisabled">Anterior</a>
+@for (int i = 1; i <= Model.TotalPages; i++)
+{
+    if (Model.PageIndex == i)
+    {
+        <a asp-action="Index" asp-route-sortOrden="@ViewData["CurrentSort"]" asp-route-page="@i" asp-route-filter="@ViewData["Filter"]" class="btn btn-sm btn-default active">@i</a>
+    }
+    else
+    {
+        <a asp-action="Index" asp-route-sortOrden="@ViewData["CurrentSort"]" asp-route-page="@i" asp-route-filter="@ViewData["Filter"]" class="btn btn-sm btn-default ">@i</a>
+    }
+}
+
+<a asp-action="Index" asp-route-sortOrden="@ViewData["CurrentSort"]" asp-route-page="@(Model.PageIndex+1)" asp-route-filter="@ViewData["Filter"]" class="btn btn-sm btn-default @nextDisabled">Siguiente</a>
+
+<div class="pull-right">
+    Registros: @Model.TotalR
+</div>
+
+<script>
+    $('#data_1 .input-group.date').datepicker({
+			language: 'es',
+			locale: "es",
+			todayBtn: "linked",
+			keyboardNavigation: false,
+			forceParse: false,
+			autoclose: true,
+			closeText: 'Cerrar',
+			maxDateNow: true,
+		});
+</script>

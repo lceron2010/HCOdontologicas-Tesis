@@ -1,0 +1,93 @@
+﻿@model Paginacion<HC_Odontologicas.Models.Diagnostico>
+@using HC_Odontologicas.FuncionesGenerales;
+@{
+	ViewData["Title"] = "Index";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Diagnostico</h4>
+<hr />
+@if ((bool)ViewData["Crear"])
+{
+	<a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> Nuevo</a>
+}
+@if ((bool)ViewData["Exportar"])
+	{
+		@*<a asp-action="GetExcel" class="btn btn-primary"><i class="fa fa-download"></i> Exportar</a>*@
+	}
+<br />
+@* Buscar *@
+<form class="form-inline" asp-action="Index" method="get">
+	<input class="form-control mr-sm-2" type="search" name="search" placeholder="Buscar..." value="@ViewData["Filter"]">
+	<button class="btn btn-sm btn-primary" type="submit">Buscar</button>
+	<a asp-action="Index" class="btn btn-sm btn-danger" title="Limpiar filtro">Limpiar</a>
+</form>
+<br />
+<br />
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["NombreSortParam"]" asp-route-filter="@ViewData["Filter"]">Paciente</a>
+			</th>			
+			<th>
+				Cie10
+			</th>
+			<th>
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["FechaSortParam"]" asp-route-filter="@ViewData["Filter"]">Fecha</a>
+			</th>
+		<th>Acciones</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.CitaOdontologica.Paciente.NombreCompleto)
+				</td>				
+				<td>
+					@Html.DisplayFor(modelItem => item.DiagnosticoCie10[0].Cie10.CodigoNombre)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Fecha)
+				</td>
+				<td>
+					@if ((bool)ViewData["Editar"])
+					{
+						<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Editar"><i class="fa fa-edit"></i> Editar</a>
+					}
+					@if ((bool)ViewData["Eliminar"])
+					{
+						<a onclick="eliminar('@item.Codigo','../Diagnostico/DeleteConfirmed','/../Diagnostico')" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Eliminar"><i class="fa fa-trash"></i> Eliminar</a>
+					}
+
+					</td>
+			</tr>
+		}
+	</tbody>
+</table>
+<br />
+@* Paginación *@
+@{
+	var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+	var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+<a asp-action="Index" asp-route-sortOrden="@ViewData["CurrentSort"]" asp-route-page="@(Model.PageIndex-1)" asp-route-filter="@ViewData["Filter"]" class="btn btn-sm btn-default @prevDisabled">Anterior</a>
+@for (int i = 1; i <= Model.TotalPages; i++)
+{
+	if (Model.PageIndex == i)
+	{
+		<a asp-action="Index" asp-route-sortOrden="@ViewData["CurrentSort"]" asp-route-page="@i" asp-route-filter="@ViewData["Filter"]" class="btn btn-sm btn-default active">@i</a>
+	}
+	else
+	{
+		<a asp-action="Index" asp-route-sortOrden="@ViewData["CurrentSort"]" asp-route-page="@i" asp-route-filter="@ViewData["Filter"]" class="btn btn-sm btn-default ">@i</a>
+	}
+}
+
+<a asp-action="Index" asp-route-sortOrden="@ViewData["CurrentSort"]" asp-route-page="@(Model.PageIndex+1)" asp-route-filter="@ViewData["Filter"]" class="btn btn-sm btn-default @nextDisabled">Siguiente</a>
+<br />
+<div class="pull-right">
+	Registros: @Model.TotalR
+</div>

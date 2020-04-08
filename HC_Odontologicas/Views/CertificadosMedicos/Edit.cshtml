@@ -1,0 +1,224 @@
+﻿@model HC_Odontologicas.Models.CertificadoMedicoImprimir
+
+@{
+	ViewData["Title"] = "Edit";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Certificado Médico</h4>
+<hr />
+<div class="row">
+	<div class="col-lg-12 col-md-12 col-xs-12">
+		<form asp-action="Edit">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input type="hidden" asp-for="Fecha" />
+			<input type="hidden" asp-for="NombreMedico" />
+			<input type="hidden" asp-for="CIE10Nombre" />
+			<input type="hidden" asp-for="NombreMedico" />
+			<input type="hidden" asp-for="CedulaPaciente" />
+			<input type="hidden" asp-for="NombrePaciente" />
+			<input type="hidden" asp-for="FechaCita" />
+			<input type="hidden" asp-for="Pieza" />
+
+			<fieldset>
+				<legend class="titulo text-uppercase" style="font-size:inherit">Datos informativos</legend>
+				<div class="row">
+					<div class="col-lg-6 col-md-6 col-xs-12">
+						<div class="form-group">
+							<label asp-for="CedulaPaciente" class="control-label">Identificación</label>
+							<input asp-for="CedulaPaciente" class="form-control" disabled />
+							<span asp-validation-for="CedulaPaciente" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-6 col-md-6 col-xs-12">
+						<div class="form-group">
+							<label class="control-label">Paciente</label>
+							<input asp-for="NombrePaciente" id="NombrePaciente" class="form-control" disabled />
+							<span asp-validation-for="NombrePaciente" class="text-danger"></span>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend class="titulo text-uppercase" style="font-size:inherit">Cita Odontológica</legend>
+				<div class="row">
+					<div class="col-lg-6 col-md-12 col-xs-12" id="data_1">
+						<div class="form-group">
+							<label class="font-normal">Fecha Cita Odontológica *</label>
+							<div class="input-group date">
+								<span class="input-group-addon"></span>
+								<input type="text" class="form-control" asp-for="FechaCita" disabled>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-12 col-xs-12" id="data_1">
+						<div class="form-group">
+							<label class="font-normal">Hora Inicio *</label>
+							<input type="time" class="form-control" asp-for="HoraInicio">
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-12 col-xs-12" id="data_1">
+						<div class="form-group">
+							<label class="font-normal">Hora Fin *</label>
+							<input type="time" class="form-control" asp-for="HoraFin">
+						</div>
+					</div>
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend class="titulo text-uppercase" style="font-size:inherit">Diagnostico</legend>
+				<div class="row">
+					<div class="col-lg-2 col-sm-12 col-xs-12">
+						<div class="form-group">
+							<label asp-for="Pieza" class="control-label">Pieza *</label>
+							<input type="number" asp-for="Pieza" class="form-control" min="11" disabled />
+							<span asp-validation-for="Pieza" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-5 col-sm-12 col-xs-12">
+						<div class="form-group">
+							<label asp-for="CIE10Codigo" class="control-label">Cie10 *</label>
+							<select asp-for="CIE10Codigo" class="select2_demo_3 form-control" asp-items="ViewBag.CIE10" disabled></select>
+							<span asp-validation-for="CIE10Codigo" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-5 col-md-12 col-xs-12">
+						<div class="form-group">
+							<label asp-for="Procedimiento" class="control-label">Procedimiento que se realizó *</label>
+							<input asp-for="Procedimiento" class="form-control" required />
+							<span asp-validation-for="Procedimiento" class="text-danger"></span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="form-group">
+							<b>Requiere citas subsecuentes?</b>
+							<label>
+								<input type="checkbox" style="width:22px; height:22px" asp-for="CitasSubsecuentes" />
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12">
+						<div>
+							<b>Requiere Reposo?</b>
+							<input type="checkbox" style="width:22px; height:22px" asp-for="Reposo" id="reposo" onchange="mostrarCamposReposo();" />
+						</div>
+					</div>
+				</div>
+			</fieldset>
+			<br />
+			<br />
+			<fieldset id="DatosReposo" style="display:none">
+				<legend class="titulo text-uppercase" style="font-size:inherit">Datos Reposo</legend>
+				<div class="row">
+					<div class="col-lg-4 col-md-12 col-xs-12" id="data_2">
+						<div class="form-group">
+							<label class="font-normal">Desde</label>
+							<div class="input-group date">
+								<span class="input-group-addon"></span>
+								<input type="text" id="FechaInicioReposo" class="form-control" asp-for="FechaInicioReposo">
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-12 col-xs-12" id="data_3">
+						<div class="form-group">
+							<label class="font-normal">Hasta</label>
+							<div class="input-group date">
+								<span class="input-group-addon"></span>
+								<input type="text" id="FechaFinReposo" class="form-control" asp-for="FechaFinReposo">
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-12 col-xs-12" id="data_4">
+						<div class="form-group">
+							<label class="font-normal">Fecha a Reincorporarse</label>
+							<div class="input-group date">
+								<span class="input-group-addon"></span>
+								<input type="text" id="FechaReincorporarse" class="form-control" asp-for="FechaReincorporarse">
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</fieldset>
+			<br />
+			<br />
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="form-group">
+						<a class="btn btn-white" style="border: 1px solid #007bff;" onclick="regresar('../CertificadosMedicos/Index','');">Regresar</a>
+						<button type="submit" class="btn btn-primary"><i class="fa fa-file-pdf-o"></i>  Generar Certificado</button>
+
+					</div>
+				</div>
+			</div>
+
+
+		</form>
+	</div>
+</div>
+
+
+<script>
+	$(document).ready(function () {
+		$('#data_1 .input-group.date').datepicker({
+			language: 'es',
+			locale: "es",
+			todayBtn: "linked",
+			keyboardNavigation: false,
+			forceParse: false,
+			autoclose: true,
+			closeText: 'Cerrar',
+			maxDateNow: true,
+		});
+
+		$('#data_2 .input-group.date').datepicker({
+			language: 'es',
+			locale: "es",
+			todayBtn: "linked",
+			keyboardNavigation: false,
+			forceParse: false,
+			autoclose: true,
+			closeText: 'Cerrar',
+			maxDateNow: true,
+		});
+
+		$('#data_3 .input-group.date').datepicker({
+			language: 'es',
+			locale: "es",
+			todayBtn: "linked",
+			keyboardNavigation: false,
+			forceParse: false,
+			autoclose: true,
+			closeText: 'Cerrar',
+			maxDateNow: true,
+		});
+
+		$('#data_4 .input-group.date').datepicker({
+			language: 'es',
+			locale: "es",
+			todayBtn: "linked",
+			keyboardNavigation: false,
+			forceParse: false,
+			autoclose: true,
+			closeText: 'Cerrar',
+			maxDateNow: true,
+		});
+
+		$('.i-checks').iCheck({
+			checkboxClass: 'icheckbox_square-blue',
+			radioClass: 'iradio_square-blue',
+
+		});
+
+		$(".select2_demo_3").select2({
+			theme: 'bootstrap4',
+			allowClear: false,
+		});
+
+	});
+</script>
+

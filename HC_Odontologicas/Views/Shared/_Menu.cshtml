@@ -1,0 +1,87 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<UsuarioLogin> SignInManager
+@inject UserManager<UsuarioLogin> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+
+	//cargando con la funcion no se puede redireccionar a las paginas
+	
+		<script src="~/js/funcionesJS.js"></script>
+		<script src="~/lib/jquery/dist/jquery.js"></script>
+		<script>
+			window.onload = obtenerMenu();
+		</script>
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNavDropdown">
+				<ul id="menuPrincipal" class="navbar-nav">
+				</ul>
+			</div>
+		</nav>
+
+	//funciona perfectamente pero la carga es manual
+	@*<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNavDropdown">
+				<ul class="navbar-nav">
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Historia Clínica
+						</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+							<a class="dropdown-item" asp-controller="Pacientes" asp-action="Index">Pacientes</a>
+							<a class="dropdown-item" asp-controller="Anamnesis" asp-action="Index">Anamnesis</a>
+							<a class="dropdown-item" asp-controller="Odontogramas" asp-action="Index">Odontogramas</a>
+							<a class="dropdown-item" asp-controller="Diagnostico" asp-action="Index">Diagnosticos</a>
+							<a class="dropdown-item" asp-controller="ConsentimientoInformado" asp-action="Index">Consentimientos</a>
+							<a class="dropdown-item" asp-controller="Recetamedica" asp-action="Index">Recetas Médica</a>
+						</div>
+					</li>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Agenda
+						</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+							<a class="dropdown-item"asp-controller="CitasOdontologicas" asp-action="Create">Agenda</a>
+							<a class="dropdown-item" asp-controller="CitasOdontologicas" asp-action="Index">Citas</a>
+						</div>
+					</li>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Configuración
+						</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+							<a class="dropdown-item" asp-controller="Cargos" asp-action="Index">Cargos</a>
+							<a class="dropdown-item" asp-controller="Carreras" asp-action="Index">Carreras</a>
+							<a class="dropdown-item" asp-controller="Cie10" asp-action="Index">CIE10</a>
+							<a class="dropdown-item" asp-controller="Enfermedades" asp-action="Index">Enfermedades</a>
+							<a class="dropdown-item" asp-controller="Facultades" asp-action="Index">Facultades</a>
+							<a class="dropdown-item" asp-controller="Personal" asp-action="Index">Personal</a>
+							<a class="dropdown-item" asp-controller="PlantillasCertificadosMedicos" asp-action="Index">Plantillas Certificados</a>
+							<a class="dropdown-item" asp-controller="PlantillaConsentimientosInformados" asp-action="Index">Plantillas Concentimientos</a>
+							<a class="dropdown-item" asp-controller="PlantillasCorreosElectronicos" asp-action="Index">Plantillas Correos Electrónicos</a>
+							<a class="dropdown-item" asp-controller="PlantillasRecetasMedicas" asp-action="Index">Plantillas  Recetas Médicas</a>
+							<a class="dropdown-item" asp-controller="TipoIdentificaciones" asp-action="Index">Tipo Identificaciones</a>
+							<a class="dropdown-item" asp-controller="Usuarios" asp-action="Index">Usuarios</a>
+						</div>
+					</li>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Seguridad
+						</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+							<a class="dropdown-item" asp-controller="Perfiles" asp-action="Index">Perfiles</a>
+							<a class="dropdown-item" href="#">Cambiar Contraseña</a>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</nav>*@
+
+}

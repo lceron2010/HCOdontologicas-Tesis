@@ -1,0 +1,251 @@
+﻿@model HC_Odontologicas.Models.Perfil
+
+@{
+	ViewData["Title"] = "Create";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Perfil de Seguridad</h3>
+<hr />
+<div class="row">
+	<div class="col-lg-12">
+		<form asp-action="Create">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input asp-for="Codigo" class="form-control" type="hidden" />
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+					<div class="form-group">
+						<label asp-for="Nombre" class="control-label">Nombre*</label>
+						<input asp-for="Nombre" class="form-control" maxlength="64" required />
+						<span asp-validation-for="Nombre" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div class="form-group">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th hidden>CodigoMenu</th>
+									<th class="text-center">Opción de Menú</th>
+									<th class="text-center">Ver</th>
+									<th class="text-center">Crear</th>
+									<th class="text-center">Editar</th>
+									<th class="text-center">Eliminar</th>
+									<th class="text-center hidden" >Exportar</th>
+									<th class="text-center hidden">Importar</th>
+								</tr>
+							</thead>
+							<tbody>
+								@for (int i = 0; i < Model.PerfilDetalle.Count; i++)
+								{
+									@if (Model.PerfilDetalle[i].Menu.Visible == true)
+									{
+										<tr>
+											<td hidden>
+												<input type="hidden" asp-for="@Model.PerfilDetalle[i].CodigoMenu" />
+											</td>
+											@if (Model.PerfilDetalle[i].Menu.CodigoMenu == null)
+											{
+												<td>
+													<label class="text-uppercase">@Model.PerfilDetalle[i].Menu.Nombre</label>
+												</td>
+											}
+											else
+											{
+												<td style="padding-left:25px!important;">
+													@Model.PerfilDetalle[i].Menu.Nombre
+												</td>
+											}
+											<td class="text-center">
+												@if (Model.PerfilDetalle[i].Menu.Ver == true)
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Ver" />
+												}
+												else
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Ver" hidden />
+												}
+											</td>
+											<td class="text-center">
+												@if (Model.PerfilDetalle[i].Menu.Crear == true)
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Crear" />
+												}
+												else
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Crear" hidden />
+												}
+											</td>
+											<td class="text-center">
+												@if (Model.PerfilDetalle[i].Menu.Editar == true)
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Editar" />
+												}
+												else
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Editar" hidden />
+												}
+											</td>
+											<td class="text-center">
+												@if (Model.PerfilDetalle[i].Menu.Eliminar == true)
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Eliminar" />
+												}
+												else
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Eliminar" hidden />
+												}
+											</td>
+											<td class="text-center">
+												@if (Model.PerfilDetalle[i].Menu.Exportar == true)
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Exportar" />
+												}
+												else
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Exportar" hidden />
+												}
+											</td>
+											<td class="text-center hidden">
+												@if (Model.PerfilDetalle[i].Menu.Importar == true)
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Importar" />
+												}
+												else
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Importar" hidden />
+												}
+											</td>
+										</tr>
+									}
+									else
+									{
+										<tr hidden>
+											<td hidden>
+												<input type="hidden" asp-for="@Model.PerfilDetalle[i].CodigoMenu" />
+											</td>
+											@if (Model.PerfilDetalle[i].Menu.CodigoMenu == null)
+											{
+												<td>
+													<label class="text-uppercase">@Model.PerfilDetalle[i].Menu.Nombre</label>
+												</td>
+											}
+											else
+											{
+												<td style="padding-left:25px!important;">
+													@Model.PerfilDetalle[i].Menu.Nombre
+												</td>
+											}
+											<td class="text-center">
+												@if (Model.PerfilDetalle[i].Menu.Ver == true)
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Ver" />
+												}
+												else
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Ver" hidden />
+												}
+											</td>
+											<td class="text-center">
+												@if (Model.PerfilDetalle[i].Menu.Crear == true)
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Crear" />
+												}
+												else
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Crear" hidden />
+												}
+											</td>
+											<td class="text-center">
+												@if (Model.PerfilDetalle[i].Menu.Editar == true)
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Editar" />
+												}
+												else
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Editar" hidden />
+												}
+											</td>
+											<td class="text-center">
+												@if (Model.PerfilDetalle[i].Menu.Eliminar == true)
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Eliminar" />
+												}
+												else
+												{
+													<input type="checkbox" asp-for="@Model.PerfilDetalle[i].Eliminar" class="hidden" />
+												}
+											</td>
+											<td class="text-center">
+												@if (Model.PerfilDetalle[i].Menu.Exportar == true)
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Exportar" />
+												}
+												else
+												{
+													<input type="checkbox" asp-for="@Model.PerfilDetalle[i].Exportar" class="i-checks" hidden />
+												}
+											</td>
+											<td hidden>
+												@if (Model.PerfilDetalle[i].Menu.Importar == true)
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Importar" />
+												}
+												else
+												{
+													<input type="checkbox" class="i-checks" asp-for="@Model.PerfilDetalle[i].Importar" hidden />
+												}
+											</td>
+										</tr>
+									}
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div class="form-group">
+						<a class="btn btn-white colorBordeBotonAccion" onclick="regresar('../Perfiles/Index','');"><i class="fa fa-caret-square-left"></i> Regresar</a>
+						<button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+@if (ViewBag.Message != null)
+{
+	<script type="text/javascript">
+        window.onload = function () {
+            if ("@ViewBag.Message" === "Save") {
+                SuccessAlert("Guardados","/../Perfiles");
+            }
+            else {
+                ErrorAlert("@ViewBag.Message");
+            }
+        };
+	</script>
+}
+
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('.i-checks').iCheck({
+			checkboxClass: 'icheckbox_square-blue',
+			radioClass: 'iradio_square-blue',
+		});
+
+		
+
+	});
+</script>
+
+
+@section Scripts {
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

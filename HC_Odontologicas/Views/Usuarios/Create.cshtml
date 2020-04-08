@@ -1,0 +1,84 @@
+﻿@model HC_Odontologicas.Models.Usuario
+
+@{
+	ViewData["Title"] = "Create";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Usuario</h4>
+<hr />
+<div class="row">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<form asp-action="Create">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="CodigoPerfil" class="control-label">Perfil *</label>
+						<select asp-for="CodigoPerfil" class="form-control" asp-items="ViewBag.CodigoPerfil" required></select>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="CodigoPersonal" class="control-label">Personal *</label>
+						<select asp-for="CodigoPersonal" class="form-control" asp-items="ViewBag.CodigoPersonal" required></select>
+					</div>
+				</div>
+			</div>
+			@*<div class="row">
+			<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+				<div class="form-group">
+					<label asp-for="NombreUsuario" class="control-label">Nombre Usuario *</label>
+					<input asp-for="NombreUsuario" class="form-control" required maxlength="64" />
+					<span asp-validation-for="NombreUsuario" class="text-danger"></span>
+				</div>
+			</div>
+		</div>*@
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="CorreoElectronico" class="control-label">Correo Electrónico *</label>
+						<input asp-for="CorreoElectronico" type="email" class="form-control" required maxlength="64" />
+						<span asp-validation-for="CorreoElectronico" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="Contrasenia" class="control-label">Contraseña *</label>
+						<input asp-for="Contrasenia" class="form-control" required maxlength="32" />
+						<span asp-validation-for="Contrasenia" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="form-group">
+						<a class="btn btn-white colorBordeBotonAccion" onclick="regresar('../Usuarios/Index','');">Regresar</a>
+						<button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+
+@if (ViewBag.Message != null)
+{
+	<script type="text/javascript">
+        window.onload = function () {
+            if ("@ViewBag.Message" === "Save") {
+                SuccessAlert("Guardados","/../Usuarios");
+            }
+            else {
+                ErrorAlert("@ViewBag.Message");
+            }
+        };
+	</script>
+}

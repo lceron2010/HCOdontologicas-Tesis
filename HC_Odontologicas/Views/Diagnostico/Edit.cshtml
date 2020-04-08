@@ -1,0 +1,118 @@
+﻿@model HC_Odontologicas.Models.Diagnostico
+
+@{
+	ViewData["Title"] = "Edit";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h4>Diagnostico</h4>
+<hr />
+<div class="row">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<form asp-action="Edit">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input type="hidden" asp-for="Codigo" />
+			<input asp-for="CodigoCitaOdontologica" class="form-control" hidden />
+			<fieldset>
+				<legend class="titulo text-uppercase" style="font-size:inherit">Datos informativos</legend>
+				<div class="row">
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="CodigoPaciente" class="control-label">Paciente*</label>
+							<select asp-for="CodigoPaciente" class="form-control" asp-items="ViewBag.CodigoPaciente" disabled></select>
+							<span asp-validation-for="CodigoPaciente" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="CodigoPersonal" class="control-label">Personal*</label>
+							<select asp-for="CodigoPersonal" class="form-control" asp-items="ViewBag.CodigoPersonal" disabled></select>
+							<span asp-validation-for="CodigoPersonal" class="text-danger"></span>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend class="titulo text-uppercase" style="font-size:inherit">Diagnostico</legend>
+				<div class="row">
+					<div class="col-lg-6 col-sm-6 col-xs-12">
+						<div class="form-group">
+							<label asp-for="Pieza" class="control-label">Pieza *</label>
+							<input asp-for="Pieza" class="form-control" disabled/>
+							<span asp-validation-for="Pieza" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-xs-12">
+						<div class="form-group">
+							<label asp-for="CodigoDiagnosticoCie10" class="control-label">Cie10 *</label>
+							<select asp-for="CodigoDiagnosticoCie10" class="select2_demo_3 form-control" asp-items="ViewBag.CIE10" disabled></select>
+							<span asp-validation-for="CodigoDiagnosticoCie10" class="text-danger"></span>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="row">
+					<div class="col-lg-6 col-sm-6 col-xs-12">
+						<div class="form-group">
+							<label asp-for="Observacion" class="control-label">Observación</label>
+							<input asp-for="Observacion" class="form-control" disabled/>
+							<span asp-validation-for="Observacion" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-xs-12">
+						<div class="form-group">
+							<label asp-for="Recomendacion" class="control-label">Recomendación</label>
+							<input asp-for="Recomendacion" class="form-control" disabled/>
+							<span asp-validation-for="Recomendacion" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-xs-12">
+						<div class="form-group">
+							<label asp-for="Firma" class="control-label">Firma *</label>
+							<textarea asp-for="Firma" class="form-control" disabled></textarea>
+							<span asp-validation-for="Firma" class="text-danger"></span>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="form-group">
+						<a class="btn btn-white" style="border: 1px solid #007bff;" onclick="regresar('../Diagnostico/Index','');">Regresar</a>
+						@*<button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>*@
+					</div>
+				</div>
+			</div>
+
+		</form>
+	</div>
+</div>
+
+@if (ViewBag.Message != null)
+{
+	<script type="text/javascript">
+        window.onload = function () {
+            if ("@ViewBag.Message" === "Save") {
+                SuccessAlert("Guardados","/../Diagnostico");
+            }
+            else {
+                ErrorAlert("@ViewBag.Message");
+            }
+        };
+	</script>
+}
+
+<script>
+	$(document).ready(function () {
+		$(".select2_demo_3").select2({
+			theme: 'bootstrap4',
+			allowClear: false,
+		});
+
+	});
+</script>
+
+
+@section Scripts {
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

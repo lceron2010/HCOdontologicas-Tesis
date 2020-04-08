@@ -1,0 +1,125 @@
+﻿@model HC_Odontologicas.Models.Personal
+
+@{
+	ViewData["Title"] = "Edit";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Personal</h4>
+<hr />
+<div class="row">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<form asp-action="Edit">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input type="hidden" asp-for="Codigo" />
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="Nombres" class="control-label">Nombres*</label>
+						<input asp-for="Nombres" class="form-control" required maxlength="128" />
+						<span asp-validation-for="Nombres" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="Apellidos" class="control-label">Apellidos*</label>
+						<input asp-for="Apellidos" class="form-control" required maxlength="128" />
+						<span asp-validation-for="Apellidos" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="CodigoCargo" class="control-label">Cargo*</label>
+						<select asp-for="CodigoCargo" class="form-control" asp-items="ViewBag.CodigoCargo" required></select>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="CodigoTipoIdentificacion" class="control-label">Tipo Identificacion*</label>
+						<select asp-for="CodigoTipoIdentificacion" class="form-control" asp-items="ViewBag.CodigoTipoIdentificacion" required></select>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="Identificacion" class="control-label">Identificación*</label>
+						<input asp-for="Identificacion" class="form-control" required maxlength="15" />
+						<span asp-validation-for="Identificacion" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="CorreoElectronico" class="control-label">Correo Electrónico*</label>
+						<input asp-for="CorreoElectronico" type="email" class="form-control" required maxlength="128" email />
+						<span asp-validation-for="CorreoElectronico" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="Telefono" class="control-label">Télefono</label>
+						<input asp-for="Telefono" class="form-control" maxlength="20" />
+						<span asp-validation-for="Telefono" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="Celular" class="control-label">Celular</label>
+						<input asp-for="Celular" class="form-control" maxlength="20" />
+						<span asp-validation-for="Celular" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<label asp-for="Direccion" class="control-label">Dirección*</label>
+						<input asp-for="Direccion" class="form-control" maxlength="128" required />
+						<span asp-validation-for="Direccion" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-12">
+				<div>
+					<b> Activo </b>
+					<label>
+						<input type="checkbox" asp-for="Estado" class="i-checks" checked />
+					</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="form-group">
+						<a class="btn btn-white colorBordeBotonAccion" onclick="regresar('../Personal/Index','');">Regresar</a>
+						<button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
+					</div>
+				</div>
+			</div>
+
+		</form>
+	</div>
+</div>
+
+@if (ViewBag.Message != null)
+{
+	<script type="text/javascript">
+        window.onload = function () {
+            if ("@ViewBag.Message" === "Save") {
+                SuccessAlert("Guardados","/../Personal");
+            }
+            else {
+                ErrorAlert("@ViewBag.Message");
+            }
+        };
+	</script>
+}
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('.i-checks').iCheck({
+			checkboxClass: 'icheckbox_square-blue',
+			radioClass: 'iradio_square-blue',
+		});
+	});
+</script>
+
+@*@section Scripts {
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}*@

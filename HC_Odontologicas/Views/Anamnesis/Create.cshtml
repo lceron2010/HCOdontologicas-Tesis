@@ -1,0 +1,211 @@
+﻿@model HC_Odontologicas.Models.Anamnesis
+
+@{
+	ViewData["Title"] = "Create";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h4>Anamnesis Odontológico</h4>
+<hr />
+
+@{
+	if (TempData["CodigoCitaAlAtender"] != null)
+	{
+		<h3>CodigoCitaAlAtender: @TempData["CodigoCitaAlAtender"]</h3>
+	}
+	TempData.Peek("CodigoCitaAlAtender");
+}
+
+
+<div class="row">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<form asp-action="Create">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input asp-for="Codigo" hidden />
+			<input asp-for="CodigoCitaOdontologica" hidden />
+			<fieldset>
+				<legend class="titulo text-uppercase" style="font-size:inherit">Datos informativos</legend>
+				<div class="row">
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="CodigoPaciente" class="control-label">Paciente*</label>
+							<select asp-for="CodigoPaciente" class="form-control" asp-items="ViewBag.CodigoPaciente"></select>
+							<span asp-validation-for="CodigoPaciente" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="CodigoPersonal" class="control-label">Personal*</label>
+							<select asp-for="CodigoPersonal" class="form-control" asp-items="ViewBag.CodigoPersonal"></select>
+							<span asp-validation-for="CodigoPersonal" class="text-danger"></span>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend class="titulo text-uppercase" style="font-size:inherit">Anamnesis</legend>
+				<div class="row">
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="MotivoConsulta" class="control-label">Motivo de Consulta*</label>
+							<input asp-for="MotivoConsulta" class="form-control" maxlength="512" />
+							<span asp-validation-for="MotivoConsulta" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="Alerta" class="control-label">Alerta</label>
+							<input asp-for="Alerta" class="form-control" maxlength="512" />
+							<span asp-validation-for="Alerta" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" id="data_1">
+						<div class="form-group">
+							<label class="font-normal">Ultima Visita al Odontólogo</label>
+							<div class="input-group date">
+								<span class="input-group-addon"></span><input type="text" asp-for="UltimaVisitaOdontologo" class="form-control">
+							</div>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend class="titulo text-uppercase" style="font-size:inherit">Antecedentes</legend>
+				<div class="row">
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="AnamnesisEnfermedad" class="control-label">Enfermedades</label>
+							<select class="select2_demo_2 form-control" multiple="multiple" name="enfermedades[]" id="enfermedades" asp-items="ViewBag.AnamnesisEnfermedad" asp-for="AnamnesisEnfermedad">
+							</select>
+						</div>
+					</div>
+
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="AntecedentesQuirurgicos" class="control-label">Antecedentes Quirúrgicos</label>
+							<input asp-for="AntecedentesQuirurgicos" class="form-control" maxlength="512" />
+							<span asp-validation-for="AntecedentesQuirurgicos" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="Alergico" class="control-label">Alérgico</label>
+							<input asp-for="Alergico" class="form-control" maxlength="512" />
+							<span asp-validation-for="Alergico" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="Medicamentos" class="control-label">Medicamentos</label>
+							<input asp-for="Medicamentos" class="form-control" maxlength="512" />
+							<span asp-validation-for="Medicamentos" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="Habitos" class="control-label">Hábitos</label>
+							<input asp-for="Habitos" class="form-control" maxlength="512" />
+							<span asp-validation-for="Habitos" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="AntecedentesFamiliares" class="control-label">Antecedentes Familiares</label>
+							<input asp-for="AntecedentesFamiliares" class="form-control" maxlength="512" />
+							<span asp-validation-for="AntecedentesFamiliares" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="Endocrino" class="control-label">Endocrino</label>
+							<input asp-for="Endocrino" class="form-control" maxlength="128" />
+							<span asp-validation-for="Endocrino" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label asp-for="Traumatologico" class="control-label">Traumatológico</label>
+							<input asp-for="Traumatologico" class="form-control" maxlength="128" />
+							<span asp-validation-for="Traumatologico" class="text-danger"></span>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<b>¿Fuma? </b>
+						<label>
+							<input type="checkbox" asp-for="Fuma" class="i-checks" />
+						</label>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					<div class="form-group">
+						<b>¿Embarazada? </b>
+						<label>
+							<input type="checkbox" asp-for="Embarazada" class="i-checks" />
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="form-group">
+						<a class="btn btn-white" style="border: 1px solid #007bff;" onclick="regresar('../Anamnesis/Index','');">Regresar</a>
+						<button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
+
+
+						<a asp-controller="odontogramas" asp-action="Create" class="btn btn-white" data-toggle="tooltip" title="Editar">Siguiente</a>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+@if (ViewBag.Message != null)
+{
+	<script type="text/javascript">
+        window.onload = function () {
+            if ("@ViewBag.Message" === "Save") {
+                SuccessAlert("Guardados","/../Anamnesis");
+            }
+            else {
+                ErrorAlert("@ViewBag.Message");
+            }
+        };
+	</script>
+}
+
+<script>
+	$(document).ready(function () {
+		$('#data_1 .input-group.date').datepicker({
+			language: 'es',
+			locale: "es",
+			todayBtn: "linked",
+			keyboardNavigation: false,
+			forceParse: false,
+			autoclose: true,
+			closeText: 'Cerrar',
+			maxDateNow: true,
+		});
+
+		$('.i-checks').iCheck({
+			checkboxClass: 'icheckbox_square-blue',
+			radioClass: 'iradio_square-blue',
+		});
+
+		$(".select2_demo_2").select2({
+			theme: 'bootstrap4',
+		});
+
+	});
+</script>
+
+@section Scripts {
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
