@@ -235,20 +235,23 @@ namespace HC_Odontologicas.Controllers
 		public async Task<IActionResult> Edit(CitaOdontologica citaOdontologica, List<string> enfermedades, List<Odontograma> ListaOdontogramas)
 		{
 			var i = (ClaimsIdentity)User.Identity;
+			var transaction = _context.Database.BeginTransaction();
 			if (i.IsAuthenticated)
 			{
 				try
 				{
+
+
 					if (ModelState.IsValid)
 					{
 						DateTime fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 						citaOdontologica.Codigo = Encriptacion.Decrypt(citaOdontologica.Codigo);
+						
 						//anamnesis
 						Anamnesis anamnesis = new Anamnesis();
 						Int64 maxCodigoAnamnesis = 0;
 						maxCodigoAnamnesis = Convert.ToInt64(_context.Anamnesis.Max(f => f.Codigo));
-						maxCodigoAnamnesis += 1;
-						//anm.Codigo = maxCodigo.ToString("D8");
+						maxCodigoAnamnesis += 1;						
 						anamnesis.Codigo = maxCodigoAnamnesis.ToString("D8");
 						anamnesis.CodigoCitaOdontologica = citaOdontologica.Codigo;
 						anamnesis.MotivoConsulta = citaOdontologica.MotivoConsulta;
@@ -334,7 +337,7 @@ namespace HC_Odontologicas.Controllers
 						_context.SaveChanges();
 
 						var codigoReceta = "";
-						if (!(string.IsNullOrEmpty(citaOdontologica.Descripcion) && string.IsNullOrEmpty(citaOdontologica.Indicaciones)))
+						if (! ( (string.IsNullOrEmpty(citaOdontologica.DescripcionReceta)) &&( string.IsNullOrEmpty(citaOdontologica.Indicaciones))))
 						{
 							//receta medica
 							RecetaMedica recetaMedica = new RecetaMedica();
@@ -345,7 +348,15 @@ namespace HC_Odontologicas.Controllers
 							recetaMedica.CodigoCitaOdontologica = citaOdontologica.Codigo;
 							recetaMedica.Descripcion = citaOdontologica.DescripcionReceta;
 							recetaMedica.Fecha = fecha;
-							recetaMedica.CodigoPlantillaRecetaMedica = citaOdontologica.CodigoPlantillaRecetaMedica;
+							if (citaOdontologica.CodigoPlantillaRecetaMedica == "0")
+							{
+								recetaMedica.CodigoPlantillaRecetaMedica = null;
+							}
+							else
+							{
+								recetaMedica.CodigoPlantillaRecetaMedica = citaOdontologica.CodigoPlantillaRecetaMedica;
+							}
+							
 							recetaMedica.Indicaciones = citaOdontologica.Indicaciones;
 							codigoReceta = recetaMedica.Codigo;
 							_context.Add(recetaMedica);
@@ -380,6 +391,9 @@ namespace HC_Odontologicas.Controllers
 						
 						await _auditoria.GuardarLogAuditoria(fecha, i.Name, "CitaOdontologica", citaOdontologica.Codigo, "I");
 
+						transaction.Commit();
+						
+
 						ViewBag.Message = "Save";
 
 						return View(citaOdontologica);
@@ -398,7 +412,15 @@ namespace HC_Odontologicas.Controllers
 					string mensaje = e.Message;
 					if (e.InnerException != null)
 						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
+					ViewBag.Message = mensaje;
 
+					transaction.Rollback();
+
+					//eliminar el odontograma si hay algun error
+					//citaOdontologica.Codigo = Encriptacion.Decrypt(citaOdontologica.Codigo);
+					var odontograma = await _context.Odontograma.SingleOrDefaultAsync(f => f.CodigoCitaOdontologica == citaOdontologica.Codigo);
+					_context.Odontograma.Remove(odontograma);
+					await _context.SaveChangesAsync();
 
 					return View(citaOdontologica);
 				}

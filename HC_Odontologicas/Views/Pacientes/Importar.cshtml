@@ -1,0 +1,82 @@
+﻿
+@{
+	ViewData["Title"] = "Importar";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h3>Empleados</h3>
+<div class="row">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<form role="form" enctype="multipart/form-data" id="Importar" name="Importar" method="post" asp-action="GuardarDatosImportados">
+			<div class="row">
+				<div class="col-lg-6 col-sm-6 col-xs-12">
+					<div class="form-group">
+						<div class="custom-file">
+							<input id="Documento" type="file" class="custom-file-input" onchange="validarTamanioArchivo($(this));" accept="application/excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" /> @*accept="application/excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" >*@
+							<label for="nombre" id="nombre" class="custom-file-label">Seleccione un archivo...</label>
+							<br />
+						</div>
+						<span id="DocumentoMensaje" name="DocumentoMensaje" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="table-responsive">
+					<table id="tablaImportarImpuestos" class="table table-stripped table-bordered" style="display:none">
+						<thead>
+							<tr>
+								<th>Nro.</th>
+								<th>Código</th>
+								<th>Nombre</th>
+								<th>Cédula</th>
+								<th>FechaNac</th>
+								<th>Genero</th>
+								<th>Dirección</th>
+								<th>Teléfono</th>
+								<th>Celular</th>
+								<th>Email</th>
+								<th>Carrera</th>
+								<th>Facultad</th>
+								<th>EmailEPN</th>
+								<th>Graduado</th>
+								<th>Titulación</th>
+								<th>Etnia</th>
+								<th>Observaciones</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<br />
+			<div class="row">
+				<div class="form-group">
+					<a class="btn btn-white colorBordeBotonAccion" onclick="regresar('../Pacientes/Index','');">Regresar</a>
+					<button class="btn btn-primary" id="btnGuardar" type="button" onclick="GuardarDatosImportardos('@Url.Action("Index", "Pacientes" )','@Url.Action("GuardarDatosImportados", "Pacientes" )');" style="display:none">Guardar</button>
+				</div>
+			</div>
+
+		</form>
+	</div>
+</div>
+<div style="display:none;">
+	<input id="TamanoAdjunto" value="@ViewBag.TamanoAdjunto" />
+</div>
+@section Scripts {
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('.custom-file-input').on('change', function () {
+				$("#tablaImportarImpuestos").dataTable().fnDestroy();
+				let fileName = $('.custom-file-input').val().split('\\').pop();//$(this).val().split('\\').pop();
+				$(this).next('.custom-file-label').addClass("selected").html(fileName);
+				console.log("selecciono archivo");
+				cargarDatosTablaImportar();
+			});
+
+
+		});
+
+
+	</script>
+}

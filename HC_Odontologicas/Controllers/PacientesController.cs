@@ -177,6 +177,8 @@ namespace HC_Odontologicas.Controllers
 						maxCodigo = Convert.ToInt64(_context.Paciente.Max(f => f.Codigo));
 						maxCodigo += 1;
 						paciente.Codigo = maxCodigo.ToString("D8");
+						paciente.Nombres = paciente.Nombres.ToUpper();
+						paciente.Apellidos = paciente.Apellidos.ToUpper();
 						_context.Add(paciente);
 						await _context.SaveChangesAsync();
 						await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Paciente", paciente.Codigo, "I");
@@ -441,11 +443,11 @@ namespace HC_Odontologicas.Controllers
 						{
 							if (cell.Start.Column == 1)
 							{
-								newRow[cell.Start.Column - 1] = cell.Text;
+								newRow[cell.Start.Column - 1] = cell.Text.TrimEnd();
 							}
 							else
 							{
-								newRow[cell.Start.Column - 2] = cell.Text;
+								newRow[cell.Start.Column - 2] = cell.Text.TrimEnd();
 							}
 
 						}
@@ -460,7 +462,7 @@ namespace HC_Odontologicas.Controllers
 					//validar los datos
 					foreach (DataRow dr in table.Rows)
 					{
-						dr["Observaciones"] = "ninguna";// validarDatosCuentaContableString(dr);
+						dr["Observaciones"] = validarDatos(dr);
 					}
 
 					DeleteFile(Documento.FileName);
@@ -478,6 +480,47 @@ namespace HC_Odontologicas.Controllers
 
 			}
 		}
+
+		private string validarDatos(DataRow dr)
+		{
+			string mensaje = "";
+
+			if (string.IsNullOrEmpty(dr["Código"].ToString()))
+			{
+				mensaje += " Debe tener un Código";
+			}
+
+			if (string.IsNullOrEmpty(dr["Nombre"].ToString()))
+			{
+				mensaje += " Debe tener un Nombre";
+			}
+
+
+			if (string.IsNullOrEmpty(dr["Cédula"].ToString()))
+			{
+				mensaje += " Debe tener una Cédula";
+			}
+			 if (string.IsNullOrEmpty(dr["FechaNac"].ToString()))
+			{
+				mensaje += " Debe tener una FechaNac";
+			}
+			 if (string.IsNullOrEmpty(dr["Genero"].ToString()))
+			{
+				mensaje += " Debe tener un Genero";
+			}
+
+			 if (string.IsNullOrEmpty(dr["Dirección"].ToString()))
+			{
+				mensaje += " Debe tener una Dirección";
+			}
+			 if (string.IsNullOrEmpty(dr["EmailEPN"].ToString()))
+			{
+				mensaje += " Debe tener un EmailEPN";
+			}
+			
+			return mensaje;
+		}
+
 
 		//guardar los datos en la base
 		[HttpPost]
@@ -537,7 +580,7 @@ namespace HC_Odontologicas.Controllers
 						pc.Telefono = workSheet.Cells[i, 8].Value.ToString();
 						pc.Celular = workSheet.Cells[i, 9].Value.ToString();
 						pc.MailPersonal = workSheet.Cells[i, 10].Value.ToString();
-						pc.MailEpn = workSheet.Cells[i, 13].Value.ToString();
+						pc.MailEpn = workSheet.Cells[i, 21].Value.ToString();
 						pc.EstadoCivil = null;
 						pc.DependenciaDondeTrabaja = null;
 						pc.Cargo = null;
@@ -545,7 +588,7 @@ namespace HC_Odontologicas.Controllers
 						pc.TipoPaciente = null;
 						pc.Estado = true;
 						pc.CodigoTipoIdentificacion = null;
-						pc.CodigoFacultad = buscarFacultad(workSheet.Cells[i, 12].Value.ToString());
+						pc.CodigoFacultad = null;// buscarFacultad(workSheet.Cells[i, 12].Value.ToString());
 						pc.CodigoCarrera = null;//buscarCarrrera(pc.CodigoFacultad, workSheet.Cells[i, 11].Value.ToString());
 						_context.Add(pc);
 						//_auditoria.GuardarLogAuditoria(fechaPacienteGuardado, j.Name, "Paciente", pc.Codigo, "I");
@@ -570,7 +613,7 @@ namespace HC_Odontologicas.Controllers
 						pc.Telefono = workSheet.Cells[i, 9].Value.ToString();
 						pc.Celular = workSheet.Cells[i, 10].Value.ToString();
 						pc.MailPersonal = workSheet.Cells[i, 11].Value.ToString();
-						pc.MailEpn = workSheet.Cells[i, 14].Value.ToString();
+						pc.MailEpn = workSheet.Cells[i, 22].Value.ToString();
 						pc.EstadoCivil = null;
 						pc.DependenciaDondeTrabaja = null;
 						pc.Cargo = null;
@@ -578,7 +621,7 @@ namespace HC_Odontologicas.Controllers
 						pc.TipoPaciente = null;
 						pc.Estado = true;
 						pc.CodigoTipoIdentificacion = null;
-						pc.CodigoFacultad = null; buscarFacultad(workSheet.Cells[i, 13].Value.ToString());
+						pc.CodigoFacultad = null; //buscarFacultad(workSheet.Cells[i, 13].Value.ToString());
 						pc.CodigoCarrera = null;//buscarCarrrera(pc.CodigoFacultad, workSheet.Cells[i, 11].Value.ToString());
 						_context.Add(pc);
 						//_auditoria.GuardarLogAuditoria(fechaPacienteGuardado, j.Name, "Paciente", pc.Codigo, "I");
@@ -708,6 +751,31 @@ namespace HC_Odontologicas.Controllers
 
 			return "";		
 			
+		}
+
+
+		//importar datos
+
+		public IActionResult Importar()
+		{
+			var i = (ClaimsIdentity)User.Identity;
+			if (i.IsAuthenticated)
+			{
+				//Permisos de usuario
+				var permisos = i.Claims.Where(c => c.Type == "Pacientes").Select(c => c.Value).SingleOrDefault().Split(";");
+				if (Convert.ToBoolean(permisos[5]))
+				{
+
+
+					return View();
+				}
+				else
+					return Redirect("../Pacientes");
+			}
+			else
+			{
+				return Redirect("../Identity/Account/Login");
+			}
 		}
 
 	}

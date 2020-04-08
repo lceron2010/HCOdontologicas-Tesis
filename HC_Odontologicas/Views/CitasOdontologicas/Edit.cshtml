@@ -104,17 +104,19 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-lg-8 col-md-8 col-xs-12" id="data_1">					
+					<div class="col-lg-8 col-md-8 col-xs-12" id="data_1">
+						<div class="form-group">
 							<label class="font-normal">Última Visita al Odontólogo *</label>
 							<div class="input-group date">
-								<span class="input-group-addon"></span>
-								<input type="text" class="form-control" asp-for="UltimaVisitaOdontologo" required>
+									<span class="input-group-addon"></span>
+									<input type="text" class="form-control" asp-for="UltimaVisitaOdontologo" required onchange="validarFechaAnamnesis();">
+									<span asp-validation-for="UltimaVisitaOdontologo" class="text-danger" id="UltimaVisitaOdontologoS"></span>					
 							</div>
-							<div>
-								<span asp-validation-for="UltimaVisitaOdontologo" class="text-danger" id="UltimaVisita"></span>
-							</div>
+							
+						</div>
+
 					</div>
-					
+
 				</div>
 				<div class="row">
 					<div class="col-lg-8 col-md-8 col-xs-12">
@@ -2757,7 +2759,7 @@
 					<div class="col-lg-8 col-sm-8 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Pieza" class="control-label">Pieza *</label>
-							<input asp-for="Pieza" class="form-control" required min="11"/>
+							<input asp-for="Pieza" class="form-control" required min="11" />
 							<span asp-validation-for="Pieza" class="text-danger"></span>
 						</div>
 					</div>
@@ -2785,7 +2787,7 @@
 						<div class="form-group">
 							<label asp-for="Recomendacion" class="control-label">Recomendación</label>
 							<input asp-for="Recomendacion" class="form-control" maxlength="512" />
-							<span asp-validation-for="Recomendacion" class="text-danger" ></span>
+							<span asp-validation-for="Recomendacion" class="text-danger"></span>
 						</div>
 					</div>
 				</div>
@@ -2858,10 +2860,8 @@
 				</div>
 			</fieldset>
 
-			
 
-			
-</form>
+		</form>
 	</div>
 
 </div>
@@ -2909,7 +2909,7 @@
 							console.log("1");
 							//const error = $(".body:eq(" + 0 + ") label.error", $("#formAtenderCitaOdontologica")).length;
 							var error = $("#formAtenderCitaOdontologica").valid();
-							console.log('error',error);
+							console.log('error', error);
 							if (error) {
 								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[0];
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
@@ -2922,7 +2922,7 @@
 							//const error = $(".body:eq(" + 1 + ") label.error", $("#formAtenderCitaOdontologica")).length;
 							//console.log('error', error);
 							var error = $("#formAtenderCitaOdontologica").valid();
-							console.log('error',error);
+							console.log('error', error);
 							if (error) {
 								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[1];
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
@@ -2934,7 +2934,7 @@
 						if (newIndex === 3) {
 							console.log("3");
 							var error = $("#formAtenderCitaOdontologica").valid();
-							console.log('error',error);
+							console.log('error', error);
 							if (error) {
 								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[2];
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
@@ -2960,8 +2960,8 @@
 						if (newIndex === 1) {
 							console.log("1");
 							var error = $("#formAtenderCitaOdontologica").valid();
-							console.log('error',error);
-							if (error) { 
+							console.log('error', error);
+							if (error) {
 								claseActual = $("#formAtenderCitaOdontologica")[0].className;//classList[0];
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
 								$("#formAtenderCitaOdontologica").addClass("wizard-bigA wizard clearfix");
@@ -2972,7 +2972,7 @@
 
 							console.log("2");
 							var error = $("#formAtenderCitaOdontologica").valid();
-							console.log('error',error);
+							console.log('error', error);
 							if (error) {
 								claseActual = $("#formAtenderCitaOdontologica")[0].className;//classList[1];
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
@@ -2984,7 +2984,7 @@
 						if (newIndex === 3) {
 							console.log("3");
 							var error = $("#formAtenderCitaOdontologica").valid();
-							console.log('error',error);
+							console.log('error', error);
 							if (error) {
 								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[2];
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
@@ -3027,8 +3027,8 @@
 
 					// Submit form input
 					console.log("finish");
-					GuardarDatosOdontograma("crear");			
-					
+					GuardarDatosOdontograma("crear");
+
 					form.submit();
 				}
 			}).validate({

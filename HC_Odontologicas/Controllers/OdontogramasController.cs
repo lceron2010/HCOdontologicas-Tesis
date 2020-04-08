@@ -165,7 +165,7 @@ namespace HC_Odontologicas.Controllers
 				maxCodigo += 1;
 
 				odont.Codigo = maxCodigo.ToString("D8");
-				odont.CodigoCitaOdontologica = odontograma[0].CodigoCitaOdontologica;
+				odont.CodigoCitaOdontologica = Encriptacion.Decrypt(odontograma[0].CodigoCitaOdontologica);
 				odont.FechaActualizacion = fecha;
 				odont.Observaciones = null;
 				odont.Estado = "I";
@@ -196,7 +196,7 @@ namespace HC_Odontologicas.Controllers
 				await _auditoria.GuardarLogAuditoria(fecha, i.Name, "Odontograma", odont.Codigo, "I");
 				//ViewBag.Message = "Guardado";
 
-				return "Guardado";
+				return " Se Guardado Correctamente";
 			}
 			catch (Exception e)
 			{

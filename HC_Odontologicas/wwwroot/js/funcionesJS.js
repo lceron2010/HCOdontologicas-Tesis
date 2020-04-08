@@ -677,9 +677,13 @@ function cargarColorAlEditar(response) {
 //-----------PACIENTE----importar datos  /////
 
 function cargarDatosTablaImportar() {
+	console.log("entro a cargar datos tabla");
+
 	var data = new FormData();
 	data.append('Documento', $('#Documento')[0].files[0]);
 
+	$('#tablaImportarImpuestos').show();
+	var contador = 0;
 	var opts = {
 		url: '../Pacientes/CargarDatosTabla',
 		data: data,
@@ -690,7 +694,25 @@ function cargarDatosTablaImportar() {
 		type: 'POST',
 		success: function (response) {
 			console.log(response);
+
 			var table_data = jQuery.parseJSON(response);
+
+			console.log(table_data);
+
+			var len = table_data.length - 1;
+			console.log(len);
+			for (var i = 0; i <= len; i++) {
+				console.log(table_data[i].Observaciones);
+				if (table_data[i].Observaciones != "") {
+					contador = contador + 1;
+					console.log(contador);
+				}
+			}
+
+			if (contador === 0) {
+				$('#btnGuardar').show();
+			}
+
 			$('#tablaImportarImpuestos').dataTable({
 				data: table_data,
 				bSort: false,
@@ -700,6 +722,7 @@ function cargarDatosTablaImportar() {
 				paging: false,
 				ordering: false,
 				pagingType: false,
+				info: false,
 				columns: [
 					{ "data": "Nro", "name": "Nro", "autoWidth": true },
 					{ "data": "Código", "name": "Código", "autoWidth": true },
@@ -717,11 +740,29 @@ function cargarDatosTablaImportar() {
 					{ "data": "Graduado", "name": "Graduado", "autoWidth": true },
 					{ "data": "Titulacion", "name": "Titulacion", "autoWidth": true },
 					{ "data": "Etnia", "name": "Etnia", "autoWidth": true },
+					{ "data": "Observaciones", "name": "Observaciones", "autoWidth": true }
 
-				]
+				],
+
+				"fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+					if (aData["Observaciones"] == "") {						
+						$('td', nRow).css('background-color', '#4cd93d70');
+					}
+					else {
+
+						$('td', nRow).css('background-color', '#db0c0c63');
+						
+					}
+				},
+
 			});
 		}
 	};
+
+	//console.log("contador al final", contador);
+
+
+//	('#tablaImportarImpuestos').show();
 
 	if (data.fake) {
 		// Make sure no text encoding stuff is done by xhr
@@ -731,9 +772,13 @@ function cargarDatosTablaImportar() {
 	}
 	jQuery.ajax(opts);
 
+	//console.log("contador", contador);
+	
+
 }
 
 function GuardarDatosImportardos() {
+	
 	var data = new FormData();
 	data.append('Documento', $('#Documento')[0].files[0]);
 
@@ -963,3 +1008,117 @@ function obtenerNombrePaciente(Identificacion, pantalla) {
 }
 
 
+//validaciones
+
+
+function validarFechaAnamnesis() {
+	console.log("va a validar la fecha de nacimiento anam");
+	var datoFecha = $("#UltimaVisitaOdontologo").val();
+	console.log(datoFecha);
+	var dato = datoFecha.split("/");
+	var d = dato[0];
+	var m = dato[1];
+	var a = dato[2];
+	var fecha = new Date(a + "/" + m + "/" + d);
+	console.log(fecha);
+	var hoy = new Date();
+	var dd = hoy.getDate();
+	var mm = hoy.getMonth() + 1;
+	var yyyy = hoy.getFullYear();
+	var actual = new Date(yyyy + "/" + mm + "/" + dd);
+	console.log(fecha);
+	console.log(actual);
+	if (fecha >= actual) {
+		$("#UltimaVisitaOdontologoS").text("La fecha no puede ser mayor a la actual.");
+	}
+	else {
+		$("#UltimaVisitaOdontologoS").text("");
+	}
+
+}
+
+
+
+function soloNumerosEnteros(e) {
+	var theEvent = e.htmlEvent || window.event;
+	var key = theEvent.keyCode || theEvent.which;
+
+	if (key == "8" || key == "37" || key == "39") {
+		return;
+	}
+	else {
+		//alert(key);
+	}
+
+	key = String.fromCharCode(key);
+	var regex = /[0-9]/;
+
+	if (!regex.test(key)) {
+		theEvent.returnValue = false;
+		if (theEvent.preventDefault)
+			theEvent.preventDefault();
+	}
+}
+
+function validarLaIdentificacion(value) {
+	console.log(value);
+	$("#IdentificacionSpan").text("");
+	if (value === "0001") {
+		console.log("entro al if");
+		$('#Identificacion').on('keypress', function () {
+			return soloNumerosEnteros(event);
+		});
+		$('#Identificacion').on('change', function () {
+			$("#IdentificacionSpan").text("");
+			console.log("entro al chance del input");
+			let cedula = $('#Identificacion').val();
+			let resultado = verificarCedula(cedula);
+			console.log("resultado en validar", resultado);
+			if (resultado) {
+				console.log("if de identificaicon cedula incorrecta");
+				$("#IdentificacionSpan").text("");
+			}
+			else {				
+				console.log("else de identificaicon cedula incorrecta");
+				$("#IdentificacionSpan").text("Cédula Incorrecta");
+			}
+		});
+	}
+
+	else {
+		console.log("entro al else");
+		$("#IdentificacionSpan").text("");
+		$('#Identificacion').off('keypress');
+		$("#Identificacion").off("change");
+	}
+
+}
+
+function verificarCedula(cedula) {
+	console.log(cedula);
+	
+	if (typeof (cedula) == 'string' && cedula.length == 10 && /^\d+$/.test(cedula)) {
+		var digitos = cedula.split('').map(Number);
+		var codigo_provincia = digitos[0] * 10 + digitos[1];
+
+		//if (codigo_provincia >= 1 && (codigo_provincia <= 24 || codigo_provincia == 30) && digitos[2] < 6) {
+
+		if (codigo_provincia >= 1 && (codigo_provincia <= 24 || codigo_provincia == 30)) {
+			var digito_verificador = digitos.pop();
+
+			var digito_calculado = digitos.reduce(
+				function (valorPrevio, valorActual, indice) {
+					return valorPrevio - (valorActual * (2 - indice % 2)) % 9 - (valorActual == 9) * 9;
+				}, 1000) % 10;
+			console.log("cedula bien");
+			//$("#IdentificacionS").text("");
+			return digito_calculado === digito_verificador;
+		}
+	}
+	else if (cedula.length == 0) {
+		return true;
+	}
+	//$("#IdentificacionS").text("Cédula Incorrecta");
+	console.log("cedula mal");
+	return false;
+}
