@@ -1,23 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using HC_Odontologicas.Areas.Services;
+using HC_Odontologicas.Controllers;
+using HC_Odontologicas.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using HC_Odontologicas.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using HC_Odontologicas.Models;
-using HC_Odontologicas.Controllers;
-using Microsoft.AspNetCore.Authentication;
 using Rotativa.AspNetCore;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using HC_Odontologicas.Areas.Services;
 
 namespace HC_Odontologicas
 {
@@ -36,7 +28,7 @@ namespace HC_Odontologicas
 			services.AddDbContext<HCOdontologicasContext>(options =>
 				options.UseSqlServer(
 					Configuration.GetConnectionString("DefaultConnection")));
-			
+
 			services.AddDefaultIdentity<UsuarioLogin>()
 				.AddEntityFrameworkStores<HCOdontologicasContext>();
 
@@ -52,7 +44,7 @@ namespace HC_Odontologicas
 			  );
 
 			services.AddControllersWithViews();
-			
+
 			services.AddRazorPages();
 
 			services.AddTransient<IClaimsTransformation, AddClaimsTransformation>();

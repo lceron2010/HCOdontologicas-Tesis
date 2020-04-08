@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using HC_Odontologicas.Models;
+﻿using HC_Odontologicas.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Text.RegularExpressions;
 
 namespace HC_Odontologicas.Controllers
 {
-    public class ValidacionesController : Controller
-    {
+	public class ValidacionesController : Controller
+	{
 		private readonly HCOdontologicasContext _context;
 
 		public ValidacionesController(HCOdontologicasContext context)
@@ -17,7 +14,7 @@ namespace HC_Odontologicas.Controllers
 			_context = context;
 		}
 
-		
+
 		[AcceptVerbs("Get", "Post")]
 		public IActionResult VerificarCodigoFacultad(string CodigoFacultad)
 		{
@@ -57,7 +54,7 @@ namespace HC_Odontologicas.Controllers
 			return ValidarCodigo4(CodigoPerfil);
 		}
 
-		
+
 		[AcceptVerbs("Get", "Post")]
 		public string VerifyCampoRequerido(string Campo)
 		{
@@ -97,7 +94,7 @@ namespace HC_Odontologicas.Controllers
 			}
 			return "";
 		}
-				
+
 		//public string ValidarIdentificacion(string CodigoCompania, string TipoIdentificacion, string Identificacion)
 		//{
 		//	var tipoIdentificacion = _context.Personal.SingleOrDefault(a => a.Cedula == ce);
@@ -190,7 +187,7 @@ namespace HC_Odontologicas.Controllers
 				return "";
 			}
 		}
-			
+
 		private IActionResult ValidarCodigo4(String Codigo)
 		{
 			if (Codigo.Length != 4)

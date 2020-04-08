@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using HC_Odontologicas.FuncionesGenerales;
+﻿using HC_Odontologicas.FuncionesGenerales;
 using HC_Odontologicas.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -74,16 +73,16 @@ namespace HC_Odontologicas.Controllers
 			PlantillaCorreoElectronico correo = new PlantillaCorreoElectronico();
 			correo = _context.PlantillaCorreoElectronico.SingleOrDefault(p => p.Asunto.Contains("Cita"));
 			var paciente = _context.Paciente.Where(p => p.Codigo == apiEvent.paciente).FirstOrDefault();
-			var doctor = _context.Personal.Where(d => d.Codigo == apiEvent.doctor).FirstOrDefault();			
+			var doctor = _context.Personal.Where(d => d.Codigo == apiEvent.doctor).FirstOrDefault();
 			var soloFecha = Convert.ToDateTime(newEvent.FechaInicio.ToString("dd/MM/yyyy"));
 			var fechaLarga = soloFecha.ToLongDateString();
 			var hora = newEvent.FechaInicio.ToString("HH:mm"); // newEvent.FechaInicio.TimeOfDay.ToString();//newEvent.FechaInicio.Hour.ToString() + ":" + newEvent.FechaInicio.Minute.ToString();//newEvent.FechaInicio.ToString("hh:mm");
 
 			//envio del email
 
-		//	var correoMensaje = FuncionesEmail.EnviarEmail(_emailSender,paciente.MailEpn, correo.Asunto, 
-		//		FuncionesEmail.AsuntoCitaOdontologica(correo.Cuerpo, 
-		//		paciente.NombreCompleto, fechaLarga, hora, doctor.NombreCompleto));
+			//	var correoMensaje = FuncionesEmail.EnviarEmail(_emailSender,paciente.MailEpn, correo.Asunto, 
+			//		FuncionesEmail.AsuntoCitaOdontologica(correo.Cuerpo, 
+			//		paciente.NombreCompleto, fechaLarga, hora, doctor.NombreCompleto));
 
 
 			return Ok(new

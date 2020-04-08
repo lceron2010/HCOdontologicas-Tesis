@@ -1,16 +1,15 @@
-﻿using System;
+﻿using HC_Odontologicas.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using HC_Odontologicas.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace HC_Odontologicas.Controllers
 {
-    public class MenuController : Controller
-    {
+	public class MenuController : Controller
+	{
 		private readonly HCOdontologicasContext _context;
 
 		public MenuController(HCOdontologicasContext context)
@@ -34,7 +33,7 @@ namespace HC_Odontologicas.Controllers
 			{
 				List<Menu> menus = _context.Menu.Include(m => m.SubMenu).Where(m => m.CodigoMenu == null && m.Visible == true).ToList();
 				List<PerfilDetalle> perfilDetalles = _context.PerfilDetalle
-					.Where(m =>  m.CodigoPerfil == CodigoPerfil && m.Ver == true)
+					.Where(m => m.CodigoPerfil == CodigoPerfil && m.Ver == true)
 					.ToList();
 				List<Menu> _nuevoMenu = new List<Menu>();
 

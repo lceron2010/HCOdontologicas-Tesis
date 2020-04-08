@@ -112,7 +112,7 @@ function cargarDatosReceta(PlantillaReceta) {
 		url: "/../RecetaMedica/CargarDatosPlantillaReceta",
 		data: { CodigoPlantilla },
 		success: function (response) {
-			console.log(response);
+			//console.log(response);
 			if (response !== undefined) {				
 				//$("#Descripcion").val(response.descripcion);
 				$("#DescripcionReceta").val(response.descripcion);				
@@ -134,7 +134,7 @@ function cargarDatosCarrera(Facultad) {
 		url: "/../Pacientes/CargarDatosCarrera",
 		data: { CodigoFacultad },
 		success: function (response) {
-			console.log(response);
+			//console.log(response);
 			$("#CodigoCarrera").find('option').remove();
 			$.each(response, function (key, registro) {
 				$("#CodigoCarrera").append($('<option>', {
@@ -279,12 +279,12 @@ function cambiarColor(enfermedadOdon, idGrupoDato, region) {
 		$("#" + nombre).attr("enfermedad", enfermedadOdon);
 	}
 	else if (enfermedadOdon.includes("Limpio")) {
-		console.log('limpio');
+		//console.log('limpio');
 		eliminarPath(idGrupo);
 	}
 	else {
 		idPath = enfermedadOdon + "-" + idGrupo.substring(1, 3);
-		console.log("nombe a poner:", idPath);
+	//	console.log("nombe a poner:", idPath);
 		agregarPath(idPath, idGrupo, enfermedadOdon);
 	}
 }
@@ -297,7 +297,7 @@ function eliminarPath(idGrupo) {
 				let grupo = $('#svg742')[0].children[3].children[i].id;
 				//console.log("grupo", grupo);
 				if (grupo === idGrupo ) {
-					console.log("ingreso al if idgrupo");
+					//console.log("ingreso al if idgrupo");
 					let contadorGrupo = $('#svg742')[0].children[3].children[i].childElementCount;
 					if (contadorGrupo === 6) {
 						for (var l = 1; l < contadorGrupo; l++) {
@@ -569,7 +569,7 @@ function GuardarDatosOdontograma(accion) {
 
 	}
 
-	console.log(listaOdontogramaDetalle);
+	//console.log(listaOdontogramaDetalle);
 	var odontograma = [
 		{
 			CodigoCitaOdontologica: codigoCitaOdontologica,
@@ -583,7 +583,7 @@ function GuardarDatosOdontograma(accion) {
 	else {
 		url = '/../Odontogramas/Edit';
 	}
-	console.log('datos odontograma antes de return en funciones.js', odontograma);
+	//console.log('datos odontograma antes de return en funciones.js', odontograma);
 
 	//return odontograma;
 
@@ -633,8 +633,8 @@ function obtenerDatosOdontograma(codigoOdontograma) {
 
 function cargarColorAlEditar(response) {	
 	var detalle = JSON.parse(response);
-	console.log(detalle);
-	console.log(detalle.length);
+	//console.log(detalle);
+	//console.log(detalle.length);
 
 	for (let i = 0; i < detalle.length; i++) {
 		let nombre = detalle[i].Region + "-" + detalle[i].Pieza;
@@ -677,7 +677,7 @@ function cargarColorAlEditar(response) {
 //-----------PACIENTE----importar datos  /////
 
 function cargarDatosTablaImportar() {
-	console.log("entro a cargar datos tabla");
+	//console.log("entro a cargar datos tabla");
 
 	var data = new FormData();
 	data.append('Documento', $('#Documento')[0].files[0]);
@@ -693,19 +693,19 @@ function cargarDatosTablaImportar() {
 		method: 'POST',
 		type: 'POST',
 		success: function (response) {
-			console.log(response);
+			//console.log(response);
 
 			var table_data = jQuery.parseJSON(response);
 
-			console.log(table_data);
+			//console.log(table_data);
 
 			var len = table_data.length - 1;
-			console.log(len);
+			//console.log(len);
 			for (var i = 0; i <= len; i++) {
-				console.log(table_data[i].Observaciones);
+				//console.log(table_data[i].Observaciones);
 				if (table_data[i].Observaciones != "") {
 					contador = contador + 1;
-					console.log(contador);
+					//console.log(contador);
 				}
 			}
 
@@ -848,12 +848,12 @@ function limpiarDatos() {
 
 function mostrarCamposSegunSeleccionado(response) {
 	var sure = $(response).find("option:selected").val();
-	console.log('sure', sure);
+	//console.log('sure', sure);
 	if (sure === undefined) {
 		sure = $('#tipoPaciente')[0].value;
 	}
 	//var sure = $('#tipoPaciente')[0].selectedOptions[0].value;
-	console.log(sure);
+	//console.log(sure);
 	if (sure === "0") {
 		$('#datosLaborales').hide();
 		$('#datosEstudiantiles').hide();
@@ -887,22 +887,22 @@ function mostrarCamposSegunSeleccionado(response) {
 }
 
 function validarFecha() {
-	console.log("va a validar la fecha de nacimiento");
+	//console.log("va a validar la fecha de nacimiento");
 	var datoFecha = $("#FechaNacimiento").val();
-	console.log(datoFecha);
+//	console.log(datoFecha);
 	var dato = datoFecha.split("/");
 	var d = dato[0];
 	var m = dato[1];
 	var a = dato[2];
 	var fecha = new Date(a + "/" + m + "/" + d);
-	console.log(fecha);
+	//console.log(fecha);
 	var hoy = new Date();
 	var dd = hoy.getDate();
 	var mm = hoy.getMonth() + 1;
 	var yyyy = hoy.getFullYear();
 	var actual = new Date(yyyy + "/" + mm + "/" + dd);
-	console.log(fecha);
-	console.log(actual);
+	//console.log(fecha);
+	//console.log(actual);
 	if (fecha >= actual) {
 		$("#FechaNacimientoS").text("La fecha debe ser menor a la actual.");
 	}
@@ -932,7 +932,7 @@ function mostrarCamposReposo()
 }
 
 function ejecutarPDF() {
-	console.log("inicio ejecutar");
+	//console.log("inicio ejecutar");
 	$.ajax({
 		type: "GET",
 		url: "/../CertificadosMedicos/test",
@@ -981,8 +981,8 @@ function cargarDoctores() {
 
 function obtenerNombrePaciente(Identificacion, pantalla) {
 	var nombrePaciente = "";
-	console.log(Identificacion);
-	console.log(pantalla);
+	//console.log(Identificacion);
+	//console.log(pantalla);
 	$.ajax({
 		type: "GET",
 		url: "/../Pacientes/CargarPacienteNombre",
@@ -990,7 +990,7 @@ function obtenerNombrePaciente(Identificacion, pantalla) {
 		success: function (response) {
 			nombrePaciente = response;				
 			if (pantalla === "Certificado") {
-				console.log('nombre del paciente desde JS:', nombrePaciente);		
+				//console.log('nombre del paciente desde JS:', nombrePaciente);		
 				$("#NombrePaciente").text(response);
 			}
 			else {
@@ -1012,22 +1012,22 @@ function obtenerNombrePaciente(Identificacion, pantalla) {
 
 
 function validarFechaAnamnesis() {
-	console.log("va a validar la fecha de nacimiento anam");
+	//console.log("va a validar la fecha de nacimiento anam");
 	var datoFecha = $("#UltimaVisitaOdontologo").val();
-	console.log(datoFecha);
+//	console.log(datoFecha);
 	var dato = datoFecha.split("/");
 	var d = dato[0];
 	var m = dato[1];
 	var a = dato[2];
 	var fecha = new Date(a + "/" + m + "/" + d);
-	console.log(fecha);
+	//console.log(fecha);
 	var hoy = new Date();
 	var dd = hoy.getDate();
 	var mm = hoy.getMonth() + 1;
 	var yyyy = hoy.getFullYear();
 	var actual = new Date(yyyy + "/" + mm + "/" + dd);
-	console.log(fecha);
-	console.log(actual);
+	//console.log(fecha);
+	//console.log(actual);
 	if (fecha >= actual) {
 		$("#UltimaVisitaOdontologoS").text("La fecha no puede ser mayor a la actual.");
 	}
@@ -1095,7 +1095,7 @@ function validarLaIdentificacion(value) {
 }
 
 function verificarCedula(cedula) {
-	console.log(cedula);
+	//console.log(cedula);
 	
 	if (typeof (cedula) == 'string' && cedula.length == 10 && /^\d+$/.test(cedula)) {
 		var digitos = cedula.split('').map(Number);
@@ -1110,7 +1110,7 @@ function verificarCedula(cedula) {
 				function (valorPrevio, valorActual, indice) {
 					return valorPrevio - (valorActual * (2 - indice % 2)) % 9 - (valorActual == 9) * 9;
 				}, 1000) % 10;
-			console.log("cedula bien");
+			//console.log("cedula bien");
 			//$("#IdentificacionS").text("");
 			return digito_calculado === digito_verificador;
 		}
@@ -1119,6 +1119,6 @@ function verificarCedula(cedula) {
 		return true;
 	}
 	//$("#IdentificacionS").text("Cédula Incorrecta");
-	console.log("cedula mal");
+	//console.log("cedula mal");
 	return false;
 }

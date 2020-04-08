@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using HC_Odontologicas.FuncionesGenerales;
+using HC_Odontologicas.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using HC_Odontologicas.Models;
-using System.Security.Claims;
-using HC_Odontologicas.FuncionesGenerales;
 using Rotativa.AspNetCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace HC_Odontologicas.Controllers
 {
@@ -70,7 +70,7 @@ namespace HC_Odontologicas.Controllers
 						fechaInicioDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 00, 00, 00);
 						fechaInicioFinDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 23, 59, 59);
 					}//poner liuego esto
-					 
+
 					var citaOdontologica = from c in _context.CitaOdontologica.Include(a => a.Personal).Include(a => a.Paciente)
 										   .Where(a => a.FechaInicio > fechaInicioDia && a.FechaInicio < fechaInicioFinDia && (a.Estado == "A"))
 										   .OrderBy(p => p.FechaInicio)
@@ -96,17 +96,17 @@ namespace HC_Odontologicas.Controllers
 		[HttpGet]
 		public IActionResult CertificadoReposo(string Codigo)
 		{
-			Codigo= Encriptacion.Decrypt(Codigo);
+			Codigo = Encriptacion.Decrypt(Codigo);
 			return new ViewAsPdf("CertificadoPDF", GetOne(Codigo));
 		}
 
 		public CertificadoMedicoPdf GetOne(string Codigo)
 		{
 			PlantillaCertificadoMedico certificado = _context.PlantillaCertificadoMedico.Where(c => c.Codigo == Codigo).SingleOrDefault();
-			CertificadoMedicoPdf ti = new CertificadoMedicoPdf();			
+			CertificadoMedicoPdf ti = new CertificadoMedicoPdf();
 			ti.Contenido = certificado.Descripcion;
-			var indice = certificado.Nombre.IndexOf("-"); 
-			ti.Odontologo = certificado.Nombre.Substring(0,indice).Trim();
+			var indice = certificado.Nombre.IndexOf("-");
+			ti.Odontologo = certificado.Nombre.Substring(0, indice).Trim();
 			ti.FechaActual = Funciones.ObtenerFechaActual("SA Pacific Standard Time").ToString("dd/MM/yyyy");
 			return ti;
 
@@ -143,7 +143,7 @@ namespace HC_Odontologicas.Controllers
 					List<SelectListItem> Cie10 = new SelectList(_context.Cie10.OrderBy(f => f.CodigoInterno), "Codigo", "CodigoNombre", diag.DiagnosticoCie10[0].Cie10.Codigo).ToList();
 					Cie10.Insert(0, vacio);
 					ViewData["CIE10"] = Cie10;
-					cmi.CIE10Nombre = diag.DiagnosticoCie10[0].Cie10.CodigoInterno +" - "+ diag.DiagnosticoCie10[0].Cie10.Nombre;
+					cmi.CIE10Nombre = diag.DiagnosticoCie10[0].Cie10.CodigoInterno + " - " + diag.DiagnosticoCie10[0].Cie10.Nombre;
 					cmi.Procedimiento = "";
 					cmi.Pieza = diag.Pieza;
 					cmi.Reposo = false;
@@ -190,12 +190,13 @@ namespace HC_Odontologicas.Controllers
 							{
 								rep = "SI";
 							}
-							else {
-								
+							else
+							{
+
 								var index = contenido.IndexOf("[@ReposoInicio]");
-								contenido = contenido.Substring(0, index - 6);															
+								contenido = contenido.Substring(0, index - 6);
 							}
-														
+
 							var final = contenido.Replace("[@FechaCita]", cmi.FechaCita.ToString("dd/MM/yyyy"))
 								.Replace("[@Paciente]", cmi.NombrePaciente)
 								.Replace("[@Cedula]", cmi.CedulaPaciente)
@@ -205,20 +206,20 @@ namespace HC_Odontologicas.Controllers
 								.Replace("[@Pieza]", cmi.Pieza.ToString())
 								.Replace("[@Procedimiento]", cmi.Procedimiento)
 								.Replace("[@CitasSubsecuentes]", sub)
-								.Replace("[@Reposo]", rep)																
+								.Replace("[@Reposo]", rep)
 								.Replace("[@ReposoInicio]", cmi.FechaInicioReposo.ToString("dd/MM/yyyy"))
 								.Replace("[@ReposoFin]", cmi.FechaFinReposo.ToString("dd/MM/yyyy"))
 								.Replace("[@ReposoReincorpararse]", cmi.FechaReincorporarse.ToString("dd/MM/yyyy"));
-								
+
 
 							//guardar el contenido
-							
+
 							PlantillaCertificadoMedico plantillaCertificadoMedico = new PlantillaCertificadoMedico();
 							Int64 maxCodigo = 0;
 							maxCodigo = Convert.ToInt64(_context.PlantillaCertificadoMedico.Max(f => f.Codigo));
 							maxCodigo += 1;
 							plantillaCertificadoMedico.Codigo = maxCodigo.ToString("D4");
-							plantillaCertificadoMedico.Nombre =cmi.NombreMedico + " - " + cmi.NombrePaciente;
+							plantillaCertificadoMedico.Nombre = cmi.NombreMedico + " - " + cmi.NombrePaciente;
 							plantillaCertificadoMedico.Descripcion = final;
 
 							_context.Add(plantillaCertificadoMedico);
@@ -227,7 +228,7 @@ namespace HC_Odontologicas.Controllers
 
 							string Codigo = Encriptacion.Encrypt(plantillaCertificadoMedico.Codigo);
 
-							return Redirect("../CertificadosMedicos/CertificadoReposo?Codigo="+Codigo);
+							return Redirect("../CertificadosMedicos/CertificadoReposo?Codigo=" + Codigo);
 
 						}
 						catch (DbUpdateConcurrencyException)

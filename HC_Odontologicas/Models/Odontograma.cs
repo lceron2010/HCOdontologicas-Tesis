@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HC_Odontologicas.Models
 {
-    public partial class Odontograma
-    {
-        public Odontograma()
-        {
-            OdontogramaDetalle = new List<OdontogramaDetalle>();
-        }
+	public partial class Odontograma
+	{
+		public Odontograma()
+		{
+			OdontogramaDetalle = new List<OdontogramaDetalle>();
+		}
 
 		public string Codigo { get; set; }
 		public string CodigoCitaOdontologica { get; set; }

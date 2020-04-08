@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using HC_Odontologicas.FuncionesGenerales;
+using HC_Odontologicas.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using HC_Odontologicas.Models;
-using HC_Odontologicas.FuncionesGenerales;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace HC_Odontologicas.Controllers
 {
@@ -52,7 +52,7 @@ namespace HC_Odontologicas.Controllers
 
 					ViewData["Filter"] = search;
 					ViewData["CurrentSort"] = sortOrder;
-					
+
 					var diagnostico = from c in _context.Diagnostico.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente).Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal).Include(c => c.DiagnosticoCie10).ThenInclude(c => c.Cie10) select c;
 
 					if (!String.IsNullOrEmpty(search))
@@ -64,13 +64,13 @@ namespace HC_Odontologicas.Controllers
 									|| s.CitaOdontologica.Paciente.Apellidos.Contains(search)
 									|| s.CitaOdontologica.Paciente.NombreCompleto.Contains(search)
 									|| s.CitaOdontologica.Paciente.Identificacion.Contains(search))
-									 select c;
+									  select c;
 
 					switch (sortOrder)
-						{
-							case "nombre_desc":
-								diagnostico = diagnostico.OrderByDescending(s => s.Fecha);
-								break;
+					{
+						case "nombre_desc":
+							diagnostico = diagnostico.OrderByDescending(s => s.Fecha);
+							break;
 						case "fecha_asc":
 							diagnostico = diagnostico.OrderBy(s => s.Fecha);
 							break;
@@ -78,10 +78,10 @@ namespace HC_Odontologicas.Controllers
 							diagnostico = diagnostico.OrderByDescending(s => s.Fecha);
 							break;
 						default:
-								diagnostico = diagnostico.OrderBy(s => s.Fecha);
-								break;
+							diagnostico = diagnostico.OrderBy(s => s.Fecha);
+							break;
 
-						}
+					}
 					int pageSize = 10;
 					return View(await Paginacion<Diagnostico>.CreateAsync(diagnostico, page ?? 1, pageSize)); // page devuelve valor si lo tiene caso contrario devuelve 1
 				}
@@ -109,7 +109,7 @@ namespace HC_Odontologicas.Controllers
 					//lista de enfermedades
 					//List<DiagnosticoCie10> diagnosticoC = new List<DiagnosticoCie10>();
 					//var enfermedad = _context.Cie10.OrderBy(f => f.Nombre).Where(f => f.Nombre.StartsWith("C")).ToList(); //QUITAR LUEGO					
-																														  //agregar los cie10 a la lista de diagnosticoCIE10
+					//agregar los cie10 a la lista de diagnosticoCIE10
 					//foreach (Cie10 item in enfermedad)
 					//{
 					//	DiagnosticoCie10 aenfermedad = new DiagnosticoCie10();
@@ -427,7 +427,7 @@ namespace HC_Odontologicas.Controllers
 							maxCodigoAe = Convert.ToInt64(_context.DiagnosticoCie10.Max(f => f.Codigo));
 							DiagnosticoCie10 diagCie10 = new DiagnosticoCie10();
 							maxCodigoAe += 1;
-							diagCie10.Codigo = maxCodigoAe.ToString("D8");							
+							diagCie10.Codigo = maxCodigoAe.ToString("D8");
 							diagCie10.CodigoDiagnostico = diagnostico.Codigo;
 							diagCie10.CodigoCie10 = diagnostico.CodigoDiagnosticoCie10;
 							_context.DiagnosticoCie10.Add(diagCie10);

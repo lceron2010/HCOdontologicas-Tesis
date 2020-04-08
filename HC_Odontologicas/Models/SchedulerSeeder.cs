@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace HC_Odontologicas.Models
 {
@@ -14,7 +11,7 @@ namespace HC_Odontologicas.Models
 				return;   // DB has been seeded
 			}
 
-			
+
 		}
 	}
 

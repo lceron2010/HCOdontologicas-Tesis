@@ -1,13 +1,12 @@
-﻿using System;
+﻿using HC_Odontologicas.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using HC_Odontologicas.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace HC_Odontologicas.Controllers
 {
@@ -27,7 +26,7 @@ namespace HC_Odontologicas.Controllers
 			{
 				var identity = (ClaimsIdentity)principal.Identity;
 				var user = _context.Usuario.Include(u => u.Perfil).SingleOrDefault(p => p.CorreoElectronico == identity.Name);
-				
+
 				identity.AddClaim(new Claim("CodigoPerfil", user.CodigoPerfil));
 				identity.AddClaim(new Claim("NombreCompleto", user.CorreoElectronico));
 				identity.AddClaim(new Claim("NombrePerfil", user.Perfil.Nombre));
@@ -35,10 +34,11 @@ namespace HC_Odontologicas.Controllers
 				{
 					identity.AddClaim(new Claim("CodigoPersonal", ""));
 				}
-				else {
+				else
+				{
 					identity.AddClaim(new Claim("CodigoPersonal", user.CodigoPersonal));
 				}
-				
+
 
 				var perfilDetalle = _context.PerfilDetalle.Include(p => p.Menu).Where(p => p.CodigoPerfil == user.CodigoPerfil).ToList();
 				List<Claim> perfilDetalles = new List<Claim>();

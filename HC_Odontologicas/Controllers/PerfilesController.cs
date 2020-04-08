@@ -1,32 +1,31 @@
-﻿using System;
+﻿using HC_Odontologicas.FuncionesGenerales;
+using HC_Odontologicas.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using HC_Odontologicas.Models;
 using System.Security.Claims;
-using HC_Odontologicas.FuncionesGenerales;
+using System.Threading.Tasks;
 
 namespace HC_Odontologicas.Controllers
 {
-    public class PerfilesController : Controller
-    {
+	public class PerfilesController : Controller
+	{
 		private readonly HCOdontologicasContext _context;
 		private ValidacionesController validaciones;
-		private readonly AuditoriaController _auditoria;		
+		private readonly AuditoriaController _auditoria;
 
 		public PerfilesController(HCOdontologicasContext context)
-        {
+		{
 			_context = context;
 			validaciones = new ValidacionesController(_context);
 			_auditoria = new AuditoriaController(context);
 		}
 
-        // GET: Perfiles
-        public async Task<IActionResult> Index(string sortOrder, string Filter, int? page, string search)
-        {
+		// GET: Perfiles
+		public async Task<IActionResult> Index(string sortOrder, string Filter, int? page, string search)
+		{
 
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
@@ -78,14 +77,14 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-        // GET: Perfiles/Create
-        public IActionResult Create()
-        {
+		// GET: Perfiles/Create
+		public IActionResult Create()
+		{
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
 				var permisos = i.Claims.Where(c => c.Type == "Perfiles").Select(c => c.Value).SingleOrDefault().Split(";");
-				
+
 				if (Convert.ToBoolean(permisos[1]))
 				{
 					List<Menu> menus = _context.Menu.Include(m => m.SubMenu).Where(m => m.CodigoMenu == null).ToList();
@@ -144,15 +143,15 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-        // POST: Perfiles/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]        
-        public async Task<IActionResult> Create(Perfil perfil)
-        {
+		// POST: Perfiles/Create
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		public async Task<IActionResult> Create(Perfil perfil)
+		{
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
-			{				
+			{
 				try
 				{
 					if (ModelState.IsValid)
@@ -202,14 +201,14 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-        // GET: Perfiles/Edit/5
-        public async Task<IActionResult> Edit(string codigo)
-        {
+		// GET: Perfiles/Edit/5
+		public async Task<IActionResult> Edit(string codigo)
+		{
 
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
-				var permisos = i.Claims.Where(c => c.Type == "Perfiles").Select(c => c.Value).SingleOrDefault().Split(";");				
+				var permisos = i.Claims.Where(c => c.Type == "Perfiles").Select(c => c.Value).SingleOrDefault().Split(";");
 				codigo = Encriptacion.Decrypt(codigo);
 				if (Convert.ToBoolean(permisos[2]))
 				{
@@ -228,9 +227,9 @@ namespace HC_Odontologicas.Controllers
 
 					Perfil p = new Perfil
 					{
-						
+
 						Codigo = perfil.Codigo,
-						Nombre = perfil.Nombre,						
+						Nombre = perfil.Nombre,
 						FechaCreacion = perfil.FechaCreacion,
 						UsuarioCreacion = perfil.UsuarioCreacion,
 						PerfilDetalle = new List<PerfilDetalle>()
@@ -240,7 +239,7 @@ namespace HC_Odontologicas.Controllers
 						var a = perfil.PerfilDetalle.Single(f => f.CodigoMenu == menu.Codigo);
 						PerfilDetalle detalle = new PerfilDetalle
 						{
-							
+
 							CodigoPerfil = a.CodigoPerfil,
 							CodigoMenu = a.CodigoMenu,
 							Menu = new Menu()
@@ -261,7 +260,7 @@ namespace HC_Odontologicas.Controllers
 							var b = perfil.PerfilDetalle.Single(f => f.CodigoMenu == subMenu.Codigo);
 							PerfilDetalle detalle1 = new PerfilDetalle
 							{
-								
+
 								CodigoPerfil = b.CodigoPerfil,
 								CodigoMenu = b.CodigoMenu,
 								Ver = b.Ver,
@@ -299,12 +298,12 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-        // POST: Perfiles/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        public async Task<IActionResult> Edit(Perfil perfil)
-        {
+		// POST: Perfiles/Edit/5
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		public async Task<IActionResult> Edit(Perfil perfil)
+		{
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
@@ -320,7 +319,7 @@ namespace HC_Odontologicas.Controllers
 					{
 						try
 						{
-							perfil.Codigo = Encriptacion.Decrypt(perfil.Codigo);							
+							perfil.Codigo = Encriptacion.Decrypt(perfil.Codigo);
 							var PerfilAntiguo = _context.Perfil.Include(p => p.PerfilDetalle).SingleOrDefault(p => p.Codigo == perfil.Codigo);
 							PerfilAntiguo.Nombre = perfil.Nombre;
 							PerfilAntiguo.FechaModificacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
@@ -363,11 +362,11 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-        // POST: Perfiles/Delete/5
-        [HttpPost]
-        
-        public async Task<String> DeleteConfirmed(string codigo)
-        {
+		// POST: Perfiles/Delete/5
+		[HttpPost]
+
+		public async Task<String> DeleteConfirmed(string codigo)
+		{
 			try
 			{
 				var i = (ClaimsIdentity)User.Identity;
@@ -386,6 +385,6 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-        
-    }
+
+	}
 }

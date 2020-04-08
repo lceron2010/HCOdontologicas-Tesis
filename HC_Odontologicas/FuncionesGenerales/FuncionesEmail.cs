@@ -1,8 +1,5 @@
-﻿using HC_Odontologicas.Models;
-using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,7 +12,7 @@ namespace HC_Odontologicas.FuncionesGenerales
 			try
 			{
 				//enviar mail
-				await emailSender.SendEmailAsync(emailDestino, asunto, mensaje);				
+				await emailSender.SendEmailAsync(emailDestino, asunto, mensaje);
 
 				return "Save";
 			}
@@ -28,12 +25,12 @@ namespace HC_Odontologicas.FuncionesGenerales
 		public static String AsuntoCitaOdontologica(String mensaje, String paciente, String fecha, string hora, string odontologo)
 		{
 			mensaje = mensaje.Replace("\r\n\r\n", "<br/><br/>").Replace("[#strong]", "<strong>").Replace("[#/strong]", "</strong>");
-			mensaje = mensaje.Replace("[@Paciente]", paciente).Replace("[@Fecha]", fecha).Replace("[@HoraInicio]", hora).Replace("[@Odontologo]", odontologo); 
-			return mensaje;		
+			mensaje = mensaje.Replace("[@Paciente]", paciente).Replace("[@Fecha]", fecha).Replace("[@HoraInicio]", hora).Replace("[@Odontologo]", odontologo);
+			return mensaje;
 		}
 
 
-		
+
 		public static String CambiarContrasenia(String mensaje, String nombreCompleto, String usuario, String contrasenia, String callbackUrl)
 		{
 			mensaje = mensaje.Replace("\r\n\r\n", "<br/><br/>").Replace("[#strong]", "<strong>").Replace("[#/strong]", "</strong>");
@@ -46,7 +43,7 @@ namespace HC_Odontologicas.FuncionesGenerales
 			mensaje = mensaje.Replace("[@NombreCompleto]", nombreCompleto).Replace("[@NombreUsuario]", usuario).Replace("[@Contrasenia]", contrasenia);
 			return mensaje;
 		}
-		
+
 		public static string RecuperarMensaje(string mensaje)
 		{
 			StringBuilder str = new StringBuilder();

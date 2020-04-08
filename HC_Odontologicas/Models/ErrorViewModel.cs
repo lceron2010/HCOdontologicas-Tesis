@@ -1,5 +1,3 @@
-using System;
-
 namespace HC_Odontologicas.Models
 {
 	public class ErrorViewModel

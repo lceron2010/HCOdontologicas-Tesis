@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace HC_Odontologicas.Models
 {
-    public partial class PlantillaRecetaMedica
-    {
+	public partial class PlantillaRecetaMedica
+	{
 		public PlantillaRecetaMedica()
 		{
 			RecetaMedica = new HashSet<RecetaMedica>();
@@ -16,7 +15,7 @@ namespace HC_Odontologicas.Models
 		public string Nombre { get; set; }
 		[Required(ErrorMessage = "Campo requerido.")]
 		public string Descripcion { get; set; }
-        
+
 
 		public virtual ICollection<RecetaMedica> RecetaMedica { get; set; }
 	}

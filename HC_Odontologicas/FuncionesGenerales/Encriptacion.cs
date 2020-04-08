@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace HC_Odontologicas.FuncionesGenerales
 {
@@ -52,7 +49,7 @@ namespace HC_Odontologicas.FuncionesGenerales
 		public static string Decrypt(string encryptedString)
 		{
 			//encryptedString = "+dPM0yb4j4vrnIWnWbxxTg==";
-			var primer = encryptedString.Substring(0,1);
+			var primer = encryptedString.Substring(0, 1);
 			if (primer.Equals(" "))
 			{
 				encryptedString = "+" + encryptedString;

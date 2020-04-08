@@ -2759,7 +2759,7 @@
 					<div class="col-lg-8 col-sm-8 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Pieza" class="control-label">Pieza *</label>
-							<input asp-for="Pieza" class="form-control" required min="11" />
+							<input asp-for="Pieza" class="form-control" required type="number" value="11" min="10" />
 							<span asp-validation-for="Pieza" class="text-danger"></span>
 						</div>
 					</div>
@@ -2768,7 +2768,7 @@
 					<div class="col-lg-8 col-sm-8 col-xs-12">
 						<div class="form-group">
 							<label asp-for="CodigoDiagnosticoCie10" class="control-label">Cie10*</label>
-							<select asp-for="CodigoDiagnosticoCie10" class="select2_demo_3 form-control" asp-items="ViewBag.CIE10" required matches="1"></select>
+							<select asp-for="CodigoDiagnosticoCie10" class="select2_demo_3 form-control" asp-items="ViewBag.CIE10" required ></select>
 							<span asp-validation-for="CodigoDiagnosticoCie10" class="text-danger"></span>
 						</div>
 					</div>
@@ -2791,13 +2791,23 @@
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-lg-8 col-sm-8 col-xs-12">
-						<div class="form-group">
-							<label asp-for="Firma" class="control-label">Firma*</label>
-							<textarea asp-for="Firma" class="form-control" maxlength="128" required></textarea>
-							<span asp-validation-for="Firma" class="text-danger"></span>
-						</div>
+				@*<div class="row">
+			<div class="col-lg-8 col-sm-8 col-xs-12">
+				<div class="form-group">
+					<label asp-for="Firma" class="control-label">Firma*</label>
+					<textarea asp-for="Firma" class="form-control" maxlength="128" required></textarea>
+					<span asp-validation-for="Firma" class="text-danger"></span>
+				</div>
+			</div>
+		</div>*@
+
+				<div class="col-lg-12">
+					<div>
+						<b>Acepto el Diagnostico *</b>
+						<label>
+							<input type="checkbox" asp-for="Acuerdo" class="i-checks" checked required />
+							<span asp-validation-for="Acuerdo" class="text-danger"></span>
+						</label>
 					</div>
 				</div>
 			</fieldset>
@@ -2815,7 +2825,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="row">
+				@*<div class="row">
 					<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 						<div class="form-group">
 							<div class="form-group">
@@ -2824,6 +2834,15 @@
 								<span asp-validation-for="FirmaConcentimiento" class="text-danger"></span>
 							</div>
 						</div>
+					</div>
+				</div>*@
+				<div class="col-lg-12">
+					<div>
+						<b>Acepto el Consentimiento Informado *</b>
+						<label>
+							<input type="checkbox" asp-for="AcuerdoConsentimiento" class="i-checks" checked required/>
+							<span asp-validation-for="AcuerdoConsentimiento" class="text-danger"></span>
+						</label>
 					</div>
 				</div>
 			</fieldset>
@@ -3026,7 +3045,7 @@
 					var form = $(this);
 
 					// Submit form input
-					console.log("finish");
+					//console.log("finish");
 					GuardarDatosOdontograma("crear");
 
 					form.submit();

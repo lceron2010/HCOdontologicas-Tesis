@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using HC_Odontologicas.FuncionesGenerales;
+using HC_Odontologicas.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using HC_Odontologicas.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
-using HC_Odontologicas.FuncionesGenerales;
+using System.Threading.Tasks;
 
 namespace HC_Odontologicas.Controllers
 {
@@ -41,7 +41,7 @@ namespace HC_Odontologicas.Controllers
 
 				if (Convert.ToBoolean(permisos[0]))
 				{
-					ViewData["NombreSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";					
+					ViewData["NombreSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
 					ViewData["FechaSortParam"] = sortOrder == "fecha_desc" ? "fecha_asc" : "fecha_desc";
 					//permite mantener la busqueda introducida en el filtro de busqueda
 					if (search != null)
@@ -53,13 +53,14 @@ namespace HC_Odontologicas.Controllers
 					ViewData["CurrentSort"] = sortOrder;
 					var consentimiento = from c in _context.ConsentimientoInformado.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente).Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal) select c;
 					if (!String.IsNullOrEmpty(search))
-						 consentimiento = from c in _context.ConsentimientoInformado
-									.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente)
-									.Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal)
-									.Where(s => s.CitaOdontologica.Paciente.Nombres.Contains(search)
-									|| s.CitaOdontologica.Paciente.Apellidos.Contains(search)
-									|| s.CitaOdontologica.Paciente.NombreCompleto.Contains(search)
-									|| s.CitaOdontologica.Paciente.Identificacion.Contains(search)) select c;
+						consentimiento = from c in _context.ConsentimientoInformado
+								   .Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente)
+								   .Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal)
+								   .Where(s => s.CitaOdontologica.Paciente.Nombres.Contains(search)
+								   || s.CitaOdontologica.Paciente.Apellidos.Contains(search)
+								   || s.CitaOdontologica.Paciente.NombreCompleto.Contains(search)
+								   || s.CitaOdontologica.Paciente.Identificacion.Contains(search))
+										 select c;
 
 					switch (sortOrder)
 					{
@@ -136,7 +137,7 @@ namespace HC_Odontologicas.Controllers
 					ViewData["CodigoPersonal"] = Personal;
 					ViewData["CodigoPaciente"] = Paciente;
 
-					var PlantillaCI = _context.PlantillaConsentimientoInformado.SingleOrDefault();					
+					var PlantillaCI = _context.PlantillaConsentimientoInformado.SingleOrDefault();
 					ViewData["Descripcion"] = PlantillaCI.Descripcion;
 
 					return View(consentimientoInformado);
@@ -210,7 +211,7 @@ namespace HC_Odontologicas.Controllers
 						maxCodigo += 1;
 						consentimientoInformado.Codigo = maxCodigo.ToString("D8");
 						consentimientoInformado.Fecha = FechaCitaCreacion;
-						
+
 						_context.Add(consentimientoInformado);
 						await _context.SaveChangesAsync();
 						transaction.Commit();
@@ -312,7 +313,7 @@ namespace HC_Odontologicas.Controllers
 						try
 						{
 							consentimientoInformado.Codigo = Encriptacion.Decrypt(consentimientoInformado.Codigo);
-							consentimientoInformado.Fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");							
+							consentimientoInformado.Fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 							_context.Update(consentimientoInformado);
 							await _context.SaveChangesAsync();
 							await _auditoria.GuardarLogAuditoria(consentimientoInformado.Fecha, i.Name, "ConsentimientoInformado", consentimientoInformado.Codigo, "U");

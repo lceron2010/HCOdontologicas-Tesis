@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using HC_Odontologicas.FuncionesGenerales;
+using HC_Odontologicas.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using HC_Odontologicas.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
-using HC_Odontologicas.FuncionesGenerales;
+using System.Threading.Tasks;
 
 namespace HC_Odontologicas.Controllers
 {
@@ -55,32 +55,33 @@ namespace HC_Odontologicas.Controllers
 					//var personal = from c in _context.Personal.Include(a => a.Cargo).OrderBy(p => p.NombreCompleto) select c;
 					var anamnesis = from c in _context.Anamnesis.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente).Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal).OrderBy(c => c.CitaOdontologica.Paciente.NombreCompleto) select c;
 
-					if (!String.IsNullOrEmpty(search))	
+					if (!String.IsNullOrEmpty(search))
 						anamnesis = from c in _context.Anamnesis.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente)
 									.Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal)
 									.OrderBy(c => c.CitaOdontologica.Paciente.NombreCompleto)
 									.Where(s => s.CitaOdontologica.Paciente.Nombres.Contains(search)
 									|| s.CitaOdontologica.Paciente.Apellidos.Contains(search)
 									|| s.CitaOdontologica.Paciente.NombreCompleto.Contains(search)
-									|| s.CitaOdontologica.Paciente.Identificacion.Contains(search)) select c;
-					
-						switch (sortOrder)
-						{
-						
+									|| s.CitaOdontologica.Paciente.Identificacion.Contains(search))
+									select c;
+
+					switch (sortOrder)
+					{
+
 						case "nombre_desc":
-								anamnesis = anamnesis.OrderByDescending(s => s.CitaOdontologica.Paciente.NombreCompleto);
-								break;
+							anamnesis = anamnesis.OrderByDescending(s => s.CitaOdontologica.Paciente.NombreCompleto);
+							break;
 						case "fecha_asc":
-								anamnesis = anamnesis.OrderBy(s => s.Fecha);
+							anamnesis = anamnesis.OrderBy(s => s.Fecha);
 							break;
 						case "fecha_desc":
-								anamnesis = anamnesis.OrderByDescending(s => s.Fecha);
+							anamnesis = anamnesis.OrderByDescending(s => s.Fecha);
 							break;
 						default:
-								anamnesis = anamnesis.OrderBy(s => s.CitaOdontologica.Paciente.NombreCompleto);
-								break;
+							anamnesis = anamnesis.OrderBy(s => s.CitaOdontologica.Paciente.NombreCompleto);
+							break;
 
-						}
+					}
 					int pageSize = 10;
 					return View(await Paginacion<Anamnesis>.CreateAsync(anamnesis, page ?? 1, pageSize)); // page devuelve valor si lo tiene caso contrario devuelve 1
 				}
@@ -135,12 +136,12 @@ namespace HC_Odontologicas.Controllers
 					//TimeSpan intInicial = new TimeSpan(fecha.Hour, fecha.Minute, 00);
 					TimeSpan intInicial = new TimeSpan(19, 30, 00);
 					TimeSpan intFinal = new TimeSpan(22, 30, 00);
-					
+
 					//ver estos condiciones.
 					var c = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date);
 					c = c.Where(ci => ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal);
 					CitaOdontologica cita = c.FirstOrDefault();
-					
+
 					//CitaOdontologica cita = _context.CitaOdontologica.Where(ci => ci.FechaInicio.Date == fecha.Date && ci.HoraInicio >= intInicial || ci.HoraFin <= intFinal).SingleOrDefault();
 					//-- fin ver las condiciones
 					List<SelectListItem> Personal = null;
@@ -219,7 +220,7 @@ namespace HC_Odontologicas.Controllers
 						{
 							anamnesis.CodigoCitaOdontologica = citaOdontologica.Codigo;
 						}
-											   						
+
 						//guardar el anamnesos
 						Anamnesis anm = new Anamnesis();
 						Int64 maxCodigo = 0;
@@ -250,13 +251,13 @@ namespace HC_Odontologicas.Controllers
 						maxCodigoAe = Convert.ToInt64(_context.AnamnesisEnfermedad.Max(f => f.Codigo));
 
 						foreach (var enf in enfermedades)
-						{							
-								AnamnesisEnfermedad anamnesisEnfermedad = new AnamnesisEnfermedad();
-								maxCodigoAe += 1;
-								anamnesisEnfermedad.Codigo = maxCodigoAe.ToString("D8");								
-								anamnesisEnfermedad.CodigoAnamnesis = anm.Codigo;
-								anamnesisEnfermedad.CodigoEnfermedad = enf;
-								_context.AnamnesisEnfermedad.Add(anamnesisEnfermedad);							
+						{
+							AnamnesisEnfermedad anamnesisEnfermedad = new AnamnesisEnfermedad();
+							maxCodigoAe += 1;
+							anamnesisEnfermedad.Codigo = maxCodigoAe.ToString("D8");
+							anamnesisEnfermedad.CodigoAnamnesis = anm.Codigo;
+							anamnesisEnfermedad.CodigoEnfermedad = enf;
+							_context.AnamnesisEnfermedad.Add(anamnesisEnfermedad);
 						}
 
 						//foreach (var enf in anamnesis.AnamnesisEnfermedad)
@@ -303,10 +304,10 @@ namespace HC_Odontologicas.Controllers
 				return Redirect("../Identity/Account/Login");
 			}
 		}
-		
+
 		// GET: Anamnesis/Edit/5
 		public async Task<IActionResult> Edit(string codigo)
-		{			
+		{
 
 			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
@@ -322,9 +323,9 @@ namespace HC_Odontologicas.Controllers
 						.ThenInclude(a => a.Enfermedad)
 						.Include(a => a.CitaOdontologica).ThenInclude(h => h.Paciente)
 						.Include(an => an.CitaOdontologica).ThenInclude(hc => hc.Personal)
-						
+
 						.SingleOrDefaultAsync(f => f.Codigo == codigo);
-					
+
 					if (anamnesis == null)
 						return NotFound();
 
@@ -346,7 +347,7 @@ namespace HC_Odontologicas.Controllers
 					{
 						listaImpuestosTCI.Add(item.Enfermedad);
 						listaE.Add(item.Codigo);
-						listaEE = listaEE  + item.Codigo + ",";
+						listaEE = listaEE + item.Codigo + ",";
 					}
 					//enfermedad que faltan en anamnesisEnfermedad
 					var listaImpuestosAgregar = (from t in listaEnfermedades where !listaImpuestosTCI.Any(x => x.Codigo == t.Codigo) select t).ToList();
@@ -364,7 +365,7 @@ namespace HC_Odontologicas.Controllers
 
 					ViewData["AnamnesisEnfermedadSeleccionadas"] = listaEE;//listaE.ToString();
 
-					List <SelectListItem> Enfermedades = null;
+					List<SelectListItem> Enfermedades = null;
 					Enfermedades = new SelectList(_context.Enfermedad.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
 					//SelectListItem test = new SelectListItem(value: "9", text: "test", selected: true );
 					//Enfermedades.Insert(8, test);
@@ -400,7 +401,7 @@ namespace HC_Odontologicas.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Edit(Anamnesis anamnesis, List<string> enfermedades)
 		{
-			var i = (ClaimsIdentity)User.Identity;				
+			var i = (ClaimsIdentity)User.Identity;
 			List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", anamnesis.CodigoPersonal).ToList();
 			List<SelectListItem> Paciente = new SelectList(_context.Paciente.OrderBy(p => p.NombreCompleto).Where(p => p.Estado == true), "Codigo", "NombreCompleto", anamnesis.CodigoPaciente).ToList();
 
@@ -415,8 +416,8 @@ namespace HC_Odontologicas.Controllers
 							var transaction = _context.Database.BeginTransaction();
 							//actualizar anamnesis
 							anamnesis.Codigo = Encriptacion.Decrypt(anamnesis.Codigo);
-							Anamnesis anamnesisAntiguo = _context.Anamnesis.SingleOrDefault(p =>p.Codigo == anamnesis.Codigo);
-							anamnesisAntiguo.Codigo= anamnesis.Codigo;							
+							Anamnesis anamnesisAntiguo = _context.Anamnesis.SingleOrDefault(p => p.Codigo == anamnesis.Codigo);
+							anamnesisAntiguo.Codigo = anamnesis.Codigo;
 							anamnesisAntiguo.CodigoCitaOdontologica = anamnesis.CodigoCitaOdontologica;
 							anamnesisAntiguo.MotivoConsulta = anamnesis.MotivoConsulta;
 							anamnesisAntiguo.EnfermedadActual = anamnesis.EnfermedadActual;
@@ -433,7 +434,7 @@ namespace HC_Odontologicas.Controllers
 							anamnesisAntiguo.Endocrino = anamnesis.Endocrino;
 							anamnesisAntiguo.Traumatologico = anamnesis.Traumatologico;
 							anamnesisAntiguo.Fecha = fecha;
-													   							
+
 							var anamnesisEnf = _context.AnamnesisEnfermedad.Where(a => a.CodigoAnamnesis == anamnesis.Codigo).ToList();
 							foreach (var item in anamnesisEnf)
 								_context.AnamnesisEnfermedad.Remove(item);
@@ -480,7 +481,7 @@ namespace HC_Odontologicas.Controllers
 							ViewData["CodigoPaciente"] = Paciente;
 
 							return View(anamnesis);
-														
+
 						}
 						catch (DbUpdateConcurrencyException)
 						{

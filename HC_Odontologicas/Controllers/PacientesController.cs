@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using HC_Odontologicas.FuncionesGenerales;
+using HC_Odontologicas.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using HC_Odontologicas.Models;
-using System.Security.Claims;
-using HC_Odontologicas.FuncionesGenerales;
-using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using OfficeOpenXml;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using OfficeOpenXml;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Hosting;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace HC_Odontologicas.Controllers
 {
@@ -63,7 +62,7 @@ namespace HC_Odontologicas.Controllers
 					var pacientes = from c in _context.Paciente.OrderBy(p => p.NombreCompleto) select c;
 
 					if (!String.IsNullOrEmpty(search)) //para no mostrar nada al iniciar
-						pacientes = pacientes.Where(s => s.NombreCompleto.Contains(search) || s.Identificacion.Contains(search) 
+						pacientes = pacientes.Where(s => s.NombreCompleto.Contains(search) || s.Identificacion.Contains(search)
 						|| s.NumeroUnico.Contains(search) || s.Nombres.Contains(search) || s.Apellidos.Contains(search));
 
 					switch (sortOrder)
@@ -500,24 +499,24 @@ namespace HC_Odontologicas.Controllers
 			{
 				mensaje += " Debe tener una Cédula";
 			}
-			 if (string.IsNullOrEmpty(dr["FechaNac"].ToString()))
+			if (string.IsNullOrEmpty(dr["FechaNac"].ToString()))
 			{
 				mensaje += " Debe tener una FechaNac";
 			}
-			 if (string.IsNullOrEmpty(dr["Genero"].ToString()))
+			if (string.IsNullOrEmpty(dr["Genero"].ToString()))
 			{
 				mensaje += " Debe tener un Genero";
 			}
 
-			 if (string.IsNullOrEmpty(dr["Dirección"].ToString()))
+			if (string.IsNullOrEmpty(dr["Dirección"].ToString()))
 			{
 				mensaje += " Debe tener una Dirección";
 			}
-			 if (string.IsNullOrEmpty(dr["EmailEPN"].ToString()))
+			if (string.IsNullOrEmpty(dr["EmailEPN"].ToString()))
 			{
 				mensaje += " Debe tener un EmailEPN";
 			}
-			
+
 			return mensaje;
 		}
 
@@ -568,7 +567,7 @@ namespace HC_Odontologicas.Controllers
 					if (workSheet.Cells[i, 1].Value != null)
 					{
 						string nombreCompleto = workSheet.Cells[i, 3].Value.ToString();
-						string[] nombres = nombreCompleto.Split(" ");						
+						string[] nombres = nombreCompleto.Split(" ");
 						pc.Codigo = maxCodigo.ToString("D8");
 						pc.NumeroUnico = workSheet.Cells[i, 2].Value.ToString();
 						pc.Nombres = nombres[2] + " " + nombres[3];
@@ -749,8 +748,8 @@ namespace HC_Odontologicas.Controllers
 				}
 			}
 
-			return "";		
-			
+			return "";
+
 		}
 
 

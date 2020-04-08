@@ -49,14 +49,14 @@
 				<td>
 					@if ((bool)ViewData["Editar"])
 					{
-						<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Editar"><i class="fa fa-edit"></i> Editar</a>
+						<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Editar"><i class="fa fa-eye"></i> Ver</a>
 					}
 					@*<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" onclick="obtenerDatosOdontograma('@Encriptacion.Encrypt(item.Codigo)')" class="btn btn-outline-warning" data-toggle="tooltip" title="Editar">Editar</a>*@
 					@if ((bool)ViewData["Eliminar"])
 					{
 						<a onclick="eliminar('@item.Codigo','../Odontogramas/DeleteConfirmed','/../Odontogramas')" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Eliminar"><i class="fa fa-trash"></i> Eliminar</a>
 					}
-					</td>
+				</td>
 			</tr>
 		}
 	</tbody>

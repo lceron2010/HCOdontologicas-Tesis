@@ -1,30 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using HC_Odontologicas.FuncionesGenerales;
+using HC_Odontologicas.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using HC_Odontologicas.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
-using HC_Odontologicas.FuncionesGenerales;
-using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
 namespace HC_Odontologicas.Controllers
 {
-    public class UsuariosController : Controller
-    {
-        private readonly HCOdontologicasContext _context;
-        private ValidacionesController validaciones;
-        private readonly AuditoriaController _auditoria;
+	public class UsuariosController : Controller
+	{
+		private readonly HCOdontologicasContext _context;
+		private ValidacionesController validaciones;
+		private readonly AuditoriaController _auditoria;
 		SelectListItem vacio = new SelectListItem(value: "0", text: "Seleccione...");
 		private readonly UserManager<UsuarioLogin> _userManager;
 
 		public UsuariosController(HCOdontologicasContext context, UserManager<UsuarioLogin> userManager)
-        {
-            _context = context;
-            validaciones = new ValidacionesController(_context);
-            _auditoria = new AuditoriaController(context);
+		{
+			_context = context;
+			validaciones = new ValidacionesController(_context);
+			_auditoria = new AuditoriaController(context);
 			_userManager = userManager;
 		}
 
@@ -56,7 +56,7 @@ namespace HC_Odontologicas.Controllers
 					ViewData["Filter"] = search;
 					ViewData["CurrentSort"] = sortOrder;
 
-					var usuario = from c in _context.Usuario.Include(u=>u.Perfil).Include(u => u.Personal) select c;
+					var usuario = from c in _context.Usuario.Include(u => u.Perfil).Include(u => u.Personal) select c;
 					if (!String.IsNullOrEmpty(search))
 						usuario = usuario.Where(s => s.CorreoElectronico.Contains(search) || s.CorreoElectronico.Contains(search));
 
@@ -78,7 +78,7 @@ namespace HC_Odontologicas.Controllers
 					}
 					int pageSize = 10;
 					return View(await Paginacion<Usuario>.CreateAsync(usuario, page ?? 1, pageSize));
-					
+
 				}
 				else
 				{
@@ -152,7 +152,7 @@ namespace HC_Odontologicas.Controllers
 						_context.Add(usuario);
 						await _context.SaveChangesAsync();
 						await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Usuario", usuario.Codigo, "I");
-						
+
 						Perfil.Insert(0, vacio);
 						ViewData["CodigoPerfil"] = Perfil;
 

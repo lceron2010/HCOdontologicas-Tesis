@@ -55,14 +55,14 @@
 				<td>
 					@if ((bool)ViewData["Editar"])
 					{
-						<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Editar"><i class="fa fa-edit"></i> Editar</a>
+						<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Editar"><i class="fa fa-eye"></i> Ver</a>
 					}
 					@if ((bool)ViewData["Eliminar"])
 					{
 						<a onclick="eliminar('@item.Codigo','../Diagnostico/DeleteConfirmed','/../Diagnostico')" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Eliminar"><i class="fa fa-trash"></i> Eliminar</a>
 					}
 
-					</td>
+				</td>
 			</tr>
 		}
 	</tbody>
