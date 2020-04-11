@@ -36,7 +36,7 @@
 				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 					<div class="form-group">
 						<label asp-for="CodigoTipoIdentificacion" class="control-label">Tipo Identificacion*</label>
-						<select asp-for="CodigoTipoIdentificacion" class="form-control" asp-items="ViewBag.CodigoTipoIdentificacion" required></select>
+						<select asp-for="CodigoTipoIdentificacion" class="form-control" asp-items="ViewBag.CodigoTipoIdentificacion" required onchange="validarLaIdentificacion(this.value);"></select>
 					</div>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
@@ -44,6 +44,7 @@
 						<label asp-for="Identificacion" class="control-label">Identificación*</label>
 						<input asp-for="Identificacion" class="form-control" required maxlength="15" />
 						<span asp-validation-for="Identificacion" class="text-danger"></span>
+						<span class="text-danger" id="IdentificacionSpan"></span>
 					</div>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">

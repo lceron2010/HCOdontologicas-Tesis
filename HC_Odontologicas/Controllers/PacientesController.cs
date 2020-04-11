@@ -142,6 +142,13 @@ namespace HC_Odontologicas.Controllers
 							ModelState.AddModelError("FechaNacimiento", mensajeR);
 					}
 
+					if (paciente.CodigoTipoIdentificacion == "0001")
+					{
+						var mensajeR = validaciones.VerifyCedula(paciente.Identificacion);
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("Identificacion", mensajeR);
+
+					}
 
 					if (paciente.TipoPaciente == "E" || paciente.TipoPaciente == "EB" || paciente.TipoPaciente == "EC" || paciente.TipoPaciente == "EN")
 					{
@@ -292,6 +299,48 @@ namespace HC_Odontologicas.Controllers
 			{
 				try
 				{
+					if (paciente.FechaNacimiento >= Funciones.ObtenerFechaActual("SA Pacific Standard Time").Date)
+					{
+						var mensajeR = "La fecha debe ser menor a la actual.";
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("FechaNacimiento", mensajeR);
+					}
+
+					if (paciente.CodigoTipoIdentificacion == "0001")
+					{
+						var mensajeR = validaciones.VerifyCedula(paciente.Identificacion);
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("Identificacion", mensajeR);
+
+					}
+
+					if (paciente.TipoPaciente == "E" || paciente.TipoPaciente == "EB" || paciente.TipoPaciente == "EC" || paciente.TipoPaciente == "EN")
+					{
+						var mensajeR = validaciones.VerifyCampoRequerido(paciente.NumeroUnico);
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("NumeroUnico", mensajeR);
+
+						mensajeR = validaciones.VerifyComboRequerido(paciente.CodigoFacultad);
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("Facultad", mensajeR);
+
+						mensajeR = validaciones.VerifyComboRequerido(paciente.CodigoCarrera);
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("Carrera", mensajeR);
+					}
+					else if (paciente.TipoPaciente == "D" || paciente.TipoPaciente == "PA")
+					{
+						var mensajeR = validaciones.VerifyCampoRequerido(paciente.Cargo);
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("Cargo", mensajeR);
+					}
+					else
+					{
+						var mensajeR = validaciones.VerifyComboRequerido(paciente.TipoPaciente);
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("TipoPaciente", mensajeR);
+					}
+
 					if (ModelState.IsValid)
 					{
 						try

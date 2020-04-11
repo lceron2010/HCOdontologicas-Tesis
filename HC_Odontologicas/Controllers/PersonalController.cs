@@ -126,7 +126,14 @@ namespace HC_Odontologicas.Controllers
 			if (i.IsAuthenticated)
 			{
 				try
-				{
+				{					
+
+					if (personal.CodigoTipoIdentificacion == "0001")
+					{
+						var mensajeR = validaciones.VerifyCedula(personal.Identificacion);
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("Identificacion", mensajeR);
+					}
 
 					if (ModelState.IsValid)
 					{
