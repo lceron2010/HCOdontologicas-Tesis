@@ -48,7 +48,7 @@ namespace HC_Odontologicas.Controllers
 					ViewData["Filter"] = search;
 
 					var fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
-					var fechaInicioDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 00, 00, 00);
+					var fechaInicioDia = new DateTime(fecha.Year, fecha.Month, 11, 00, 00, 00);//new DateTime(fecha.Year, fecha.Month, fecha.Day, 00, 00, 00);
 					var fechaInicioFinDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 23, 59, 59);
 
 					var citaOdontologica = from c in _context.CitaOdontologica.Include(a => a.Personal).Include(a => a.Paciente)

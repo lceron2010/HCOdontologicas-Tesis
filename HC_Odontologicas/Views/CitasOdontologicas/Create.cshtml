@@ -45,6 +45,10 @@
 		scheduler.config.details_on_dblclick = true;
 		scheduler.config.first_hour = 8;
 		scheduler.config.last_hour = 18;
+		scheduler.config.icons_select = [		
+			"icon_details",			
+			"icon_delete"
+		];
 
 		var paciente_opts = cargarPacientes();
 		var doctor_opts = cargarDoctores();
@@ -60,13 +64,22 @@
 		scheduler.config.xml_date = "%Y-%m-%d %H:%i";
 		//para la etiqueta del evento despues de guardar.
 		scheduler.attachEvent("onEventSave", function (id, ev, is_new) {
-			if (ev.paciente != '') {
-				ev.text = "P";
-				//console.log(ev.paciente);
-				var arr = ev.paciente.split(',');
-				for (var i = 0; i < arr.length; i++) {
-					ev.text += (ev.text.length) ? (": " + getLabelPaciente(arr[i])) : (getLabelPaciente(arr[i]));
+
+			var estado = true;
+			if (ev.paciente != '') {				
+				if (ev.paciente === '0') {					
+					dhtmlx.alert("Seleccione un paciente");
+					estado= false;
 				}
+				else {
+					ev.text = "P";
+					//console.log(ev.paciente);
+					var arr = ev.paciente.split(',');
+					for (var i = 0; i < arr.length; i++) {
+						ev.text += (ev.text.length) ? (": " + getLabelPaciente(arr[i])) : (getLabelPaciente(arr[i]));
+					}
+				}
+				
 			}
 
 			if (ev.doctor != '') {
@@ -78,14 +91,15 @@
 			}
 
 			ev.color = obtenerColor(ev.doctor);
-			return true;
+
+			return estado;
 		})
 
 		function getLabelPaciente(key) {
 			for (var i = 0; i < paciente_opts.length; i++) {
 				if (key == paciente_opts[i].key) {
 					var nombre = paciente_opts[i].label.split(" ");
-					console.log(nombre);
+					//console.log(nombre);
 					return nombre[0] + " " + nombre[2];
 				}
 			}
@@ -98,7 +112,7 @@
 		}
 		function obtenerColor(key) {
 			//llenar arreglo de colores.
-			var colores = [				
+			var colores = [
 				{ key: 0, label: '#338A28' },
 				{ key: 1, label: '#BC61DA' },
 				{ key: 2, label: '#F3C13C' },
@@ -122,7 +136,7 @@
 
 			if (ev.paciente != '') {
 				ev.text = "P";
-				console.log(ev.paciente);
+				//console.log(ev.paciente);
 				var arr = ev.paciente.split(',');
 				for (var i = 0; i < arr.length; i++) {
 					ev.text += (ev.text.length) ? (": " + getLabelPaciente(arr[i])) : (getLabelPaciente(arr[i]));

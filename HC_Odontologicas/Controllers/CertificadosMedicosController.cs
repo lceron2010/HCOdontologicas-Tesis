@@ -61,7 +61,7 @@ namespace HC_Odontologicas.Controllers
 					if (String.IsNullOrEmpty(search))
 					{
 						var fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
-						fechaInicioDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 00, 00, 00);
+						fechaInicioDia = new DateTime(fecha.Year, fecha.Month, 11, 00, 00, 00);//new DateTime(fecha.Year, fecha.Month, fecha.Day, 00, 00, 00);
 						fechaInicioFinDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 23, 59, 59);
 					}
 					else
