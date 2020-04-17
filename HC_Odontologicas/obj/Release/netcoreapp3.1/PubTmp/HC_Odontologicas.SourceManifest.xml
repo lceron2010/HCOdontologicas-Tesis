@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sitemanifest>
+  <IisApp path="C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Release\netcoreapp3.1\PubTmp\Out\" />
+  <dbfullsql path="C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Release\netcoreapp3.1\PubTmp\EFSQLScripts\HC_Odontologicas.Models.HCOdontologicasContext.sql" />
+</sitemanifest>
