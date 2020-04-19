@@ -255,8 +255,12 @@ namespace HC_Odontologicas.Controllers
 					if (codigo == null)
 						return NotFound();
 
-					var paciente = await _context.Paciente.SingleOrDefaultAsync(f => f.Codigo == codigo);
+					var paciente = await _context.Paciente.Include(p => p.TipoIdentificacion)
+						.Include(p => p.Carrera)
+						.Include(p=>p.Facultad).
+						SingleOrDefaultAsync(f => f.Codigo == codigo);
 
+					
 					if (paciente == null)
 						return NotFound();
 

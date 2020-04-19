@@ -78,7 +78,9 @@
 	}
 
 	#menu li {
-		background: #000000a6;
+		background: #5E5D5C;
+		/*#000000;*/
+		/*//#000000a6;*/
 	}
 
 		#menu li:hover {

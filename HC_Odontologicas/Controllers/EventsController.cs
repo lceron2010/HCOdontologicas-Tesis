@@ -80,9 +80,9 @@ namespace HC_Odontologicas.Controllers
 
 			//envio del email
 
-			//	var correoMensaje = FuncionesEmail.EnviarEmail(_emailSender,paciente.MailEpn, correo.Asunto, 
-			//		FuncionesEmail.AsuntoCitaOdontologica(correo.Cuerpo, 
-			//		paciente.NombreCompleto, fechaLarga, hora, doctor.NombreCompleto));
+				var correoMensaje = FuncionesEmail.EnviarEmail(_emailSender,paciente.MailEpn, correo.Asunto, 
+					FuncionesEmail.AsuntoCitaOdontologica(correo.Cuerpo, 
+					paciente.NombreCompleto, fechaLarga, hora, doctor.NombreCompleto));
 
 
 			return Ok(new
