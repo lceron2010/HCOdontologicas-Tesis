@@ -452,7 +452,62 @@ namespace HC_Odontologicas.Controllers
 					}
 					else
 					{
+						//cargar los datos
+
+						var paciente = _context.Paciente.Where(p => p.Codigo == citaOdontologica.CodigoPaciente).Include(p => p.Facultad).Include(p => p.Carrera).SingleOrDefault();
+
+						//datos del paciente
+						ViewData["Cedula"] = paciente.Identificacion;
+						ViewData["Nombre"] = paciente.NombreCompleto;
+						ViewData["Direccion"] = paciente.Direccion;
+						ViewData["Correo"] = paciente.MailEpn;
+						ViewData["Telefono"] = paciente.Celular;
+						if (paciente.Facultad == null)
+						{
+							ViewData["Facultad"] = "";
+							ViewData["Carrera"] = "";
+						}
+						else
+						{
+							ViewData["Facultad"] = paciente.Facultad.Nombre;
+							ViewData["Carrera"] = paciente.Carrera.Nombre;
+						}
+
+						ViewData["CodigoCitaOdontologica"] = citaOdontologica.Codigo;
+
+						//paciente
+						List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
+						ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
+
+						List<SelectListItem> Facultad = new SelectList(_context.Facultad.OrderBy(f => f.Nombre), "Codigo", "Nombre").ToList();
+						Facultad.Insert(0, vacio);
+						ViewData["CodigoFacultad"] = Facultad;
+
+						//anamnesis
+
+						List<SelectListItem> Enfermedades = null;
+						Enfermedades = new SelectList(_context.Enfermedad.OrderBy(c => c.Nombre).Where(c => c.Estado == true), "Codigo", "Nombre").ToList();
+						ViewData["AnamnesisEnfermedad"] = Enfermedades;
+
+						//diagnostico
+						List<SelectListItem> Cie10 = new SelectList(_context.Cie10.OrderBy(f => f.CodigoInterno), "Codigo", "CodigoNombre").ToList();//.Where(f => f.Nombre.StartsWith("C")).ToList(); //QUITAR LUEGO					;
+						Cie10.Insert(0, vacio);
+						ViewData["CIE10"] = Cie10;
+
+						//concentimiento informado
+						var PlantillaCI = _context.PlantillaConsentimientoInformado.Where(c => c.Nombre.Contains("Consentimiento Informado")).SingleOrDefault();
+						ViewData["Descripcion"] = PlantillaCI.Descripcion;
+
+						//receta medica
+						List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList();
+						PlantillaRM.Insert(0, vacio);
+						ViewData["CodigoPlantillaReceta"] = PlantillaRM;
+
 						ViewBag.Message = "Algo salio mal";
+
+						var odontograma = await _context.Odontograma.SingleOrDefaultAsync(f => f.CodigoCitaOdontologica == citaOdontologica.Codigo);
+						_context.Odontograma.Remove(odontograma);
+						await _context.SaveChangesAsync();
 
 						return View(citaOdontologica);
 					}

@@ -148,88 +148,6 @@ function cargarDatosCarrera(Facultad) {
 }
 
 //odontograma
-
-//mostrar y ocultar la lista de opciones
-
-var div = document.getElementById('menu');
-//la funcion que oculta y muestra
-function showHide(e) {
-	e.preventDefault();
-	e.stopPropagation();
-	idGrupo = e.target.parentNode.id;
-	$("#idPiezaClick").val(idGrupo);
-	//console.log('id del parentNode en showhide: ', idGrupo);	
-	const top = 30;
-	let leftGlobal = 0;
-	let left = 0;
-	const medida = 60;
-	const grupo1 = [11, 12, 13, 14, 15, 16, 17, 18, 51, 52, 53, 54, 55, 81, 82, 83, 84, 85, 41, 42, 43, 44, 45, 46, 47, 48];
-	const grupo2 = [21, 22, 23, 24, 25, 26, 27, 28, 61, 62, 63, 64, 65, 71, 72, 73, 74, 75, 31, 32, 33, 34, 35, 36, 37, 38];
-
-	//const medidasLeft1 = [];
-	if (idGrupo.charAt(0) === "g") {
-		let medidasLeft1;
-		//const medidasLeft2;
-		if (grupo1.includes(parseInt(idGrupo.substring(1, 3)))) {
-			leftGlobal = 400;
-			medidasLeft1 = [leftGlobal, leftGlobal - medida, leftGlobal - 2 * medida, leftGlobal - 3 * medida, leftGlobal - 4 * medida, leftGlobal - 5 * medida, leftGlobal - 6 * medida, leftGlobal - 7 * medida];
-
-		}
-		else if (grupo2.includes(parseInt(idGrupo.substring(1, 3)))) {
-			leftGlobal = 820;
-			medidasLeft1 = [leftGlobal - 7 * medida, leftGlobal - 6 * medida, leftGlobal - 5 * medida, leftGlobal - 4 * medida, leftGlobal - 3 * medida, leftGlobal - 2 * medida, leftGlobal - medida, leftGlobal];
-		}
-
-		//console.log(medidasLeft1);
-		left = medidasLeft1[parseInt(idGrupo.substring(2, 3)) - 1];
-		//console.log('ojooooooooo: ', left);
-		//console.log('estilo', div.style.display);
-		if (div.style.display === "none") {
-			//console.log('entro al if de display= none');
-			$("#menu").attr("style", "display:block; position: absolute; top:" + top + "px; left:" + left + "px;");
-		} else if (div.style.display === "block") {
-			//console.log('entro al else if de display= block');
-			//console.log('clicl: ', e.target.parentNode.id);
-			if (e.target.parentNode.id.charAt(0) === "g") {
-				$("#menu").attr("style", "display:block; position: absolute; top:" + top + "px; left:" + left + "px;");
-			}
-			else {
-				div.style.display = "none";
-			}
-		}
-	}
-}
-//var prueba = [];
-//al hacer click en el boton
-if (document.getElementById('odontograma') !== null) {
-	var contador = $('#svg742')[0].children[3];
-	for (var i = 0; i <= contador.childElementCount; i++) {
-		if ($('#svg742')[0].children[3].children[i] !== undefined) {
-			if ($('#svg742')[0].children[3].children[i].id.charAt(0) === "g") {
-				$('#svg742')[0].children[3].children[i].addEventListener("click", showHide, false);
-				//prueba.push($('#svg742')[0].children[3].children[i].id);
-			}
-
-		}
-	}
-}
-//console.log('prueba:');
-//console.log(prueba);
-//funcion para cualquier clic en el documento
-document.addEventListener("click", function (e) {
-	//obtiendo informacion del DOM para  
-	var clic = e.target;
-	//console.log('clic diferente del div:', clic);
-	if (div !== null) {
-		if (div.style.display === "block" && clic !== div) {
-			div.style.display = "none";
-			$("#idPiezaClick").val("");
-		}
-	}
-}, false);
-
-//fin mostrar lista
-
 //cambiar color, establecer enfermedad en la pieza.
 var enfermedadesOdontogramasSVG = [
 	{ key: "Sellante", valor: "c -1.06206,-0.2393 -2.8543,-0.75867 -3.98274,-1.15375 l -2.05172,-0.71834 v -3.13905 c 0,-1.7265 0.18675,-3.13909 0.41494,-3.13909 0.22823,0 1.69459,0.61372 3.2586,1.3638 3.53178,1.69379 6.94477,2.31178 10.3606,1.87604 3.72951,-0.47573 5.55494,-1.61498 6.23245,-3.88965 1.04869,-3.52088 -0.9316,-5.67509 -7.52661,-8.18761 -10.27564,-3.9148 -12.6373,-6.33724 -12.16479,-12.47779 0.38908,-5.05626 4.22947,-8.47131 11.02396,-9.803 4.04921,-0.79364 9.32207,-0.39803 12.96783,0.97339 l 1.98465,0.74646 v 2.90043 c 0,1.59521 -0.11728,2.90039 -0.26061,2.90039 -0.14333,0 -1.07842,-0.39198 -2.07797,-0.8715 -2.43696,-1.16866 -7.45829,-1.98264 -9.91153,-1.60669 -2.29747,0.3521 -4.92736,1.72964 -5.61801,2.94273 -0.6119,1.07475 -0.61574,4.34263 -0.006,5.41295 0.58443,1.02653 2.76365,2.24015 6.5297,3.63642 4.75179,1.76179 7.40555,3.1293 9.46235,4.87602 2.67321,2.27024 3.33071,3.67014 3.33071,7.09171 0,2.54019 -0.2045,3.20858 -1.56896,5.12777 -1.22133,1.71787 -2.29953,2.55155 -4.86622,3.76271 -3.05125,1.43978 -3.68154,1.56535 -8.44824,1.68347 -2.83305,0.0701 -6.01996,-0.0685 -7.08202,-0.30778 z" },
@@ -401,7 +319,13 @@ function obtenerMedida(idGrupo, tipoMedida, enfermedad) {
 	//console.log("nombre a obtener: ", nombreObtener);
 	let dato = $('#svg742')[0].children[3].children[idGrupo].children[nombreObtener].attributes.d.value;
 	//console.log("dato atributo d:", dato);
-	let division = dato.substring(2, 20).split(",");
+	let division = [];
+	if (dato.includes(",")) {
+		division = dato.substring(2, 20).split(",");
+	}
+	else {
+		division = dato.substring(2, 20).split(" ");
+	}
 	let medidaX = division[0];
 	let medidaY = division[1];
 	let medidaGeneral = "";
@@ -1061,32 +985,32 @@ function soloNumerosEnteros(e) {
 }
 
 function validarLaIdentificacion(value) {
-	console.log(value);
+	//console.log(value);
 	$("#IdentificacionSpan").text("");
 	if (value === "0001") {
-		console.log("entro al if");
+		//console.log("entro al if");
 		$('#Identificacion').on('keypress', function () {
 			return soloNumerosEnteros(event);
 		});
 		$('#Identificacion').on('change', function () {
 			$("#IdentificacionSpan").text("");
-			console.log("entro al chance del input");
+			//console.log("entro al chance del input");
 			let cedula = $('#Identificacion').val();
 			let resultado = verificarCedula(cedula);
-			console.log("resultado en validar", resultado);
+			//console.log("resultado en validar", resultado);
 			if (resultado) {
-				console.log("if de identificaicon cedula incorrecta");
+				//console.log("if de identificaicon cedula incorrecta");
 				$("#IdentificacionSpan").text("");
 			}
 			else {				
-				console.log("else de identificaicon cedula incorrecta");
+				//console.log("else de identificaicon cedula incorrecta");
 				$("#IdentificacionSpan").text("Cédula Incorrecta");
 			}
 		});
 	}
 
 	else {
-		console.log("entro al else");
+		//console.log("entro al else");
 		$("#IdentificacionSpan").text("");
 		$('#Identificacion').off('keypress');
 		$("#Identificacion").off("change");
