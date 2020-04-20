@@ -6,7 +6,6 @@
 }
 
 <style>
-
 	html, body {
 		margin: 0px;
 		padding: 0px;
@@ -36,6 +35,9 @@
 	<script src="~/lib/dhtmlx/codebase/dhtmlxscheduler.js"></script>
 	<link rel="stylesheet" type="text/css" charset="utf-8" href="~/lib/dhtmlx/codebase/dhtmlxscheduler_material.css" />
 	<script src="~/lib/dhtmlx/codebase/locale/locale_es.js" charset="utf-8"></script>
+	<script src="~/lib/dhtmlx/codebase/ext/dhtmlxscheduler_minical.js" type="text/javascript"></script>
+	
+
 
 	<script>
 		scheduler.config.multi_day = true;
@@ -45,8 +47,10 @@
 		scheduler.config.details_on_dblclick = true;
 		scheduler.config.first_hour = 8;
 		scheduler.config.last_hour = 18;
-		scheduler.config.icons_select = [		
-			"icon_details",			
+		scheduler.config.hour_size_px = 88;
+		scheduler.config.minicalendar.mark_events = false
+		scheduler.config.icons_select = [
+			"icon_details",
 			"icon_delete"
 		];
 
@@ -54,10 +58,12 @@
 		var doctor_opts = cargarDoctores();
 
 		scheduler.config.lightbox.sections = [
-			{ name: "Paciente", height: 40, map_to: "paciente", type: "select", options: paciente_opts },
+			{ name: "Paciente", height: 40, map_to: "paciente", type: "select", options: paciente_opts, filtering: true },
 			{ name: "Doctor", height: 40, map_to: "doctor", type: "select", options: doctor_opts },
-			{ name: "Observación", height: 50, map_to: "observaciones", type: "textarea", focus: true },
-			{ name: "Tiempo", height: 72, type: "time", map_to: "auto" },
+			{ name: "Observación", height: 50, map_to: "observaciones", type: "textarea" },
+			{ name: "Tiempo", height: 102, type: "calendar_time", map_to: "auto" }
+			//{ name: "Tiempo", height: 72, type: "time", map_to: "auto" },
+			//{ name: "Paciente", height: 40, map_to: "paciente", type: "select", options: paciente_opts },
 
 		];
 
@@ -66,10 +72,10 @@
 		scheduler.attachEvent("onEventSave", function (id, ev, is_new) {
 
 			var estado = true;
-			if (ev.paciente != '') {				
-				if (ev.paciente === '0') {					
+			if (ev.paciente != '') {
+				if (ev.paciente === '0') {
 					dhtmlx.alert("Seleccione un paciente");
-					estado= false;
+					estado = false;
 				}
 				else {
 					ev.text = "P";
@@ -79,7 +85,7 @@
 						ev.text += (ev.text.length) ? (": " + getLabelPaciente(arr[i])) : (getLabelPaciente(arr[i]));
 					}
 				}
-				
+
 			}
 
 			if (ev.doctor != '') {

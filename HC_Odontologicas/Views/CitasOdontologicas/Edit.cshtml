@@ -111,7 +111,7 @@
 							</div>
 							<div class="input-group date">
 								<span class="input-group-addon"></span>
-								<input type="text" class="form-control" asp-for="UltimaVisitaOdontologo" required  id="UltimaVisitaOdontologo">
+								<input type="text" class="form-control" asp-for="UltimaVisitaOdontologo" required id="UltimaVisitaOdontologo" onchange="validarFechaAnamnesis();">
 								<span asp-validation-for="UltimaVisitaOdontologo" class="text-danger" id="UltimaVisitaOdontologoS"></span>
 							</div>
 
@@ -2836,7 +2836,7 @@
 				<div class="row">
 					<div class="col-lg-12">
 						<div class="form-group">
-							<b>Acepto el Consentimiento Informado *</b>	
+							<b>Acepto el Consentimiento Informado *</b>
 							<input type="checkbox" asp-for="AcuerdoConsentimiento" class="i-checks" checked required />
 						</div>
 					</div>
@@ -2910,10 +2910,13 @@
 	<script type="text/javascript">
 		$(document).ready(function () {
 
-			$('#UltimaVisitaOdontologo').on('change', function () {
-				validarFechaAnamnesis();			
-			});
+			//$('#UltimaVisitaOdontologo').on('change', function () {
+			//	validarFechaAnamnesis();
+			//});
 
+			//$("#UltimaVisitaOdontologo").change(function () {
+			//	console.log("The text has been changed.");
+			//});
 
 			$("#wizard").steps();
 			$("#formAtenderCitaOdontologica").steps({
