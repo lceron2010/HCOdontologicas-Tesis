@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HC_Odontologicas.Models
 {
-    public partial class RecetaMedica
-    {
-        public string Codigo { get; set; }
-        public string CodigoCitaOdontologica { get; set; }
-        public string Descripcion { get; set; }
-        public DateTime Fecha { get; set; }        		
+	public partial class RecetaMedica
+	{
+		public string Codigo { get; set; }
+		public string CodigoCitaOdontologica { get; set; }
+		public string Descripcion { get; set; }
+		public DateTime Fecha { get; set; }
 		public string CodigoPlantillaRecetaMedica { get; set; }
 		public string Indicaciones { get; set; }
 

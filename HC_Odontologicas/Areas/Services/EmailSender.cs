@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Options;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
@@ -20,68 +22,105 @@ namespace HC_Odontologicas.Areas.Services
 		private string password;
 
 		// Get our parameterized configuration
-		public EmailSender(string host, int port, bool enableSSL, string userName, string password)
+		//public EmailSender(string host, int port, bool enableSSL, string userName, string password)
+		//{
+		//	this.host = host;
+		//	this.port = port;
+		//	this.enableSSL = enableSSL;
+		//	this.userName = userName;
+		//	this.password = password;
+		//}
+		//public Task SendEmailAsync(string email, string subject, string htmlMessage)
+		//{
+		//	Execute(email, subject, htmlMessage).Wait();
+		//	return Task.FromResult(0);
+		//}
+
+		//public async Task Execute(string email, string subject, string message)
+		//{
+		//	try
+		//	{
+
+		//		MailMessage mail = new MailMessage()
+		//		{
+		//			From = new MailAddress(userName, "Notificaciones - Servicio de Odontología EPN")
+		//		};
+
+		//		string[] emails = email.Split(',');
+		//		foreach (string em in emails)
+		//		{
+		//			mail.To.Add(new MailAddress(em));
+		//		}
+
+		//		mail.Subject = subject;
+		//		mail.IsBodyHtml = true;
+
+		//		String html = RecuperarMensaje(message);
+		//		AlternateView altView = AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html);
+		//		var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "imagen", "epnEmail.png");
+		//		LinkedResource res = new LinkedResource(path, MediaTypeNames.Image.Gif);
+		//		res.ContentId = "logo";
+		//		altView.LinkedResources.Add(res);
+		//		//inline.ContentId = Guid.NewGuid().ToString();
+		//		mail.AlternateViews.Add(altView);
+		//		mail.Body = html;
+
+		//		SmtpClient oSmtp = new SmtpClient();
+		//		oSmtp.Host = host;
+		//		oSmtp.EnableSsl = true;
+		//		oSmtp.Port = port;
+
+		//		string usuario = userName;
+		//		string pwd = password;
+		//		if (usuario != string.Empty & pwd != string.Empty)
+		//			oSmtp.Credentials = new System.Net.NetworkCredential(usuario, pwd);
+
+		//		await oSmtp.SendMailAsync(mail);
+
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		ex.Message.ToString();
+		//	}
+		//}
+
+
+		public EmailSender(IOptions<AuthMessageSenderOptions> optionsAccessor)
 		{
-			this.host = host;
-			this.port = port;
-			this.enableSSL = enableSSL;
-			this.userName = userName;
-			this.password = password;
+			Options = optionsAccessor.Value;
 		}
 
-		public Task SendEmailAsync(string email, string subject, string htmlMessage)
+		public AuthMessageSenderOptions Options { get; } //set only via Secret Manager
+
+		public Task SendEmailAsync(string email, string subject, string message)
 		{
-			Execute(email, subject, htmlMessage).Wait();
-			return Task.FromResult(0);
+			return Execute(Options.SendGridKey, subject, message, email);
 		}
 
-
-		public async Task Execute(string email, string subject, string message)
+		public Task Execute(string apiKey, string subject, string message, string email)
 		{
-			try
+			var apiKey3 = Environment.GetEnvironmentVariable("SendGridKey");
+			var apiKey2 = "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";
+			var client = new SendGridClient(apiKey2);
+			Options.SendGridKey = "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";
+			
+			var from = new EmailAddress("serviciodeodontologiaepn@gmail.com", "Notificaciones - Servicio de Odontología EPN");
+			List<EmailAddress> tos = new List<EmailAddress>();
+			string[] emails = email.Split(',');
+			foreach (string em in emails)
 			{
-
-				MailMessage mail = new MailMessage()
-				{
-					From = new MailAddress(userName, "Notificaciones - Servicio de Odontología EPN")
-				};
-
-				string[] emails = email.Split(',');
-				foreach (string em in emails)
-				{
-					mail.To.Add(new MailAddress(em));
-				}
-
-				mail.Subject = subject;
-				mail.IsBodyHtml = true;
-
-				String html = RecuperarMensaje(message);
-				AlternateView altView = AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html);
-				var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "imagen", "epnEmail.png");
-				LinkedResource res = new LinkedResource(path, MediaTypeNames.Image.Gif);
-				res.ContentId = "logo";
-				altView.LinkedResources.Add(res);
-				//inline.ContentId = Guid.NewGuid().ToString();
-				mail.AlternateViews.Add(altView);
-				mail.Body = html;
-
-				SmtpClient oSmtp = new SmtpClient();
-				oSmtp.Host = host;
-				oSmtp.EnableSsl = true;
-				oSmtp.Port = port;
-
-				string usuario = userName;
-				string pwd = password;
-				if (usuario != string.Empty & pwd != string.Empty)
-					oSmtp.Credentials = new System.Net.NetworkCredential(usuario, pwd);
-
-				await oSmtp.SendMailAsync(mail);
-
+				tos.Add(new EmailAddress(em));
 			}
-			catch (Exception ex)
-			{
-				ex.Message.ToString();
-			}
+
+			var msg = MailHelper.CreateSingleEmailToMultipleRecipients(from, tos, subject, message, message, false);
+
+			//msg.AddTo(new EmailAddress(email));
+
+			// Disable click tracking.
+			// See https://sendgrid.com/docs/User_Guide/Settings/tracking.html
+			msg.SetClickTracking(false, false);
+
+			return client.SendEmailAsync(msg);
 		}
 
 		public static string RecuperarMensaje(string mensaje)

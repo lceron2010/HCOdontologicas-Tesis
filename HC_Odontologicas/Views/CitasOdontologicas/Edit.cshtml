@@ -98,7 +98,7 @@
 					<div class="col-lg-8 col-md-8 col-xs-12">
 						<div class="form-group">
 							<label asp-for="EnfermedadActual" class="control-label">Enfermedad Actual</label>
-							<input asp-for="EnfermedadActual" class="form-control" maxlength="512" />
+							<input asp-for="EnfermedadActual" class="form-control" maxlength="128" onchange='validarFechaAnamnesis();' />
 							<span asp-validation-for="EnfermedadActual" class="text-danger"></span>
 						</div>
 					</div>
@@ -106,17 +106,17 @@
 				<div class="row">
 					<div class="col-lg-8 col-md-8 col-xs-12" id="data_1">
 						<div class="form-group">
-							<label class="font-normal">Última Visita al Odontólogo *</label>
-							<div class="input-group date">
-									<span class="input-group-addon"></span>
-									<input type="text" class="form-control" asp-for="UltimaVisitaOdontologo" required onchange="validarFechaAnamnesis();">
-									<span asp-validation-for="UltimaVisitaOdontologo" class="text-danger" id="UltimaVisitaOdontologoS"></span>					
+							<div>
+								<label class="font-normal">Última Visita al Odontólogo *</label>
 							</div>
-							
+							<div class="input-group date">
+								<span class="input-group-addon"></span>
+								<input type="text" class="form-control" asp-for="UltimaVisitaOdontologo" required id="UltimaVisitaOdontologo" onchange="validarFechaAnamnesis();">
+								<span asp-validation-for="UltimaVisitaOdontologo" class="text-danger" id="UltimaVisitaOdontologoS"></span>
+							</div>
+
 						</div>
-
 					</div>
-
 				</div>
 				<div class="row">
 					<div class="col-lg-8 col-md-8 col-xs-12">
@@ -2753,13 +2753,13 @@
 					</div>
 				</div>
 			</fieldset>
-			<h1>Diagnostico</h1>
+			<h1>Diagnóstico</h1>
 			<fieldset>
 				<div class="row">
 					<div class="col-lg-8 col-sm-8 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Pieza" class="control-label">Pieza *</label>
-							<input asp-for="Pieza" class="form-control" required min="11" />
+							<input asp-for="Pieza" class="form-control" required type="number" value="11" min="11" />
 							<span asp-validation-for="Pieza" class="text-danger"></span>
 						</div>
 					</div>
@@ -2768,7 +2768,7 @@
 					<div class="col-lg-8 col-sm-8 col-xs-12">
 						<div class="form-group">
 							<label asp-for="CodigoDiagnosticoCie10" class="control-label">Cie10*</label>
-							<select asp-for="CodigoDiagnosticoCie10" class="select2_demo_3 form-control" asp-items="ViewBag.CIE10" required matches="1"></select>
+							<select asp-for="CodigoDiagnosticoCie10" class="select2_demo_3 form-control" asp-items="ViewBag.CIE10" required></select>
 							<span asp-validation-for="CodigoDiagnosticoCie10" class="text-danger"></span>
 						</div>
 					</div>
@@ -2791,38 +2791,53 @@
 						</div>
 					</div>
 				</div>
+				@*<div class="row">
+						<div class="col-lg-8 col-sm-8 col-xs-12">
+							<div class="form-group">
+								<label asp-for="Firma" class="control-label">Firma*</label>
+								<textarea asp-for="Firma" class="form-control" maxlength="128" required></textarea>
+								<span asp-validation-for="Firma" class="text-danger"></span>
+							</div>
+						</div>
+					</div>*@
 				<div class="row">
-					<div class="col-lg-8 col-sm-8 col-xs-12">
-						<div class="form-group">
-							<label asp-for="Firma" class="control-label">Firma*</label>
-							<textarea asp-for="Firma" class="form-control" maxlength="128" required></textarea>
-							<span asp-validation-for="Firma" class="text-danger"></span>
+					<div class="col-lg-12">
+						<div>
+							<b>Acepto el Diagnostico *</b>
+							<input type="checkbox" asp-for="Acuerdo" class="i-checks" checked required />
 						</div>
 					</div>
 				</div>
+
 			</fieldset>
 			<h1>Consentimiento Informado</h1>
 			<fieldset>
 				<div class="row">
 					<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 						<div class="form-group">
-							<div class="form-group">
-								<input asp-for="Descripcion" type="hidden" value="@ViewBag.Descripcion" />
-								<label asp-for="Descripcion" class="control-label">Descripción*</label>
-								<label asp-for="Descripcion" style="text-align:justify">@ViewBag.Descripcion</label>
-								<span asp-validation-for="Descripcion" class="text-danger"></span>
-							</div>
+							<input asp-for="Descripcion" type="hidden" value="@ViewBag.Descripcion" />
+							<label asp-for="Descripcion" class="control-label">Descripción*</label>
+							<label asp-for="Descripcion" style="text-align:justify">@ViewBag.Descripcion</label>
+							<span asp-validation-for="Descripcion" class="text-danger"></span>
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-						<div class="form-group">
+				@*<div class="row">
+						<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 							<div class="form-group">
-								<label asp-for="FirmaConcentimiento" class="control-label">Firma *</label>
-								<textarea asp-for="FirmaConcentimiento" class="form-control" required></textarea>
-								<span asp-validation-for="FirmaConcentimiento" class="text-danger"></span>
+								<div class="form-group">
+									<label asp-for="FirmaConcentimiento" class="control-label">Firma *</label>
+									<textarea asp-for="FirmaConcentimiento" class="form-control" required></textarea>
+									<span asp-validation-for="FirmaConcentimiento" class="text-danger"></span>
+								</div>
 							</div>
+						</div>
+					</div>*@
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="form-group">
+							<b>Acepto el Consentimiento Informado *</b>
+							<input type="checkbox" asp-for="AcuerdoConsentimiento" class="i-checks" checked required />
 						</div>
 					</div>
 				</div>
@@ -2832,7 +2847,7 @@
 				<div class="row">
 					<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 						<div class="form-group">
-							<label asp-for="CodigoPlantillaRecetaMedica" class="control-label">Plantilla*</label>
+							<label asp-for="CodigoPlantillaRecetaMedica" class="control-label">Plantilla</label>
 							<select asp-for="CodigoPlantillaRecetaMedica" class="form-control" asp-items="ViewBag.CodigoPlantillaReceta" onchange="cargarDatosReceta(this);"></select>
 							<span asp-validation-for="CodigoPlantillaRecetaMedica" class="text-danger"></span>
 						</div>
@@ -2843,7 +2858,7 @@
 				<div class="row">
 					<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 						<div class="form-group">
-							<label asp-for="DescripcionReceta" class="control-label">Medicamentos*</label>
+							<label asp-for="DescripcionReceta" class="control-label">Medicamentos</label>
 							<textarea asp-for="DescripcionReceta" class="form-control"></textarea>
 							<span asp-validation-for="DescripcionReceta" class="text-danger"></span>
 						</div>
@@ -2852,7 +2867,7 @@
 				<div class="row">
 					<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 						<div class="form-group">
-							<label asp-for="Indicaciones" class="control-label">Indicaciones*</label>
+							<label asp-for="Indicaciones" class="control-label">Indicaciones</label>
 							<textarea asp-for="Indicaciones" class="form-control"></textarea>
 							<span asp-validation-for="Indicaciones" class="text-danger"></span>
 						</div>
@@ -2870,10 +2885,9 @@
 @if (ViewBag.Message != null)
 {
 	<script type="text/javascript">
-		console.log("entro al viebagmesaje diferente de null");
+
         window.onload = function () {
 			if ("@ViewBag.Message" === "Save") {
-				console.log("entro al if");
                 SuccessAlert("Guardados","/../CitasOdontologicas/Index");
             }
             else {
@@ -2893,23 +2907,31 @@
 
 	</environment>
 
-
 	<script type="text/javascript">
 		$(document).ready(function () {
+
+			//$('#UltimaVisitaOdontologo').on('change', function () {
+			//	validarFechaAnamnesis();
+			//});
+
+			//$("#UltimaVisitaOdontologo").change(function () {
+			//	console.log("The text has been changed.");
+			//});
+
 			$("#wizard").steps();
 			$("#formAtenderCitaOdontologica").steps({
 				bodyTag: "fieldset",
 				onStepChanging: function (event, currentIndex, newIndex) {
 					var claseActual = "";
-					console.log("cuI", currentIndex);
-					console.log("neI", newIndex);
+					//console.log("cuI", currentIndex);
+					//console.log("neI", newIndex);
 					// Always allow going backward even if the current step contains invalid fields!
 					if (currentIndex > newIndex) {
 						if (newIndex === 1) {
-							console.log("1");
+							//console.log("1");
 							//const error = $(".body:eq(" + 0 + ") label.error", $("#formAtenderCitaOdontologica")).length;
 							var error = $("#formAtenderCitaOdontologica").valid();
-							console.log('error', error);
+							//console.log('error', error);
 							if (error) {
 								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[0];
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
@@ -2922,7 +2944,7 @@
 							//const error = $(".body:eq(" + 1 + ") label.error", $("#formAtenderCitaOdontologica")).length;
 							//console.log('error', error);
 							var error = $("#formAtenderCitaOdontologica").valid();
-							console.log('error', error);
+							//console.log('error', error);
 							if (error) {
 								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[1];
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
@@ -2932,9 +2954,9 @@
 						}
 
 						if (newIndex === 3) {
-							console.log("3");
+							//console.log("3");
 							var error = $("#formAtenderCitaOdontologica").valid();
-							console.log('error', error);
+							//console.log('error', error);
 							if (error) {
 								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[2];
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
@@ -2958,9 +2980,9 @@
 
 
 						if (newIndex === 1) {
-							console.log("1");
+							//console.log("1");
 							var error = $("#formAtenderCitaOdontologica").valid();
-							console.log('error', error);
+							//console.log('error', error);
 							if (error) {
 								claseActual = $("#formAtenderCitaOdontologica")[0].className;//classList[0];
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
@@ -2970,9 +2992,9 @@
 
 						if (newIndex === 2) {
 
-							console.log("2");
+							//console.log("2");
 							var error = $("#formAtenderCitaOdontologica").valid();
-							console.log('error', error);
+							//console.log('error', error);
 							if (error) {
 								claseActual = $("#formAtenderCitaOdontologica")[0].className;//classList[1];
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
@@ -2982,9 +3004,9 @@
 						}
 
 						if (newIndex === 3) {
-							console.log("3");
+							//console.log("3");
 							var error = $("#formAtenderCitaOdontologica").valid();
-							console.log('error', error);
+							//console.log('error', error);
 							if (error) {
 								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[2];
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
@@ -3026,7 +3048,7 @@
 					var form = $(this);
 
 					// Submit form input
-					console.log("finish");
+					//console.log("finish");
 					GuardarDatosOdontograma("crear");
 
 					form.submit();
@@ -3058,9 +3080,7 @@
 			});
 
 
-			$('#data_1 .input-group.date').datepicker({
-				language: 'es',
-				locale: "es",
+			$('#data_1 .input-group.date').datepicker({				
 				todayBtn: "linked",
 				keyboardNavigation: false,
 				forceParse: false,

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using HC_Odontologicas.Models;
+﻿using HC_Odontologicas.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Text.RegularExpressions;
 
 namespace HC_Odontologicas.Controllers
 {
-    public class ValidacionesController : Controller
-    {
+	public class ValidacionesController : Controller
+	{
 		private readonly HCOdontologicasContext _context;
 
 		public ValidacionesController(HCOdontologicasContext context)
@@ -17,7 +14,7 @@ namespace HC_Odontologicas.Controllers
 			_context = context;
 		}
 
-		
+
 		[AcceptVerbs("Get", "Post")]
 		public IActionResult VerificarCodigoFacultad(string CodigoFacultad)
 		{
@@ -57,7 +54,6 @@ namespace HC_Odontologicas.Controllers
 			return ValidarCodigo4(CodigoPerfil);
 		}
 
-		
 		[AcceptVerbs("Get", "Post")]
 		public string VerifyCampoRequerido(string Campo)
 		{
@@ -79,6 +75,68 @@ namespace HC_Odontologicas.Controllers
 		}
 
 		[AcceptVerbs("Get", "Post")]
+		public string VerifyCedula(string Identificacion)
+		{
+			return ValidarCedula(Identificacion);
+		}
+
+
+		private string ValidarCedula(String identificacion)
+		{
+
+			bool estado = false;
+			char[] valced = new char[13];
+			int provincia;
+			if (identificacion.Length >= 10)
+			{
+				valced = identificacion.Trim().ToCharArray();
+				provincia = int.Parse((valced[0].ToString() + valced[1].ToString()));
+				if (provincia > 0 && provincia < 25)
+				{
+					if (int.Parse(valced[2].ToString()) < 6)
+					{
+						estado = VerificaCedula(valced);
+					}					
+				}
+			}
+	
+			if (!estado)
+			{
+				return "Cédula Incorrecta.";
+			}
+			return string.Empty;
+
+		}
+
+		public static bool VerificaCedula(char[] validarCedula)
+		{
+			int aux = 0, par = 0, impar = 0, verifi;
+			for (int i = 0; i < 9; i += 2)
+			{
+				aux = 2 * int.Parse(validarCedula[i].ToString());
+				if (aux > 9)
+					aux -= 9;
+				par += aux;
+			}
+			for (int i = 1; i < 9; i += 2)
+			{
+				impar += int.Parse(validarCedula[i].ToString());
+			}
+
+			aux = par + impar;
+			if (aux % 10 != 0)
+			{
+				verifi = 10 - (aux % 10);
+			}
+			else
+				verifi = 0;
+			if (verifi == int.Parse(validarCedula[9].ToString()))
+				return true;
+			else
+				return false;
+		}
+
+		[AcceptVerbs("Get", "Post")]
 		public string ValidarLongitudes(string NumDocMinimo, string NumDocMaximo)
 		{
 			int minimo = string.IsNullOrEmpty(NumDocMinimo) ? 0 : Convert.ToInt32(NumDocMinimo);
@@ -97,83 +155,7 @@ namespace HC_Odontologicas.Controllers
 			}
 			return "";
 		}
-				
-		//public string ValidarIdentificacion(string CodigoCompania, string TipoIdentificacion, string Identificacion)
-		//{
-		//	var tipoIdentificacion = _context.Personal.SingleOrDefault(a => a.Cedula == ce);
-		//	var compania = _context.Compania.SingleOrDefault(c => c.Codigo == CodigoCompania).Nombre.ToUpper();
-		//	int numMinimo = tipoIdentificacion.NumeroMinino;
-		//	int numMaximo = tipoIdentificacion.NumeroMaximo;
-		//	string tipoId = tipoIdentificacion.TipoId;
-		//	string tipoDato = tipoIdentificacion.TipoDato;
-		//	string mensaje = string.Empty;
 
-		//	//Longitud
-		//	if (numMinimo == numMaximo && numMaximo != 0)
-		//	{
-		//		if (Identificacion.Length != numMinimo)
-		//			mensaje = "La longitud de la identificación debe ser de " + numMinimo + ".";
-		//	}
-		//	else if (numMinimo != numMaximo)
-		//	{
-		//		if (Identificacion.Length < numMinimo || Identificacion.Length > numMaximo)
-		//			mensaje = "La longitud de la identificación debe estar en un rango de " + numMinimo + " - " + numMaximo + ".";
-		//	}
-
-		//	//Tipo de Dato
-		//	if (tipoDato == "N")
-		//	{
-		//		foreach (var ch in Identificacion)
-		//		{
-		//			if (!Char.IsNumber(ch))
-		//				mensaje = "La identificación solo admite caracteres numéricos.";
-		//		}
-		//	}
-		//	else if (tipoDato == "A")
-		//	{
-		//		if (compania == "CHILE")
-		//		{
-		//			if (tipoId == "N")
-		//			{
-		//				if (!Identificacion.Contains("-"))
-		//					mensaje = "La identificación debe contener un guión '-' en la penúltima posición.";
-		//				else
-		//				{
-		//					int cont = 0;
-		//					int posicionCaracter = Identificacion.Length - 2;
-		//					char[] word = Identificacion.ToCharArray();
-		//					foreach (char a in word)
-		//						if (a.ToString() == "-")
-		//							cont++;
-		//					if (word[posicionCaracter].ToString() != "-")
-		//						mensaje = "El guión debe estar en la penúltima posición.";
-		//					if (cont > 0)
-		//						mensaje = "Solo debe haber un guión, debe estar en la penúltima posición.";
-		//				}
-		//			}
-		//			else
-		//			{
-		//				if (Identificacion.Contains("-"))
-		//				{
-		//					int posicionCaracter = Identificacion.Length - 2;
-		//					char[] word = Identificacion.ToCharArray();
-		//					if (word[posicionCaracter].ToString() != "-")
-		//						mensaje = "El guión debe estar en la penúltima posición.";
-		//				}
-		//			}
-		//		}
-		//		else
-		//		{
-		//			foreach (var ch in Identificacion)
-		//			{
-		//				if (!Char.IsLetterOrDigit(ch))
-		//					mensaje = "La identificación solo admite caracteres alfanuméricos.";
-		//			}
-		//		}
-		//	}
-
-		//	return mensaje;
-		//}
 
 		public string ValidarContrasenia(string Contrasenia)
 		{
@@ -190,7 +172,7 @@ namespace HC_Odontologicas.Controllers
 				return "";
 			}
 		}
-			
+
 		private IActionResult ValidarCodigo4(String Codigo)
 		{
 			if (Codigo.Length != 4)

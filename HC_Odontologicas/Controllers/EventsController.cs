@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using HC_Odontologicas.FuncionesGenerales;
+﻿using HC_Odontologicas.FuncionesGenerales;
 using HC_Odontologicas.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -59,8 +58,8 @@ namespace HC_Odontologicas.Controllers
 			newEvent.CodigoPersonal = apiEvent.doctor;
 			newEvent.FechaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 			newEvent.Observaciones = apiEvent.observaciones;
-			newEvent.FechaInicio = Convert.ToDateTime(apiEvent.start_date);
-			newEvent.FechaFin = Convert.ToDateTime(apiEvent.end_date);
+			newEvent.FechaInicio = Funciones.ObtenerFecha(Convert.ToDateTime(apiEvent.start_date), "SA Pacific Standard Time");
+			newEvent.FechaFin = Funciones.ObtenerFecha(Convert.ToDateTime(apiEvent.start_date), "SA Pacific Standard Time");//Convert.ToDateTime(apiEvent.end_date);
 			newEvent.HoraInicio = new TimeSpan(newEvent.FechaInicio.Hour, newEvent.FechaInicio.Minute, newEvent.FechaInicio.Second);
 			newEvent.HoraFin = new TimeSpan(newEvent.FechaFin.Hour, newEvent.FechaFin.Minute, newEvent.FechaFin.Second);
 			newEvent.Estado = "C";
@@ -74,16 +73,16 @@ namespace HC_Odontologicas.Controllers
 			PlantillaCorreoElectronico correo = new PlantillaCorreoElectronico();
 			correo = _context.PlantillaCorreoElectronico.SingleOrDefault(p => p.Asunto.Contains("Cita"));
 			var paciente = _context.Paciente.Where(p => p.Codigo == apiEvent.paciente).FirstOrDefault();
-			var doctor = _context.Personal.Where(d => d.Codigo == apiEvent.doctor).FirstOrDefault();			
-			var soloFecha = Convert.ToDateTime(newEvent.FechaInicio.ToString("dd/MM/yyyy"));
-			var fechaLarga = soloFecha.ToLongDateString();
+			var doctor = _context.Personal.Where(d => d.Codigo == apiEvent.doctor).FirstOrDefault();
+			var soloFecha = (newEvent.FechaInicio.ToString("dd/MM/yyyy"));///Convert.ToDateTime(newEvent.FechaInicio.ToString("dd/MM/yyyy"));
+			//var fechaLarga = soloFecha.ToLongDateString();
 			var hora = newEvent.FechaInicio.ToString("HH:mm"); // newEvent.FechaInicio.TimeOfDay.ToString();//newEvent.FechaInicio.Hour.ToString() + ":" + newEvent.FechaInicio.Minute.ToString();//newEvent.FechaInicio.ToString("hh:mm");
 
 			//envio del email
 
-		//	var correoMensaje = FuncionesEmail.EnviarEmail(_emailSender,paciente.MailEpn, correo.Asunto, 
-		//		FuncionesEmail.AsuntoCitaOdontologica(correo.Cuerpo, 
-		//		paciente.NombreCompleto, fechaLarga, hora, doctor.NombreCompleto));
+			var correoMensaje = FuncionesEmail.EnviarEmail(_emailSender, paciente.MailEpn + ',' + paciente.MailPersonal, correo.Asunto,
+				FuncionesEmail.AsuntoCitaOdontologica(correo.Cuerpo,
+				paciente.NombreCompleto, soloFecha, hora, doctor.NombreCompleto));
 
 
 			return Ok(new
@@ -129,14 +128,19 @@ namespace HC_Odontologicas.Controllers
 			var e = _context.CitaOdontologica.Find(id);
 			if (e != null)
 			{
-				_context.CitaOdontologica.Remove(e);
-				_context.SaveChanges();
+				try
+				{
+					_context.CitaOdontologica.Remove(e);
+					_context.SaveChanges();
+				}
+				catch
+				{
+					return new ObjectResult("No se puede eliminar una cita ya registrada");
+				}
 			}
 
-			return Ok(new
-			{
-				action = "deleted"
-			});
+			return Ok(new {action = "deleted" });
+
 		}
 	}
 }

@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using HC_Odontologicas.FuncionesGenerales;
+using HC_Odontologicas.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using HC_Odontologicas.Models;
-using System.Security.Claims;
-using HC_Odontologicas.FuncionesGenerales;
-using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using OfficeOpenXml;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using OfficeOpenXml;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Hosting;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace HC_Odontologicas.Controllers
 {
@@ -63,7 +62,7 @@ namespace HC_Odontologicas.Controllers
 					var pacientes = from c in _context.Paciente.OrderBy(p => p.NombreCompleto) select c;
 
 					if (!String.IsNullOrEmpty(search)) //para no mostrar nada al iniciar
-						pacientes = pacientes.Where(s => s.NombreCompleto.Contains(search) || s.Identificacion.Contains(search) 
+						pacientes = pacientes.Where(s => s.NombreCompleto.Contains(search) || s.Identificacion.Contains(search)
 						|| s.NumeroUnico.Contains(search) || s.Nombres.Contains(search) || s.Apellidos.Contains(search));
 
 					switch (sortOrder)
@@ -143,6 +142,13 @@ namespace HC_Odontologicas.Controllers
 							ModelState.AddModelError("FechaNacimiento", mensajeR);
 					}
 
+					if (paciente.CodigoTipoIdentificacion == "0001")
+					{
+						var mensajeR = validaciones.VerifyCedula(paciente.Identificacion);
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("Identificacion", mensajeR);
+
+					}
 
 					if (paciente.TipoPaciente == "E" || paciente.TipoPaciente == "EB" || paciente.TipoPaciente == "EC" || paciente.TipoPaciente == "EN")
 					{
@@ -179,6 +185,13 @@ namespace HC_Odontologicas.Controllers
 						paciente.Codigo = maxCodigo.ToString("D8");
 						paciente.Nombres = paciente.Nombres.ToUpper();
 						paciente.Apellidos = paciente.Apellidos.ToUpper();
+						if (paciente.CodigoFacultad == "0")
+						{
+							paciente.CodigoFacultad = null;
+
+						}
+
+
 						_context.Add(paciente);
 						await _context.SaveChangesAsync();
 						await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Paciente", paciente.Codigo, "I");
@@ -249,8 +262,12 @@ namespace HC_Odontologicas.Controllers
 					if (codigo == null)
 						return NotFound();
 
-					var paciente = await _context.Paciente.SingleOrDefaultAsync(f => f.Codigo == codigo);
+					var paciente = await _context.Paciente.Include(p => p.TipoIdentificacion)
+						.Include(p => p.Carrera)
+						.Include(p=>p.Facultad).
+						SingleOrDefaultAsync(f => f.Codigo == codigo);
 
+					
 					if (paciente == null)
 						return NotFound();
 
@@ -293,6 +310,48 @@ namespace HC_Odontologicas.Controllers
 			{
 				try
 				{
+					if (paciente.FechaNacimiento >= Funciones.ObtenerFechaActual("SA Pacific Standard Time").Date)
+					{
+						var mensajeR = "La fecha debe ser menor a la actual.";
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("FechaNacimiento", mensajeR);
+					}
+
+					if (paciente.CodigoTipoIdentificacion == "0001")
+					{
+						var mensajeR = validaciones.VerifyCedula(paciente.Identificacion);
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("Identificacion", mensajeR);
+
+					}
+
+					if (paciente.TipoPaciente == "E" || paciente.TipoPaciente == "EB" || paciente.TipoPaciente == "EC" || paciente.TipoPaciente == "EN")
+					{
+						var mensajeR = validaciones.VerifyCampoRequerido(paciente.NumeroUnico);
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("NumeroUnico", mensajeR);
+
+						mensajeR = validaciones.VerifyComboRequerido(paciente.CodigoFacultad);
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("Facultad", mensajeR);
+
+						mensajeR = validaciones.VerifyComboRequerido(paciente.CodigoCarrera);
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("Carrera", mensajeR);
+					}
+					else if (paciente.TipoPaciente == "D" || paciente.TipoPaciente == "PA")
+					{
+						var mensajeR = validaciones.VerifyCampoRequerido(paciente.Cargo);
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("Cargo", mensajeR);
+					}
+					else
+					{
+						var mensajeR = validaciones.VerifyComboRequerido(paciente.TipoPaciente);
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("TipoPaciente", mensajeR);
+					}
+
 					if (ModelState.IsValid)
 					{
 						try
@@ -500,24 +559,24 @@ namespace HC_Odontologicas.Controllers
 			{
 				mensaje += " Debe tener una Cédula";
 			}
-			 if (string.IsNullOrEmpty(dr["FechaNac"].ToString()))
+			if (string.IsNullOrEmpty(dr["FechaNac"].ToString()))
 			{
 				mensaje += " Debe tener una FechaNac";
 			}
-			 if (string.IsNullOrEmpty(dr["Genero"].ToString()))
+			if (string.IsNullOrEmpty(dr["Genero"].ToString()))
 			{
 				mensaje += " Debe tener un Genero";
 			}
 
-			 if (string.IsNullOrEmpty(dr["Dirección"].ToString()))
+			if (string.IsNullOrEmpty(dr["Dirección"].ToString()))
 			{
 				mensaje += " Debe tener una Dirección";
 			}
-			 if (string.IsNullOrEmpty(dr["EmailEPN"].ToString()))
+			if (string.IsNullOrEmpty(dr["EmailEPN"].ToString()))
 			{
 				mensaje += " Debe tener un EmailEPN";
 			}
-			
+
 			return mensaje;
 		}
 
@@ -568,7 +627,7 @@ namespace HC_Odontologicas.Controllers
 					if (workSheet.Cells[i, 1].Value != null)
 					{
 						string nombreCompleto = workSheet.Cells[i, 3].Value.ToString();
-						string[] nombres = nombreCompleto.Split(" ");						
+						string[] nombres = nombreCompleto.Split(" ");
 						pc.Codigo = maxCodigo.ToString("D8");
 						pc.NumeroUnico = workSheet.Cells[i, 2].Value.ToString();
 						pc.Nombres = nombres[2] + " " + nombres[3];
@@ -749,8 +808,8 @@ namespace HC_Odontologicas.Controllers
 				}
 			}
 
-			return "";		
-			
+			return "";
+
 		}
 
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace HC_Odontologicas.FuncionesGenerales
+﻿namespace HC_Odontologicas.FuncionesGenerales
 {
 	public class MensajesError
 	{
@@ -24,7 +19,7 @@ namespace HC_Odontologicas.FuncionesGenerales
 				if (mensajeError.Contains("Asunto"))
 					mensajeError = "El asunto ya ha sido registrado.";
 			}
-						return mensajeError;
+			return mensajeError;
 		}
 
 		public static string ForeignKey(string mensajeError)

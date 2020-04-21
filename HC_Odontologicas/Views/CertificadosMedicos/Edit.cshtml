@@ -111,38 +111,14 @@
 			</fieldset>
 			<br />
 			<br />
-			<fieldset id="DatosReposo" style="display:none">
-				<legend class="titulo text-uppercase" style="font-size:inherit">Datos Reposo</legend>
+			<fieldset id="DatosReposo" style="display:none">				
 				<div class="row">
-					<div class="col-lg-4 col-md-12 col-xs-12" id="data_2">
-						<div class="form-group">
-							<label class="font-normal">Desde</label>
-							<div class="input-group date">
-								<span class="input-group-addon"></span>
-								<input type="text" id="FechaInicioReposo" class="form-control" asp-for="FechaInicioReposo">
-							</div>
-						</div>
+					<div class="form-group">		
+						<label>Número de dias de reposo</label>
+						<input type="number" id="NumdiasReposo" class="form-control" asp-for="NumdiasReposo">						
 					</div>
-					<div class="col-lg-4 col-md-12 col-xs-12" id="data_3">
-						<div class="form-group">
-							<label class="font-normal">Hasta</label>
-							<div class="input-group date">
-								<span class="input-group-addon"></span>
-								<input type="text" id="FechaFinReposo" class="form-control" asp-for="FechaFinReposo">
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-4 col-md-12 col-xs-12" id="data_4">
-						<div class="form-group">
-							<label class="font-normal">Fecha a Reincorporarse</label>
-							<div class="input-group date">
-								<span class="input-group-addon"></span>
-								<input type="text" id="FechaReincorporarse" class="form-control" asp-for="FechaReincorporarse">
-							</div>
-						</div>
-					</div>
-
 				</div>
+						
 			</fieldset>
 			<br />
 			<br />
@@ -161,12 +137,16 @@
 	</div>
 </div>
 
+<script>
+	window.onload = mostrarCamposReposo();
+	
+</script>
 
 <script>
 	$(document).ready(function () {
 		$('#data_1 .input-group.date').datepicker({
-			language: 'es',
-			locale: "es",
+			//language: 'es',
+			//locale: "es",
 			todayBtn: "linked",
 			keyboardNavigation: false,
 			forceParse: false,
@@ -175,38 +155,6 @@
 			maxDateNow: true,
 		});
 
-		$('#data_2 .input-group.date').datepicker({
-			language: 'es',
-			locale: "es",
-			todayBtn: "linked",
-			keyboardNavigation: false,
-			forceParse: false,
-			autoclose: true,
-			closeText: 'Cerrar',
-			maxDateNow: true,
-		});
-
-		$('#data_3 .input-group.date').datepicker({
-			language: 'es',
-			locale: "es",
-			todayBtn: "linked",
-			keyboardNavigation: false,
-			forceParse: false,
-			autoclose: true,
-			closeText: 'Cerrar',
-			maxDateNow: true,
-		});
-
-		$('#data_4 .input-group.date').datepicker({
-			language: 'es',
-			locale: "es",
-			todayBtn: "linked",
-			keyboardNavigation: false,
-			forceParse: false,
-			autoclose: true,
-			closeText: 'Cerrar',
-			maxDateNow: true,
-		});
 
 		$('.i-checks').iCheck({
 			checkboxClass: 'icheckbox_square-blue',

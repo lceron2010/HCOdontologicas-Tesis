@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HC_Odontologicas.FuncionesGenerales
 {
@@ -12,5 +9,12 @@ namespace HC_Odontologicas.FuncionesGenerales
 			TimeZoneInfo zona = TimeZoneInfo.FindSystemTimeZoneById(zonaHoraria);
 			return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, zona);
 		}
+
+		public static DateTime ObtenerFecha(DateTime fecha, String zonaHoraria)
+		{
+			TimeZoneInfo zona = TimeZoneInfo.FindSystemTimeZoneById(zonaHoraria);
+			return TimeZoneInfo.ConvertTimeFromUtc(fecha, zona);
+		}
+
 	}
 }

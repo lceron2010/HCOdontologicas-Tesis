@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using HC_Odontologicas.FuncionesGenerales;
+using HC_Odontologicas.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using HC_Odontologicas.Models;
-using HC_Odontologicas.FuncionesGenerales;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace HC_Odontologicas.Controllers
 {
@@ -64,18 +63,19 @@ namespace HC_Odontologicas.Controllers
 									.Where(s => s.CitaOdontologica.Paciente.Nombres.Contains(search)
 									|| s.CitaOdontologica.Paciente.Apellidos.Contains(search)
 									|| s.CitaOdontologica.Paciente.NombreCompleto.Contains(search)
-									|| s.CitaOdontologica.Paciente.Identificacion.Contains(search)) select c;
+									|| s.CitaOdontologica.Paciente.Identificacion.Contains(search))
+									  select c;
 
 					switch (sortOrder)
-						{
-							case "nombre_desc":
-								odontograma = odontograma.OrderByDescending(s => s.CitaOdontologica.Paciente.NombreCompleto);
-								break;
-							default:
-								odontograma = odontograma.OrderBy(s => s.CitaOdontologica.Paciente.NombreCompleto);
-								break;
+					{
+						case "nombre_desc":
+							odontograma = odontograma.OrderByDescending(s => s.CitaOdontologica.Paciente.NombreCompleto);
+							break;
+						default:
+							odontograma = odontograma.OrderBy(s => s.CitaOdontologica.Paciente.NombreCompleto);
+							break;
 
-						}
+					}
 					int pageSize = 10;
 					return View(await Paginacion<Odontograma>.CreateAsync(odontograma, page ?? 1, pageSize)); // page devuelve valor si lo tiene caso contrario devuelve 1
 				}

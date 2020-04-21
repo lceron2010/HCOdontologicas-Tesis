@@ -4,7 +4,7 @@
 	ViewData["Title"] = "Edit";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h4>Diagnostico</h4>
+	<h4>Diagnóstico</h4>
 <hr />
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -37,7 +37,7 @@
 					<div class="col-lg-6 col-sm-6 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Pieza" class="control-label">Pieza *</label>
-							<input asp-for="Pieza" class="form-control" disabled/>
+							<input asp-for="Pieza" class="form-control" disabled />
 							<span asp-validation-for="Pieza" class="text-danger"></span>
 						</div>
 					</div>
@@ -55,22 +55,32 @@
 					<div class="col-lg-6 col-sm-6 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Observacion" class="control-label">Observación</label>
-							<input asp-for="Observacion" class="form-control" disabled/>
+							<input asp-for="Observacion" class="form-control" disabled />
 							<span asp-validation-for="Observacion" class="text-danger"></span>
 						</div>
 					</div>
 					<div class="col-lg-6 col-sm-6 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Recomendacion" class="control-label">Recomendación</label>
-							<input asp-for="Recomendacion" class="form-control" disabled/>
+							<input asp-for="Recomendacion" class="form-control" disabled />
 							<span asp-validation-for="Recomendacion" class="text-danger"></span>
 						</div>
 					</div>
-					<div class="col-lg-6 col-sm-6 col-xs-12">
-						<div class="form-group">
-							<label asp-for="Firma" class="control-label">Firma *</label>
-							<textarea asp-for="Firma" class="form-control" disabled></textarea>
-							<span asp-validation-for="Firma" class="text-danger"></span>
+					@*<div class="col-lg-6 col-sm-6 col-xs-12">
+							<div class="form-group">
+								<label asp-for="Firma" class="control-label">Firma *</label>
+								<textarea asp-for="Firma" class="form-control" disabled></textarea>
+								<span asp-validation-for="Firma" class="text-danger"></span>
+							</div>
+						</div>*@
+
+					<div class="col-lg-12">
+						<div>
+							<b>Acepto el Diagnostico *</b>
+							<label>
+								<input type="checkbox" asp-for="Acuerdo" class="i-checks" disabled />
+								<span asp-validation-for="Acuerdo" class="text-danger"></span>
+							</label>
 						</div>
 					</div>
 				</div>
@@ -116,3 +126,14 @@
 @section Scripts {
 	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('.i-checks').iCheck({
+			checkboxClass: 'icheckbox_square-blue',
+			radioClass: 'iradio_square-blue',
+		});
+	});
+</script>

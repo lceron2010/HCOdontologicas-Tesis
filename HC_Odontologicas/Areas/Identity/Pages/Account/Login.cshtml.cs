@@ -1,13 +1,13 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using HC_Odontologicas.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using HC_Odontologicas.Models;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace HC_Odontologicas.Areas.Identity.Pages.Account
 {
@@ -28,7 +28,7 @@ namespace HC_Odontologicas.Areas.Identity.Pages.Account
 		public string ErrorMessage { get; set; }
 		public class InputModel
 		{
-			[Required(ErrorMessage = "Ingrese su usuario")]			
+			[Required(ErrorMessage = "Ingrese su usuario")]
 			public string UsuarioLogin { get; set; }
 
 			[Required(ErrorMessage = "Ingrese su contraseña")]
@@ -89,6 +89,6 @@ namespace HC_Odontologicas.Areas.Identity.Pages.Account
 				return Page();
 			}
 		}
-				
+
 	}
 }

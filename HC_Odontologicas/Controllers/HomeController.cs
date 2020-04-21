@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using HC_Odontologicas.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using HC_Odontologicas.Models;
+using System.Diagnostics;
+using System.Linq;
 using System.Security.Claims;
 
 namespace HC_Odontologicas.Controllers

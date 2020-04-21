@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Este archivo se usa en el proceso de publicación y empaquetado del proyecto web. Para personalizar el comportamiento de este proceso,
+edite el archivo MSBuild. Visite https://go.microsoft.com/fwlink/?LinkID=208121 para obtener más información. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA7w1hCqpmBk6NalQ3lfgkKAAAAAACAAAAAAAQZgAAAAEAACAAAABKfilcN6J8huNKbwgjvBdN2Q3t2mRjCZeAQJsnH8NY7AAAAAAOgAAAAAIAACAAAAAkBh/J2ON97NjpwLAey7a8En6wd/yKhsAiqME1aRWiDoAAAADlhYJ5Fje8BZmVypECKFTOs/XMLah5OUfg0KMMR1bncPtCXT2zvQEnCcbw0s2+p/xsgHv2NjA/H3s1k7/gIURcUXh6NOb8E48G6BJH0ubwld7L6TDKcu91im04WT/djcO8heUTphgY52xT2OgQ1Ly0/SfrqiO6C3W+gT47zg3f0kAAAABHRNA82UttPT38yKaJo0nsYrVYR+92IhLHTR/01/bCAfwSJBExWan7SizLi95I9ot0nq3x42amzQ97sbov53ne</EncryptedPassword>
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="DefaultConnection">
+      <Value>Data Source=tcp:hcodontologicas20200413181201dbserver.database.windows.net,1433%3bInitial Catalog=HCOdontologicas20200413182232_db%3bUser Id=adminiuser%40hcodontologicas20200413181201dbserver%3bPassword=Laura27%2a%2a</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+  <ItemGroup>
+    <EFMigrations Include="HC_Odontologicas.Models.HCOdontologicasContext">
+      <Value>Data Source=tcp:hcodontologicas20200413181201dbserver.database.windows.net,1433%3bInitial Catalog=HCOdontologicas20200413182232_db%3bUser Id=adminiuser%40hcodontologicas20200413181201dbserver%3bPassword=Laura27%2a%2a</Value>
+    </EFMigrations>
+  </ItemGroup>
+</Project>

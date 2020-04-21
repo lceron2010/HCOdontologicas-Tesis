@@ -1,16 +1,16 @@
-﻿using System;
+﻿using HC_Odontologicas.Models;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using HC_Odontologicas.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace HC_Odontologicas.Controllers
 {
-    public class AuditoriaController : Controller
-    {
+	public class AuditoriaController : Controller
+	{
 		private readonly HCOdontologicasContext _context;
 		public AuditoriaController(HCOdontologicasContext context)
 		{
@@ -51,7 +51,7 @@ namespace HC_Odontologicas.Controllers
 					Tabla = Tabla.Substring(0, 32);
 
 				logAuditoria.Tabla = Tabla;
-				logAuditoria.Clave = Clave;				
+				logAuditoria.Clave = Clave;
 				//accion
 				logAuditoria.Accion = string.IsNullOrEmpty(Accion) ? "A" : Accion.Substring(0, 1);
 				logAuditoria.DireccionIp = ip;

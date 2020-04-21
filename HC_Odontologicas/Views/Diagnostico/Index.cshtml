@@ -5,16 +5,16 @@
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h4>Diagnostico</h4>
+<h4>Diagnósticos</h4>
 <hr />
 @if ((bool)ViewData["Crear"])
 {
 	<a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> Nuevo</a>
 }
 @if ((bool)ViewData["Exportar"])
-	{
-		@*<a asp-action="GetExcel" class="btn btn-primary"><i class="fa fa-download"></i> Exportar</a>*@
-	}
+{
+	@*<a asp-action="GetExcel" class="btn btn-primary"><i class="fa fa-download"></i> Exportar</a>*@
+}
 <br />
 @* Buscar *@
 <form class="form-inline" asp-action="Index" method="get">
@@ -29,14 +29,14 @@
 		<tr>
 			<th>
 				<a asp-action="Index" asp-route-sortOrder="@ViewData["NombreSortParam"]" asp-route-filter="@ViewData["Filter"]">Paciente</a>
-			</th>			
+			</th>
 			<th>
 				Cie10
 			</th>
 			<th>
 				<a asp-action="Index" asp-route-sortOrder="@ViewData["FechaSortParam"]" asp-route-filter="@ViewData["Filter"]">Fecha</a>
 			</th>
-		<th>Acciones</th>
+			<th>Acciones</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -45,7 +45,7 @@
 			<tr>
 				<td>
 					@Html.DisplayFor(modelItem => item.CitaOdontologica.Paciente.NombreCompleto)
-				</td>				
+				</td>
 				<td>
 					@Html.DisplayFor(modelItem => item.DiagnosticoCie10[0].Cie10.CodigoNombre)
 				</td>
@@ -55,14 +55,14 @@
 				<td>
 					@if ((bool)ViewData["Editar"])
 					{
-						<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Editar"><i class="fa fa-edit"></i> Editar</a>
+						<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Editar"><i class="fa fa-eye"></i> Ver</a>
 					}
 					@if ((bool)ViewData["Eliminar"])
 					{
 						<a onclick="eliminar('@item.Codigo','../Diagnostico/DeleteConfirmed','/../Diagnostico')" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Eliminar"><i class="fa fa-trash"></i> Eliminar</a>
 					}
 
-					</td>
+				</td>
 			</tr>
 		}
 	</tbody>

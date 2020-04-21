@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using HC_Odontologicas.FuncionesGenerales;
+using HC_Odontologicas.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using HC_Odontologicas.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
-using HC_Odontologicas.FuncionesGenerales;
+using System.Threading.Tasks;
 
 namespace HC_Odontologicas.Controllers
 {
@@ -40,7 +40,7 @@ namespace HC_Odontologicas.Controllers
 				if (Convert.ToBoolean(permisos[0]))
 				{
 					ViewData["NombreSortParam"] = string.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
-					ViewData["FacultadSortParam"] = sortOrder == "fac_asc" ? "fac_desc" : "fac_asc";					
+					ViewData["FacultadSortParam"] = sortOrder == "fac_asc" ? "fac_desc" : "fac_asc";
 
 					//permite mantener la busqueda introducida en el filtro de busqueda
 
@@ -66,7 +66,7 @@ namespace HC_Odontologicas.Controllers
 							break;
 						case "fac_desc":
 							carrera = carrera.OrderByDescending(s => s.Facultad.Nombre);
-							break;																
+							break;
 						default:
 							carrera = carrera.OrderBy(s => s.Nombre);
 							break;

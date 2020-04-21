@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace HC_Odontologicas.Models
+﻿namespace HC_Odontologicas.Models
 {
-    public partial class OdontogramaDetalle
-    {
+	public partial class OdontogramaDetalle
+	{
 		public string Codigo { get; set; }
 		public string CodigoOdontograma { get; set; }
 		public int Pieza { get; set; }
@@ -16,6 +13,6 @@ namespace HC_Odontologicas.Models
 		public virtual Odontograma Odontograma { get; set; }
 		public virtual EnfermedadOdontograma EnfermedadOdontograma { get; set; }
 		public virtual RegionPiezaDental RegionPiezaDental { get; set; }
-		
-    }
+
+	}
 }

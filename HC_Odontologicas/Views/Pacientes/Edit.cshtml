@@ -33,28 +33,34 @@
 					<div class="col-lg-6 col-sm-6 col-xs-12">
 						<div class="form-group">
 							<label asp-for="CodigoTipoIdentificacion" class="control-label">Tipo de identificación *</label>
-							<select asp-for="CodigoTipoIdentificacion" class="form-control" asp-items="ViewBag.CodigoTipoIdentificacion" required></select>
+							<select asp-for="CodigoTipoIdentificacion" class="form-control" asp-items="ViewBag.CodigoTipoIdentificacion" required onchange="validarLaIdentificacion(this.value);"></select>
 							<span asp-validation-for="CodigoTipoIdentificacion" class="text-danger"></span>
 						</div>
 					</div>
 					<div class="col-lg-6 col-sm-6 col-xs-12">
 						<div class="form-group">
-							<label asp-for="Identificacion" class="control-label">Identificación *</label>
-							<input asp-for="Identificacion" class="form-control" required maxlength="13" />
+							<label asp-for="Identificacion" class="control-label"></label>
+							<input asp-for="Identificacion" class="form-control" required maxlength="13" id="Identificacion" />
 							<span asp-validation-for="Identificacion" class="text-danger"></span>
+							<span class="text-danger" id="IdentificacionSpan"></span>
+
 						</div>
 					</div>
 					<div class="col-lg-6 col-sm-6 col-xs-12" id="data_1">
 						<label class="font-normal">Fecha nacimiento *</label>
 						<div class="input-group date">
 							<span class="input-group-addon"></span>
-							<input type="text" class="form-control" required asp-for="FechaNacimiento">
+							<input type="text" class="form-control" id="FechaNacimiento" required asp-for="FechaNacimiento" onchange="validarFecha();">
+						</div>
+						<div>
+							<span asp-validation-for="FechaNacimiento" class="text-danger" id="FechaNacimientoS"></span>
 						</div>
 					</div>
 					<div class="col-lg-6 col-sm-6 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Genero" class="control-label">Genero *</label>
 							<select asp-for="Genero" class="form-control">
+								<option value="0">Seleccione...</option>
 								<option value="M">Masculino</option>
 								<option value="F">Femenino</option>
 							</select>
@@ -65,6 +71,7 @@
 						<div class="form-group">
 							<label asp-for="EstadoCivil" class="control-label">Estado Civil*</label>
 							<select asp-for="EstadoCivil" class="form-control">
+								<option value="0">Seleccione...</option>
 								<option value="Soltero">Soltero</option>
 								<option value="Casado">Casado</option>
 								<option value="Divorciado">Divorciado</option>
@@ -96,14 +103,14 @@
 					<div class="col-lg-6 col-sm-6 col-xs-12">
 						<div class="form-group">
 							<label asp-for="MailPersonal" class="control-label">Correo Electrónico Personal</label>
-							<input asp-for="MailPersonal" class="form-control" maxlength="64" />
+							<input asp-for="MailPersonal" class="form-control" email maxlength="64" />
 							<span asp-validation-for="MailPersonal" class="text-danger"></span>
 						</div>
 					</div>
 					<div class="col-lg-6 col-sm-6 col-xs-12">
 						<div class="form-group">
 							<label asp-for="MailEpn" class="control-label">Correo Electrónico EPN*</label>
-							<input asp-for="MailEpn" class="form-control" required maxlength="64" />
+							<input asp-for="MailEpn" class="form-control" required maxlength="64" email />
 							<span asp-validation-for="MailEpn" class="text-danger"></span>
 						</div>
 					</div>
@@ -124,7 +131,7 @@
 						<div class="form-group">
 							<label asp-for="TipoPaciente" class="control-label">Tipo paciente*</label>
 							<select asp-for="TipoPaciente" id="tipoPaciente" class="form-control" onchange="mostrarCamposSegunSeleccionado(this);">
-								<option value="0">Ninguno</option>
+								<option value="0">Seleccione...</option>
 								<option value="E">Estudiante</option>
 								<option value="EB">Estudiante Becas</option>
 								<option value="EC">Estudiante Conadis</option>
@@ -143,7 +150,7 @@
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="NumeroUnico" class="control-label">Numero único*</label>
-							<input asp-for="NumeroUnico" class="form-control" required maxlength="16" />
+							<input asp-for="NumeroUnico" class="form-control" maxlength="9" required onkeypress=" return soloNumerosEnteros(event);" />
 							<span asp-validation-for="NumeroUnico" class="text-danger"></span>
 						</div>
 					</div>
@@ -177,7 +184,7 @@
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label asp-for="Cargo" class="control-label">Cargo *</label>
-							<input asp-for="Cargo" class="form-control" maxlength="64" />
+							<input asp-for="Cargo" class="form-control" maxlength="64" required />
 							<span asp-validation-for="Cargo" class="text-danger"></span>
 						</div>
 					</div>
@@ -214,20 +221,32 @@
 		</form>
 	</div>
 </div>
+
+
+
 <script type="text/javascript">
 	$(document).ready(function () {
 		$('.i-checks').iCheck({
 			checkboxClass: 'icheckbox_square-blue',
 			radioClass: 'iradio_square-blue',
 		});
+
+		$('#data_1 .input-group.date').datepicker({
+			language: 'es',
+			locale: "es",
+			todayBtn: "linked",
+			keyboardNavigation: false,
+			forceParse: false,
+			autoclose: true,
+			closeText: 'Cerrar',
+			maxDateNow: true,
+		});
+
 	});
 </script>
 
-<script type="text/javascript">
-	window.onload = function () {
-		//var codigoTipoPaciente = $("#TipoPaciente")[0].value
-		mostrarCamposSegunSeleccionado($("#TipoPaciente")[0]);
-	}
+<script>
+	window.onload = mostrarCamposSegunSeleccionado();
 </script>
 
 
@@ -245,6 +264,6 @@
 	</script>
 }
 
-@*@section Scripts {
+@section Scripts {
 		@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-	}*@
+	}

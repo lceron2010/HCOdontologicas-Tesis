@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using HC_Odontologicas.FuncionesGenerales;
+using HC_Odontologicas.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using HC_Odontologicas.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
-using HC_Odontologicas.FuncionesGenerales;
+using System.Threading.Tasks;
 
 namespace HC_Odontologicas.Controllers
 {
@@ -99,7 +99,7 @@ namespace HC_Odontologicas.Controllers
 
 					List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList();
 					Cargo.Insert(0, vacio);
-					ViewData["CodigoCargo"] = Cargo;									
+					ViewData["CodigoCargo"] = Cargo;
 
 					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(ti => ti.Nombre), "Codigo", "Nombre").ToList();
 					TipoIdentificacion.Insert(0, vacio);
@@ -126,7 +126,14 @@ namespace HC_Odontologicas.Controllers
 			if (i.IsAuthenticated)
 			{
 				try
-				{
+				{					
+
+					if (personal.CodigoTipoIdentificacion == "0001")
+					{
+						var mensajeR = validaciones.VerifyCedula(personal.Identificacion);
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("Identificacion", mensajeR);
+					}
 
 					if (ModelState.IsValid)
 					{
@@ -144,7 +151,7 @@ namespace HC_Odontologicas.Controllers
 					List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList();
 					Cargo.Insert(0, vacio);
 					ViewData["CodigoCargo"] = Cargo;
-										
+
 
 					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(ti => ti.Nombre), "Codigo", "Nombre").ToList();
 					TipoIdentificacion.Insert(0, vacio);
@@ -161,7 +168,7 @@ namespace HC_Odontologicas.Controllers
 					List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList();
 					Cargo.Insert(0, vacio);
 					ViewData["CodigoCargo"] = Cargo;
-										
+
 
 					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(ti => ti.Nombre), "Codigo", "Nombre").ToList();
 					TipoIdentificacion.Insert(0, vacio);
@@ -197,7 +204,7 @@ namespace HC_Odontologicas.Controllers
 					List<SelectListItem> Cargo = new SelectList(_context.Cargo.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList();
 					Cargo.Insert(0, vacio);
 					ViewData["CodigoCargo"] = Cargo;
-										
+
 
 					List<SelectListItem> TipoIdentificacion = new SelectList(_context.TipoIdentificacion.OrderBy(ti => ti.Nombre), "Codigo", "Nombre").ToList();
 					TipoIdentificacion.Insert(0, vacio);
@@ -241,8 +248,8 @@ namespace HC_Odontologicas.Controllers
 
 							Cargo.Insert(0, vacio);
 							ViewData["CodigoCargo"] = Cargo;
-														
-							
+
+
 							TipoIdentificacion.Insert(0, vacio);
 							ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 							return View(personal);
@@ -255,7 +262,7 @@ namespace HC_Odontologicas.Controllers
 
 					Cargo.Insert(0, vacio);
 					ViewData["CodigoCargo"] = Cargo;
-										
+
 
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
@@ -273,7 +280,7 @@ namespace HC_Odontologicas.Controllers
 					Cargo.Insert(0, vacio);
 					ViewData["CodigoCargo"] = Cargo;
 
-				
+
 					TipoIdentificacion.Insert(0, vacio);
 					ViewData["CodigoTipoIdentificacion"] = TipoIdentificacion;
 
@@ -286,10 +293,10 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 
-		
+
 		// POST: Personals/Delete/5
 		[HttpPost]
-	
+
 		public async Task<String> DeleteConfirmed(string codigo)
 		{
 			try
@@ -320,11 +327,11 @@ namespace HC_Odontologicas.Controllers
 			var codigoPersonal = "";
 			List<SelectListItem> list = new List<SelectListItem>();
 			var Doctores = await _context.Personal.OrderBy(f => f.NombreCompleto).Where(p => p.Estado == true && p.Cargo.Nombre == "Doctor").ToListAsync();
-			
+
 			if (perfil.Contains("Doctor"))
 			{
 				codigoPersonal = i.Claims.Where(c => c.Type == "CodigoPersonal").Select(c => c.Value).SingleOrDefault();
-				var personalN = _context.Personal.Where(p => p.Estado == true && p.Codigo== codigoPersonal).SingleOrDefault().NombreCompleto;
+				var personalN = _context.Personal.Where(p => p.Estado == true && p.Codigo == codigoPersonal).SingleOrDefault().NombreCompleto;
 				list.Insert(0, new SelectListItem(personalN, codigoPersonal, true));
 				foreach (Personal item in Doctores.ToList())
 				{

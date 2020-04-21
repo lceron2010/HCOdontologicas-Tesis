@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using HC_Odontologicas.FuncionesGenerales;
 using HC_Odontologicas.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
 using System.Security.Claims;
-using HC_Odontologicas.FuncionesGenerales;
+using System.Threading.Tasks;
 
 namespace HC_Odontologicas.Controllers
 {
@@ -64,7 +62,7 @@ namespace HC_Odontologicas.Controllers
 					}
 					int pageSize = 10;
 					return View(await Paginacion<Cie10>.CreateAsync(cie10, page ?? 1, pageSize));
-					
+
 				}
 				else
 				{
@@ -123,7 +121,7 @@ namespace HC_Odontologicas.Controllers
 						return View(cie10);
 					}
 					return View(cie10);
-					
+
 				}
 				catch (Exception e)
 				{
@@ -141,7 +139,7 @@ namespace HC_Odontologicas.Controllers
 				return Redirect("../Identity/Account/Login");
 			}
 
-		}   
+		}
 		// GET: Cie10/Edit/5
 		public async Task<IActionResult> Edit(String codigo)
 		{
@@ -173,10 +171,10 @@ namespace HC_Odontologicas.Controllers
 		// POST: Cie10/Edit/5
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-		[HttpPost]		
+		[HttpPost]
 		public async Task<IActionResult> Edit(Cie10 cie10)
 		{
-			var i = (ClaimsIdentity)User.Identity;	
+			var i = (ClaimsIdentity)User.Identity;
 			if (i.IsAuthenticated)
 			{
 				try
@@ -186,11 +184,11 @@ namespace HC_Odontologicas.Controllers
 					{
 						try
 						{
-							cie10.Codigo = Encriptacion.Decrypt(cie10.Codigo);							
+							cie10.Codigo = Encriptacion.Decrypt(cie10.Codigo);
 							_context.Update(cie10);
 							await _context.SaveChangesAsync();
 							await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "CIE10", cie10.Codigo, "U");
-							ViewBag.Message = "Save";					
+							ViewBag.Message = "Save";
 
 							return View(cie10);
 						}
@@ -198,7 +196,7 @@ namespace HC_Odontologicas.Controllers
 						{
 							throw;
 						}
-					}					
+					}
 
 					return View(cie10);
 				}
@@ -208,7 +206,7 @@ namespace HC_Odontologicas.Controllers
 					if (e.InnerException != null)
 						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
 
-					ViewBag.Message = mensaje;				
+					ViewBag.Message = mensaje;
 
 					return View(cie10);
 				}
@@ -219,7 +217,7 @@ namespace HC_Odontologicas.Controllers
 			}
 		}
 		// POST: Cie10/Delete/5
-		[HttpPost]		
+		[HttpPost]
 		public async Task<String> DeleteConfirmed(string codigo)
 		{
 			try
@@ -241,6 +239,6 @@ namespace HC_Odontologicas.Controllers
 			}
 
 		}
-		
+
 	}
 }

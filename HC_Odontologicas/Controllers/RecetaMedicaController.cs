@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using HC_Odontologicas.FuncionesGenerales;
+using HC_Odontologicas.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using HC_Odontologicas.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
-using HC_Odontologicas.FuncionesGenerales;
+using System.Threading.Tasks;
 
 namespace HC_Odontologicas.Controllers
 {

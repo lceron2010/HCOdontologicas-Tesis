@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" description="" value="HCOdontologicas20200413182232" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\Users\\Dario\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC_Odontologicas\\obj\\Release\\netcoreapp3\.1\\PubTmp\\Out\\$" />
+  </parameter>
+  <parameter name="HC_Odontologicas.Models.HCOdontologicasContext" description="" value="Data Source=tcp:hcodontologicas20200413181201dbserver.database.windows.net,1433;Initial Catalog=HCOdontologicas20200413182232_db;User Id=adminiuser@hcodontologicas20200413181201dbserver;Password=Laura27**" tags="dbfullsql">
+    <parameterEntry kind="ProviderPath" scope="dbfullsql" match="^C:\\Users\\Dario\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC_Odontologicas\\obj\\Release\\netcoreapp3\.1\\PubTmp\\EFSQLScripts\\HC_Odontologicas\.Models\.HCOdontologicasContext\.sql$" />
+  </parameter>
+</parameters>

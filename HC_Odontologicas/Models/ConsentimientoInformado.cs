@@ -1,18 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HC_Odontologicas.Models
 {
-    public partial class ConsentimientoInformado
-    {
-		
+	public partial class ConsentimientoInformado
+	{
+
 
 		public string Codigo { get; set; }
-        public string CodigoCitaOdontologica { get; set; }        
-        public string Descripcion { get; set; }
-        public string Firma { get; set; }
-        public DateTime Fecha { get; set; }        		
+		public string CodigoCitaOdontologica { get; set; }
+		public string Descripcion { get; set; }
+		public string Firma { get; set; }
+		public DateTime Fecha { get; set; }
+		public bool Acuerdo { get; set; }
+
 
 		[NotMapped]
 		public string CodigoPaciente { get; set; }
@@ -21,6 +22,6 @@ namespace HC_Odontologicas.Models
 
 
 		public virtual CitaOdontologica CitaOdontologica { get; set; }
-		
+
 	}
 }

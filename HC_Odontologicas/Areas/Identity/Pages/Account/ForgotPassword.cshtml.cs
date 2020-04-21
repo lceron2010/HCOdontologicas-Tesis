@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HC_Odontologicas.FuncionesGenerales;
+using HC_Odontologicas.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
-using HC_Odontologicas.Models;
-using HC_Odontologicas.FuncionesGenerales;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HC_Odontologicas.Areas.Identity.Pages.Account
 {
@@ -21,7 +16,7 @@ namespace HC_Odontologicas.Areas.Identity.Pages.Account
     {
         private readonly UserManager<UsuarioLogin> _userManager;
         private readonly IEmailSender _emailSender;
-        private readonly HCOdontologicasContext _context;
+        private readonly HCOdontologicasContext _context;        
 
         public ForgotPasswordModel(UserManager<UsuarioLogin> userManager, IEmailSender emailSender, HCOdontologicasContext context)
         {
@@ -49,7 +44,7 @@ namespace HC_Odontologicas.Areas.Identity.Pages.Account
                 if (user != null)
                 {
                     var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                   
+
                     PlantillaCorreoElectronico correo = new PlantillaCorreoElectronico();
                     correo = _context.PlantillaCorreoElectronico.SingleOrDefault(p => p.Asunto.Contains("Recuperar Contrasenia"));
                     string cuerpo = FuncionesEmail.RecuperarContrasenia(correo.Cuerpo, user.Email, user.UserName, user.Password);
