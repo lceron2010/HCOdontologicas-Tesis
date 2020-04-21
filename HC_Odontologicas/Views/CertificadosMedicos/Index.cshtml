@@ -42,7 +42,7 @@
                     @Html.DisplayFor(modelItem => item.FechaInicio)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Ver Certificado Médico"><i class="fa fa-search"></i> Ver Certificado</a>
+                    <a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Ver Certificado Médico"><i class="fa fa-search"></i> Crear Certificado</a>
 
                 </td>
             </tr>
@@ -73,16 +73,3 @@
 <div class="pull-right">
     Registros: @Model.TotalR
 </div>
-
-<script>
-    $('#data_1 .input-group.date').datepicker({
-			language: 'es',
-			locale: "es",
-			todayBtn: "linked",
-			keyboardNavigation: false,
-			forceParse: false,
-			autoclose: true,
-			closeText: 'Cerrar',
-			maxDateNow: true,
-		});
-</script>

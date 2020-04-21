@@ -31,9 +31,9 @@ namespace HC_Odontologicas.Models
 		public string Procedimiento { get; set; }
 		public bool CitasSubsecuentes { get; set; }
 		public bool Reposo { get; set; }
-		public DateTime FechaInicioReposo { get; set; }
-		public DateTime FechaFinReposo { get; set; }
-		public DateTime FechaReincorporarse { get; set; }
+		public DateTime? FechaInicioReposo { get; set; }
+		public DateTime? FechaFinReposo { get; set; }
+		public DateTime? FechaReincorporarse { get; set; }
 
 
 		public string CIE10Nombre { get; set; }
@@ -46,7 +46,11 @@ namespace HC_Odontologicas.Models
 		public string CuerpoCertificado { get; set; }
 		public string Observacion { get; set; }
 		public string Recomendacion { get; set; }
+
+		public int NumdiasReposo { get; set; }
+
 	}
+
 
 	[NotMapped]
 	public partial class CertificadoMedicoPdf

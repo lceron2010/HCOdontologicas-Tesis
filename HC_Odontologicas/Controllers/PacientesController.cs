@@ -185,6 +185,13 @@ namespace HC_Odontologicas.Controllers
 						paciente.Codigo = maxCodigo.ToString("D8");
 						paciente.Nombres = paciente.Nombres.ToUpper();
 						paciente.Apellidos = paciente.Apellidos.ToUpper();
+						if (paciente.CodigoFacultad == "0")
+						{
+							paciente.CodigoFacultad = null;
+
+						}
+
+
 						_context.Add(paciente);
 						await _context.SaveChangesAsync();
 						await _auditoria.GuardarLogAuditoria(Funciones.ObtenerFechaActual("SA Pacific Standard Time"), i.Name, "Paciente", paciente.Codigo, "I");

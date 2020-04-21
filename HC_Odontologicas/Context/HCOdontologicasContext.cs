@@ -676,8 +676,7 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(64)
 					.IsUnicode(false);
 
-				entity.Property(e => e.NumeroUnico)
-					.IsRequired()
+				entity.Property(e => e.NumeroUnico)					
 					.HasMaxLength(8)
 					.IsUnicode(false);
 

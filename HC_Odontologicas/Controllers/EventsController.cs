@@ -80,9 +80,9 @@ namespace HC_Odontologicas.Controllers
 
 			//envio del email
 
-				var correoMensaje = FuncionesEmail.EnviarEmail(_emailSender,paciente.MailEpn, correo.Asunto, 
-					FuncionesEmail.AsuntoCitaOdontologica(correo.Cuerpo, 
-					paciente.NombreCompleto, fechaLarga, hora, doctor.NombreCompleto));
+				//var correoMensaje = FuncionesEmail.EnviarEmail(_emailSender,paciente.MailEpn + ','+ paciente.MailPersonal, correo.Asunto, 
+				//	FuncionesEmail.AsuntoCitaOdontologica(correo.Cuerpo, 
+				//	paciente.NombreCompleto, fechaLarga, hora, doctor.NombreCompleto));
 
 
 			return Ok(new
@@ -128,14 +128,19 @@ namespace HC_Odontologicas.Controllers
 			var e = _context.CitaOdontologica.Find(id);
 			if (e != null)
 			{
-				_context.CitaOdontologica.Remove(e);
-				_context.SaveChanges();
+				try
+				{
+					_context.CitaOdontologica.Remove(e);
+					_context.SaveChanges();
+				}
+				catch
+				{
+					return new ObjectResult("No se puede eliminar una cita ya registrada");
+				}
 			}
 
-			return Ok(new
-			{
-				action = "deleted"
-			});
+			return Ok(new {action = "deleted" });
+
 		}
 	}
 }

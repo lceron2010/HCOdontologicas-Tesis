@@ -3,6 +3,7 @@ using HC_Odontologicas.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using Rotativa.AspNetCore;
 using System;
 using System.Collections.Generic;
@@ -147,9 +148,9 @@ namespace HC_Odontologicas.Controllers
 					cmi.Procedimiento = "";
 					cmi.Pieza = diag.Pieza;
 					cmi.Reposo = false;
-					cmi.FechaInicioReposo = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
-					cmi.FechaFinReposo = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
-					cmi.FechaReincorporarse = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+					//cmi.FechaInicioReposo = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+				//	cmi.FechaFinReposo = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+					//cmi.FechaReincorporarse = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 					cmi.Fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 					cmi.NombreMedico = cita.Personal.NombreCompleto;
 
@@ -186,16 +187,30 @@ namespace HC_Odontologicas.Controllers
 								sub = "SI";
 							}
 							var rep = "NO";
+							DateTime fechaInicioReposo = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+							DateTime fechaFinReposo = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+							DateTime fechaReincorporarse = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
+							//var Fechareincorporarse =
 							if (cmi.Reposo)
 							{
 								rep = "SI";
+								if (cmi.NumdiasReposo > 0)
+								{
+									fechaFinReposo = Funciones.ObtenerFechaActual("SA Pacific Standard Time").AddDays(cmi.NumdiasReposo - 1);
+									
+								}
+								fechaReincorporarse = fechaFinReposo.AddDays(1);
+
 							}
 							else
 							{
-
 								var index = contenido.IndexOf("[@ReposoInicio]");
 								contenido = contenido.Substring(0, index - 6);
 							}
+
+							string fir = fechaInicioReposo.ToString("dd/MM/yyyy");
+							string ffr = fechaFinReposo.ToString("dd/MM/yyyy");
+							string fr = fechaReincorporarse.ToString("dd/MM/yyyy");
 
 							var final = contenido.Replace("[@FechaCita]", cmi.FechaCita.ToString("dd/MM/yyyy"))
 								.Replace("[@Paciente]", cmi.NombrePaciente)
@@ -207,11 +222,11 @@ namespace HC_Odontologicas.Controllers
 								.Replace("[@Procedimiento]", cmi.Procedimiento)
 								.Replace("[@CitasSubsecuentes]", sub)
 								.Replace("[@Reposo]", rep)
-								.Replace("[@ReposoInicio]", cmi.FechaInicioReposo.ToString("dd/MM/yyyy"))
-								.Replace("[@ReposoFin]", cmi.FechaFinReposo.ToString("dd/MM/yyyy"))
-								.Replace("[@ReposoReincorpararse]", cmi.FechaReincorporarse.ToString("dd/MM/yyyy"));
+								.Replace("[@ReposoInicio]", fir)
+								.Replace("[@ReposoFin]", ffr)
+								.Replace("[@ReposoReincorpararse]", fr);
 
-
+							//.ToString("dd/MM/yyyy"))
 							//guardar el contenido
 
 							PlantillaCertificadoMedico plantillaCertificadoMedico = new PlantillaCertificadoMedico();
