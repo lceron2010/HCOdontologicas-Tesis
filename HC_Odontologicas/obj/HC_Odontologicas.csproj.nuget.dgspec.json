@@ -82,6 +82,10 @@
               "target": "Package",
               "version": "[1.2.0-beta, )"
             },
+            "SendGrid": {
+              "target": "Package",
+              "version": "[9.14.0, )"
+            },
             "SweetAlert": {
               "target": "Package",
               "version": "[1.0.0, )"

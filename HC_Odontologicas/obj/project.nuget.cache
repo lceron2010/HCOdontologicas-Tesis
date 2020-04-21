@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "usZnMSDwzeO553rSh/JM7EhhdvFQVhwc4gHMPmxAc7xpkSIjZ6gED/Lu+Rncn0FS9YELuTgDo74eOF0b7dSPMQ==",
+  "dgSpecHash": "H6orgaidtpJ+3H+uhtgVWJBJ1JYUfi5KAW1RCf9BS057EHBd/LdvVWQ93mxO53+UOlqXFNErDA6YCfZIou0sFg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Dario\\Documents\\GitHub\\HCOdontologicas-Tesis\\HC_Odontologicas\\HC_Odontologicas.csproj",
   "expectedPackageFiles": [
@@ -138,6 +138,7 @@
     "C:\\Users\\Dario\\.nuget\\packages\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "C:\\Users\\Dario\\.nuget\\packages\\runtime.win-x64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "C:\\Users\\Dario\\.nuget\\packages\\runtime.win-x86.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x86.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
+    "C:\\Users\\Dario\\.nuget\\packages\\sendgrid\\9.14.0\\sendgrid.9.14.0.nupkg.sha512",
     "C:\\Users\\Dario\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.0.2\\sqlitepclraw.bundle_e_sqlite3.2.0.2.nupkg.sha512",
     "C:\\Users\\Dario\\.nuget\\packages\\sqlitepclraw.core\\2.0.2\\sqlitepclraw.core.2.0.2.nupkg.sha512",
     "C:\\Users\\Dario\\.nuget\\packages\\sqlitepclraw.lib.e_sqlite3\\2.0.2\\sqlitepclraw.lib.e_sqlite3.2.0.2.nupkg.sha512",

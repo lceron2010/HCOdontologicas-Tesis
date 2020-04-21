@@ -58,8 +58,8 @@ namespace HC_Odontologicas.Controllers
 			newEvent.CodigoPersonal = apiEvent.doctor;
 			newEvent.FechaCreacion = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 			newEvent.Observaciones = apiEvent.observaciones;
-			newEvent.FechaInicio = Convert.ToDateTime(apiEvent.start_date);
-			newEvent.FechaFin = Convert.ToDateTime(apiEvent.end_date);
+			newEvent.FechaInicio = Funciones.ObtenerFecha(Convert.ToDateTime(apiEvent.start_date), "SA Pacific Standard Time");
+			newEvent.FechaFin = Funciones.ObtenerFecha(Convert.ToDateTime(apiEvent.start_date), "SA Pacific Standard Time");//Convert.ToDateTime(apiEvent.end_date);
 			newEvent.HoraInicio = new TimeSpan(newEvent.FechaInicio.Hour, newEvent.FechaInicio.Minute, newEvent.FechaInicio.Second);
 			newEvent.HoraFin = new TimeSpan(newEvent.FechaFin.Hour, newEvent.FechaFin.Minute, newEvent.FechaFin.Second);
 			newEvent.Estado = "C";
@@ -74,15 +74,15 @@ namespace HC_Odontologicas.Controllers
 			correo = _context.PlantillaCorreoElectronico.SingleOrDefault(p => p.Asunto.Contains("Cita"));
 			var paciente = _context.Paciente.Where(p => p.Codigo == apiEvent.paciente).FirstOrDefault();
 			var doctor = _context.Personal.Where(d => d.Codigo == apiEvent.doctor).FirstOrDefault();
-			var soloFecha = Convert.ToDateTime(newEvent.FechaInicio.ToString("dd/MM/yyyy"));
-			var fechaLarga = soloFecha.ToLongDateString();
+			var soloFecha = (newEvent.FechaInicio.ToString("dd/MM/yyyy"));///Convert.ToDateTime(newEvent.FechaInicio.ToString("dd/MM/yyyy"));
+			//var fechaLarga = soloFecha.ToLongDateString();
 			var hora = newEvent.FechaInicio.ToString("HH:mm"); // newEvent.FechaInicio.TimeOfDay.ToString();//newEvent.FechaInicio.Hour.ToString() + ":" + newEvent.FechaInicio.Minute.ToString();//newEvent.FechaInicio.ToString("hh:mm");
 
 			//envio del email
 
-				//var correoMensaje = FuncionesEmail.EnviarEmail(_emailSender,paciente.MailEpn + ','+ paciente.MailPersonal, correo.Asunto, 
-				//	FuncionesEmail.AsuntoCitaOdontologica(correo.Cuerpo, 
-				//	paciente.NombreCompleto, fechaLarga, hora, doctor.NombreCompleto));
+			var correoMensaje = FuncionesEmail.EnviarEmail(_emailSender, paciente.MailEpn + ',' + paciente.MailPersonal, correo.Asunto,
+				FuncionesEmail.AsuntoCitaOdontologica(correo.Cuerpo,
+				paciente.NombreCompleto, soloFecha, hora, doctor.NombreCompleto));
 
 
 			return Ok(new

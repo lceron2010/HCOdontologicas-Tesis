@@ -152,9 +152,6 @@ C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\bin\Debug
 C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Runtime.Caching.dll
 C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\HC_Odontologicas.csprojAssemblyReference.cache
-C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\HC_Odontologicas.csproj.CoreCompileInputs.cache
-C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\HC_Odontologicas.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\HC_Odontologicas.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\HC_Odontologicas.RazorAssemblyInfo.cache
 C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\HC_Odontologicas.RazorAssemblyInfo.cs
 C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\HC_Odontologicas.AssemblyInfoInputs.cache
@@ -259,3 +256,7 @@ C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug
 C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\HC_Odontologicas.dll
 C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\HC_Odontologicas.pdb
 C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\HC_Odontologicas.genruntimeconfig.cache
+C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\bin\Debug\netcoreapp3.1\SendGrid.dll
+C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\HC_Odontologicas.csproj.CoreCompileInputs.cache
+C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\HC_Odontologicas.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\HC_Odontologicas.MvcApplicationPartsAssemblyInfo.cache

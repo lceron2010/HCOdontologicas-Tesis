@@ -16,7 +16,7 @@ namespace HC_Odontologicas.Areas.Identity.Pages.Account
     {
         private readonly UserManager<UsuarioLogin> _userManager;
         private readonly IEmailSender _emailSender;
-        private readonly HCOdontologicasContext _context;
+        private readonly HCOdontologicasContext _context;        
 
         public ForgotPasswordModel(UserManager<UsuarioLogin> userManager, IEmailSender emailSender, HCOdontologicasContext context)
         {

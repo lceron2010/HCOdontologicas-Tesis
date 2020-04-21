@@ -259,3 +259,4 @@ C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Relea
 C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Release\netcoreapp3.1\HC_Odontologicas.dll
 C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Release\netcoreapp3.1\HC_Odontologicas.pdb
 C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Release\netcoreapp3.1\HC_Odontologicas.genruntimeconfig.cache
+C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\bin\Release\netcoreapp3.1\SendGrid.dll
