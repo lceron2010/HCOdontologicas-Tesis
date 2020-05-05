@@ -260,3 +260,10 @@ C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\bin\Debug
 C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\HC_Odontologicas.csproj.CoreCompileInputs.cache
 C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\HC_Odontologicas.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\HC_Odontologicas.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\Razor\Views\PacienteBecaVulnerabilidades\Create.cshtml.g.cs
+C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\Razor\Views\PacienteBecaVulnerabilidades\Delete.cshtml.g.cs
+C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\Razor\Views\PacienteBecaVulnerabilidades\Details.cshtml.g.cs
+C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\Razor\Views\PacienteBecaVulnerabilidades\Edit.cshtml.g.cs
+C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\Razor\Views\PacienteBecaVulnerabilidades\Index.cshtml.g.cs
+C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\Razor\Views\CitasOdontologicas\ImprimirRecetaMedica.cshtml.g.cs
+C:\Users\Dario\Documents\GitHub\HCOdontologicas-Tesis\HC_Odontologicas\obj\Debug\netcoreapp3.1\Razor\Views\RecetaMedica\ImprimirRecetaMedica.cshtml.g.cs

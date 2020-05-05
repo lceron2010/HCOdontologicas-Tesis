@@ -13,7 +13,6 @@ namespace HC_Odontologicas.FuncionesGenerales
 			{
 				//enviar mail
 				await emailSender.SendEmailAsync(emailDestino, asunto, mensaje);
-
 				return "Save";
 			}
 			catch (Exception e)
@@ -29,14 +28,13 @@ namespace HC_Odontologicas.FuncionesGenerales
 			return mensaje;
 		}
 
-
-
 		public static String CambiarContrasenia(String mensaje, String nombreCompleto, String usuario, String contrasenia, String callbackUrl)
 		{
 			mensaje = mensaje.Replace("\r\n\r\n", "<br/><br/>").Replace("[#strong]", "<strong>").Replace("[#/strong]", "</strong>");
 			mensaje = mensaje.Replace("[@NombreCompleto]", nombreCompleto).Replace("[@NombreUsuario]", usuario).Replace("[@Contrasenia]", contrasenia);
 			return mensaje;
 		}
+		
 		public static String RecuperarContrasenia(String mensaje, String nombreCompleto, String usuario, String contrasenia)
 		{
 			mensaje = mensaje.Replace("\r\n\r\n", "<br/><br/>").Replace("[#strong]", "<strong>").Replace("[#/strong]", "</strong>");
@@ -70,6 +68,39 @@ namespace HC_Odontologicas.FuncionesGenerales
 			str.AppendLine("</html>");
 			return (str.ToString());
 		}
+
+		public static string RecuperarMensajeCampania1(string mensaje)
+		{
+			StringBuilder str = new StringBuilder();
+			str.AppendLine("<html>");
+			str.AppendLine("<head>");
+			str.AppendLine("<meta name='format-detection' content='telephone=no'>");
+			str.AppendLine("<title>Notificaciones Servicio Odontología</title>");
+			str.AppendLine("</head>");
+			str.AppendLine("<body>");
+			str.AppendLine("<table width='100%' border='0' cellspacing='0' cellpadding='0'>");
+			str.AppendLine("<tr>");
+			str.AppendLine("<td></td>");
+			str.AppendLine("<td width='80%' style='padding:10px; border:1px solid LightGrey; font-family: Tahoma, Arial; font-size: 0.8em; text-align:left;' >");
+			str.AppendLine("<br/>");
+			str.AppendLine(mensaje);
+			str.AppendLine("<br/>");
+			str.AppendLine("<img src='cid:logo'>");
+			str.AppendLine("<br/>");
+			str.AppendLine("<div>");
+			str.AppendLine("<p>Dr.Angel Vladimir Verdesoto Jácome</p>");
+			str.AppendLine("<p>Odontólogo de la EPN</p>");
+			str.AppendLine("<p>Correo electronico: angel.verdesoto@epn.edu.ec</p>");
+			str.AppendLine("<p>Celular: 0987463410</p>");
+			str.AppendLine("</div>");
+			str.AppendLine("</tr>");
+			str.AppendLine("</table>");
+			str.AppendLine("</body>");
+			str.AppendLine("</html>");
+			return (str.ToString());
+
+		}
+
 	}
 
 }

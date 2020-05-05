@@ -42,6 +42,7 @@ namespace HC_Odontologicas.Models
 		public virtual DbSet<RegionPiezaDental> RegionPiezaDental { get; set; }
 		public virtual DbSet<Usuario> Usuario { get; set; }
 		public virtual DbSet<TipoIdentificacion> TipoIdentificacion { get; set; }
+		public virtual DbSet<PacienteBecaVulnerabilidad> PacienteBecaVulnerabilidad { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
@@ -965,6 +966,7 @@ namespace HC_Odontologicas.Models
 					.HasConstraintName("FK_RecetaMedica_PlantillaRecetaMedica");
 
 			});
+			
 			modelBuilder.Entity<RegionPiezaDental>(entity =>
 			{
 				entity.HasKey(e => e.Codigo);
@@ -984,6 +986,7 @@ namespace HC_Odontologicas.Models
 					.IsUnicode(false)
 					.IsFixedLength();
 			});
+			
 			modelBuilder.Entity<Usuario>(entity =>
 			{
 				entity.HasKey(e => e.Codigo);
@@ -1072,6 +1075,46 @@ namespace HC_Odontologicas.Models
 					.HasMaxLength(64)
 					.IsUnicode(false);
 			});
+
+			modelBuilder.Entity<PacienteBecaVulnerabilidad>(entity =>
+			{
+				entity.HasKey(e => e.Codigo);
+
+				entity.Property(e => e.NombreCompleto)
+					.IsRequired()
+					.HasMaxLength(128);				
+
+				entity.Property(e => e.Cedula)
+					.IsRequired()
+					.HasMaxLength(10);
+
+				entity.Property(e => e.TipoBeca)
+					.HasMaxLength(64)
+					.IsUnicode(false);
+
+				entity.Property(e => e.Carrera)
+					.HasMaxLength(128)
+					.IsUnicode(false);
+
+				entity.Property(e => e.Periodo)
+					.HasMaxLength(64)
+					.IsUnicode(false);
+
+				entity.Property(e => e.EmailPersonal)					
+					.HasMaxLength(64)
+					.IsUnicode(false);
+
+				entity.Property(e => e.EmailEPN)					
+					.HasMaxLength(64)
+					.IsUnicode(false);
+
+				entity.Property(e => e.Campania)
+					.HasMaxLength(128)
+					.IsUnicode(false);
+
+
+			});
+
 
 			// OnModelCreatingPartial(modelBuilder);
 		}

@@ -95,7 +95,7 @@ namespace HC_Odontologicas.Controllers
 
 		//MostrarCertificado
 		[HttpGet]
-		public IActionResult CertificadoReposo(string Codigo)
+		public IActionResult CertificadoMedico(string Codigo)
 		{
 			Codigo = Encriptacion.Decrypt(Codigo);
 			return new ViewAsPdf("CertificadoPDF", GetOne(Codigo));
@@ -243,7 +243,7 @@ namespace HC_Odontologicas.Controllers
 
 							string Codigo = Encriptacion.Encrypt(plantillaCertificadoMedico.Codigo);
 
-							return Redirect("../CertificadosMedicos/CertificadoReposo?Codigo=" + Codigo);
+							return Redirect("../CertificadosMedicos/CertificadoMedico?Codigo=" + Codigo);
 
 						}
 						catch (DbUpdateConcurrencyException)

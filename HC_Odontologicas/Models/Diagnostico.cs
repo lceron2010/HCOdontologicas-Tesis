@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -19,6 +20,7 @@ namespace HC_Odontologicas.Models
 		public string Recomendacion { get; set; }
 		public string Firma { get; set; }
 		public bool Acuerdo { get; set; }
+		
 
 		[NotMapped]
 		public string CodigoPaciente { get; set; }

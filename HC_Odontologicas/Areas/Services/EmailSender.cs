@@ -94,12 +94,24 @@ namespace HC_Odontologicas.Areas.Services
 
 		public Task SendEmailAsync(string email, string subject, string message)
 		{
-			return Execute(Options.SendGridKey, subject, message, email);
-		}
 
-		public Task Execute(string apiKey, string subject, string message, string email)
-		{
-			var apiKey3 = Environment.GetEnvironmentVariable("SendGridKey");
+			if (subject == "CITA ODONTOLÓGICA")
+			{
+				return Execute(subject, message, email);
+			}
+			else if (subject == "Recuperar Contrasenia")
+			{
+				return Execute(subject, message, email);
+			}
+			else
+			{
+				return ExecuteCampania(subject, message, email);
+			}
+
+			//return Execute(subject, message, email);
+		}
+		public Task Execute(string subject, string message, string email)
+		{			
 			var apiKey2 = "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";
 			var client = new SendGridClient(apiKey2);
 			Options.SendGridKey = "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";
@@ -111,17 +123,56 @@ namespace HC_Odontologicas.Areas.Services
 			{
 				tos.Add(new EmailAddress(em));
 			}
-
-			var msg = MailHelper.CreateSingleEmailToMultipleRecipients(from, tos, subject, message, message, false);
-
-			//msg.AddTo(new EmailAddress(email));
-
-			// Disable click tracking.
-			// See https://sendgrid.com/docs/User_Guide/Settings/tracking.html
+			var msg = MailHelper.CreateSingleEmailToMultipleRecipients(from, tos, subject, message, RecuperarMensaje(message), false);
+			msg.HtmlContent = message;
 			msg.SetClickTracking(false, false);
-
 			return client.SendEmailAsync(msg);
 		}
+
+
+		public async Task ExecuteCampania(string subject, string message, string email)
+		{
+			try
+			{
+
+				MailMessage mailMsg = new MailMessage();
+				// From
+				mailMsg.From = new MailAddress("serviciodeodontologiaepn@gmail.com", "Notificaciones - Servicio de Odontología EPN");
+
+				string[] emails = email.Split(',');
+				foreach (string em in emails)
+				{
+					if (!string.IsNullOrEmpty(em))
+					{
+						mailMsg.To.Add(new MailAddress(em));
+					}
+				}
+
+				mailMsg.Subject = subject;
+				string text = "";
+				string html = message;
+				AlternateView altView = AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html);
+				var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "imagen", "campania1.jpg");
+				LinkedResource res = new LinkedResource(path, MediaTypeNames.Image.Gif);
+				res.ContentId = "logo";
+				altView.LinkedResources.Add(res);
+				mailMsg.AlternateViews.Add(altView);
+				// Init SmtpClient and send
+				SmtpClient smtpClient = new SmtpClient("smtp.sendgrid.net", Convert.ToInt32(587));
+				System.Net.NetworkCredential credentials = new System.Net.NetworkCredential("azure_3a3f7f8298aa13076779d4c1dfe4c697@azure.com", "Laura27**");
+				smtpClient.Credentials = credentials;
+				smtpClient.Send(mailMsg);
+
+				//return new Task("Save"); //"Save";
+
+			}
+			catch (Exception ex)
+			{
+				ex.Message.ToString();
+				//return ex.Message
+			}
+		}
+
 
 		public static string RecuperarMensaje(string mensaje)
 		{
@@ -151,6 +202,8 @@ namespace HC_Odontologicas.Areas.Services
 			str.AppendLine("</html>");
 			return (str.ToString());
 		}
+
+		
 	}
 
 }

@@ -1,0 +1,157 @@
+﻿@model RecetaMedica
+
+@{
+	ViewData["Title"] = "ImprimirRecetaMedica";
+	Layout = null;
+}
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+
+	<style>
+		table, th, td {
+			border-collapse: collapse;
+			padding: 7px;
+		}
+
+		th {
+			text-align: center;
+		}
+
+		.verticalLine {
+			border-left: solid;
+			border-width: 1px;
+		}
+
+		.lineaInferior {
+			border-bottom: solid;
+			border-width: 1px;
+		}
+
+		table, th, td .bordeVertical {
+			border: 1px solid black;
+			border-collapse: collapse;
+		}
+	</style>
+
+</head>
+<body>
+	<table style="width: 100%; height: 100%;">
+		<tr>
+			<th style="width:50%">
+				<div style="align-content:center">
+					<div class="row">
+						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+							<img src="~/imagen/logoEPN.jpg" width="200px" height="100px" />
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+							<h5 style="text-align: center">CENTRO MEDICO DE DBP- ÁREA DE ODONTOLOGÍA</h5>
+							<h4 style="text-align: center">SERVICIO MÉDICO / ODONTOLÓGICO</h4>
+						</div>
+					</div>
+				</div>
+			</th>
+			<td rowspan="20" class="bordeVertical">
+			</td>
+			<th style="width:50%">
+				<div style="align-content:center">
+					<div class="row">
+						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+							<img src="~/imagen/logoEPN.jpg" width="200px" height="100px" />
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+							<h5 style="text-align: center">CENTRO MEDICO DE DBP- ÁREA DE ODONTOLOGÍA</h5>
+							<h4 style="text-align: center">SERVICIO MÉDICO / ODONTOLÓGICO</h4>
+						</div>
+					</div>
+				</div>
+			</th>
+		</tr>
+		<tr>
+			<td>
+			</td>
+			<td>
+				<br>
+			</td>
+		</tr>
+		<tr>
+			<td><h5>Paciente: @Model.CitaOdontologica.Paciente.NombreCompleto</h5></td>
+			<td align="center"> <h4>Indicaciones</h4></td>
+		</tr>
+		<tr>
+			<td>Quito, @Model.fechaString</td>
+			<td>@Model.Indicaciones</td>
+		</tr>
+		<tr>
+			<td>
+				<br>
+			</td>
+			<td>
+				<br>
+			</td>
+		</tr>
+		<tr>
+			<td><h5>RP.</h5></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>
+				<br>
+			</td>
+			<td>
+				<br>
+			</td>
+		</tr>
+		<tr>
+			<td>@Model.Descripcion</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><br></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><br></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><br></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><br></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><br></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><br></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><br></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><br></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><br></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><h5>Dr: @Model.CitaOdontologica.Personal.NombreCompleto</h5></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><h5>ODONTOLOGO</h5></td>
+			<td></td>
+		</tr>
+	</table>
+
+</body>
+</html>

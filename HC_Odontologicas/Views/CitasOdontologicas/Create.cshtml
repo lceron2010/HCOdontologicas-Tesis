@@ -70,6 +70,23 @@
 		//para la etiqueta del evento despues de guardar.
 		scheduler.attachEvent("onEventSave", function (id, ev, is_new) {
 
+			
+
+			//console.log(new Date(2020, 4, 1));
+			//console.log(new Date(2020, 4, 30));
+			var fechaHoy = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+			//var evs = scheduler.getEvents(new Date(ev.start_date.getFullYear(), ev.start_date.getMonth(), ev.start_date.getDate()),new Date(ev.start_date.getFullYear(), ev.start_date.getMonth(), ev.start_date.getDate())); 
+			//var evs = scheduler.getEvents(new Date("2020, 5, 4"), new Date("2020, 5, 5")); 
+			//console.log(new Date("2020, 5, 4"));
+
+			//console.log(evs);
+
+			console.log("otra manera");
+			var evs = scheduler.getEvents(ev.start_date, ev.end_date)
+			console.log(evs);
+
+
 			var estado = true;
 			if (ev.paciente != '') {
 				if (ev.paciente === '0') {
@@ -77,12 +94,35 @@
 					estado = false;
 				}
 				else {
-					ev.text = "P";
-					//console.log(ev.paciente);
-					var arr = ev.paciente.split(',');
-					for (var i = 0; i < arr.length; i++) {
-						ev.text += (ev.text.length) ? (": " + getLabelPaciente(arr[i])) : (getLabelPaciente(arr[i]));
+					console.log('tamaño', evs.length);
+					for (var i = 0; i < evs.length; i++) {
+						//alert(evs[i].text);
+						console.log('list pa',evs[i].paciente);
+						console.log('nue pa',ev.paciente);
+						console.log('list do',evs[i].doctor);
+						console.log('nuev do',ev.doctor);
+						console.log('list star', evs[i].start_date);
+						console.log('nuev star', ev.start_date);
+						console.log('list star', evs[i].end_date);
+						console.log('nuev star', ev.end_date);
+						//if ((evs[i].paciente === ev.paciente) && (evs[i].doctor === ev.doctor) && (evs[i].start_date === ev.start_date) && (evs[i].end_date === ev.end_date)) {
+						if (evs[i].paciente === ev.paciente && evs[i].doctor === ev.doctor) {
+							console.log("entro al if");
+							dhtmlx.alert("El paciente ya tiene registrada una cita odontológica");
+							estado = false;
+							return estado;
+						}
+						else {
+							ev.text = "P";							
+							var arr = ev.paciente.split(',');
+							for (var i = 0; i < arr.length; i++) {
+								ev.text += (ev.text.length) ? (": " + getLabelPaciente(arr[i])) : (getLabelPaciente(arr[i]));
+							}
+						}
 					}
+
+
+					
 				}
 
 			}

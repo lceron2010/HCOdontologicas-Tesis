@@ -455,7 +455,6 @@ namespace HC_Odontologicas.Controllers
 		//mostrar datos en el model.
 		public String CargarDatosTabla(IFormFile Documento)
 		{
-
 			try
 			{
 				DataTable table = new DataTable();
@@ -525,6 +524,7 @@ namespace HC_Odontologicas.Controllers
 					}
 
 					DeleteFile(Documento.FileName);
+
 				}
 
 				String tabla = JsonConvert.SerializeObject(table);

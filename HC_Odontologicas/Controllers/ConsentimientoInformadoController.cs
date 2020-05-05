@@ -269,6 +269,7 @@ namespace HC_Odontologicas.Controllers
 					if (consentimiento == null)
 						return NotFound();
 
+					ViewData["ImagenConsentimiento"] = consentimiento.Firma;
 
 					List<SelectListItem> Personal = new SelectList(_context.Personal.OrderBy(c => c.NombreCompleto).Where(c => c.Estado == true), "Codigo", "NombreCompleto", consentimiento.CitaOdontologica.Personal.Codigo).ToList();
 					Personal.Insert(0, vacio);

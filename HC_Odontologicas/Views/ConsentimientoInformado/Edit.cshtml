@@ -45,24 +45,19 @@
 						</div>
 					</div>
 				</div>
-				@*<div class="row">
-						<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-							<div class="form-group">
-								<label asp-for="Firma" class="control-label">Firma*</label>
-								<textarea asp-for="Firma" class="form-control" disabled></textarea>
-								<span asp-validation-for="Firma" class="text-danger"></span>
-							</div>
-						</div>
-					</div>*@
-				<div class="col-lg-12">
-					<div>
-						<b>Acepto el Consentimiento Informado *</b>
-						<label>
-							<input type="checkbox" asp-for="Acuerdo" class="i-checks" disabled />
-							<span asp-validation-for="Acuerdo" class="text-danger"></span>
-						</label>
+				
+			<div class="row">
+				<div class="col-lg-6 col-sm-6 col-xs-12">
+					<div class="form-group">
+						@{
+							var imgFileName = @ViewBag.ImagenConsentimiento;
+						}
+						<label>Firma</label>
+						<br />
+						<img src="~/Firmas/@imgFileName" width="100" height="100" />
 					</div>
 				</div>
+			</div>
 			</fieldset>
 			<div class="row">
 				<div class="col-lg-12">

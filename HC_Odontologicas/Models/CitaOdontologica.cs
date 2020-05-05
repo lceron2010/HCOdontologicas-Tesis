@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -130,17 +131,21 @@ namespace HC_Odontologicas.Models
 		public string CodigoDiagnosticoCie10 { get; set; }
 		[NotMapped]
 		public bool Acuerdo { get; set; }
+		[NotMapped]
+		public IFormFile FirmaD { get; set; }
 
 
 		//consentimiento informado      
 		[NotMapped]
 		public string Descripcion { get; set; }
 		[NotMapped]
-		public string FirmaConcentimiento { get; set; }
+		public string FirmaConsentimiento { get; set; }
 		[NotMapped]
-		public DateTime FechaConcentimiento { get; set; }
+		public DateTime FechaConsentimiento { get; set; }
 		[NotMapped]
 		public bool AcuerdoConsentimiento { get; set; }
+		[NotMapped]
+		public IFormFile FirmaC { get; set; }
 
 		//receta medica
 		[NotMapped]
