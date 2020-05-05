@@ -55,6 +55,11 @@ namespace HC_Odontologicas.FuncionesGenerales
 				encryptedString = "+" + encryptedString;
 			}
 
+			if (encryptedString.Contains(" "))
+			{
+				encryptedString = encryptedString.Replace(" ", "+");
+			}
+
 			string decryptedString = string.Empty;
 
 			byte[] encryptedBytes = Convert.FromBase64String(encryptedString);

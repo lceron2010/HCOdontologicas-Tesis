@@ -8,7 +8,7 @@
 
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-		<form id="formAtenderCitaOdontologica" asp-action="Edit" class="wizard-big">
+		<form asp-action="Edit" class="wizard-big" enctype="multipart/form-data" id="formAtenderCitaOdontologica">
 			<h1>Datos Informativos</h1>
 			<fieldset>
 				<div class="row">
@@ -26,6 +26,7 @@
 							<input type="hidden" asp-for="HoraInicio" />
 							<input type="hidden" asp-for="HoraFin" />
 							<input type="hidden" asp-for="UsuarioCreacion" />
+							<input type="hidden" asp-for="Identificacion" />
 							<input type="hidden" id="ListaOdontogramas" name="ListaOdontogramas" asp-for="ListaOdontogramas" />
 
 							<h4>@ViewBag.Nombre</h4>
@@ -103,6 +104,7 @@
 						</div>
 					</div>
 				</div>
+
 				<div class="row">
 					<div class="col-lg-8 col-md-8 col-xs-12" id="data_1">
 						<div class="form-group">
@@ -111,7 +113,7 @@
 							</div>
 							<div class="input-group date">
 								<span class="input-group-addon"></span>
-								<input type="text" class="form-control" asp-for="UltimaVisitaOdontologo" required id="UltimaVisitaOdontologo" onchange="validarFechaAnamnesis();">
+								<input type="text" class="form-control" asp-for="UltimaVisitaOdontologo" required id="UltimaVisitaOdontologo" onchange="validarFechaAnamnesis();" name="UltimaVisitaOdontologo">
 								<span asp-validation-for="UltimaVisitaOdontologo" class="text-danger" id="UltimaVisitaOdontologoS"></span>
 							</div>
 
@@ -2791,20 +2793,26 @@
 						</div>
 					</div>
 				</div>
-				@*<div class="row">
-						<div class="col-lg-8 col-sm-8 col-xs-12">
-							<div class="form-group">
-								<label asp-for="Firma" class="control-label">Firma*</label>
-								<textarea asp-for="Firma" class="form-control" maxlength="128" required></textarea>
+				<div class="row">
+					<div class="col-lg-8 col-sm-8 col-xs-12">
+						<div class="form-group">
+							<div>
+								<label>Firma*</label>
+								<span id="DocumentoMensaeD" name="DocumentoMensajeD" class="text-danger"></span>
+							</div>							
+							<div id="DivFirmaD" class="custom-file">
+								<input id="InputFirmaD" asp-for="FirmaD" type="file" class="custom-file-input" accept="image/*" required />
+								<label asp-for="Firma" id="LabelFirmaD" class="custom-file-label">Seleccione una imagen...</label>
 								<span asp-validation-for="Firma" class="text-danger"></span>
+								
 							</div>
 						</div>
-					</div>*@
-				<div class="row">
-					<div class="col-lg-12">
-						<div>
-							<b>Acepto el Diagnostico *</b>
-							<input type="checkbox" asp-for="Acuerdo" class="i-checks" checked required />
+					</div>
+				</div>
+				<div class="row" id="ImagenDiagnostico" style="display: none">
+					<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+						<div class="form-group">
+							<img id="ImagenFirmaDiagnostico" width="60" height="60" />
 						</div>
 					</div>
 				</div>
@@ -2822,25 +2830,30 @@
 						</div>
 					</div>
 				</div>
-				@*<div class="row">
-						<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-							<div class="form-group">
-								<div class="form-group">
-									<label asp-for="FirmaConcentimiento" class="control-label">Firma *</label>
-									<textarea asp-for="FirmaConcentimiento" class="form-control" required></textarea>
-									<span asp-validation-for="FirmaConcentimiento" class="text-danger"></span>
-								</div>
-							</div>
-						</div>
-					</div>*@
+
 				<div class="row">
-					<div class="col-lg-12">
+					<div class="col-lg-6 col-sm-6 col-xs-12">
 						<div class="form-group">
-							<b>Acepto el Consentimiento Informado *</b>
-							<input type="checkbox" asp-for="AcuerdoConsentimiento" class="i-checks" checked required />
+							<div>
+								<label>Firma*</label>
+								<span id="DocumentoMensajeC" name="DocumentoMensajeC" class="text-danger"></span>
+							</div>							
+							<div id="DivFirmaC" class="custom-file">
+								<input id="InputFirmaC" asp-for="FirmaC" type="file" class="custom-file-input" onchange="validarTamanioArchivo($(this));" accept="image/*" required />
+								<label asp-for="FirmaConsentimiento" id="LabelFirmaC" class="custom-file-label">Seleccione una imagen...</label>
+								<span asp-validation-for="FirmaConsentimiento" class="text-danger"></span>
+							</div>
 						</div>
 					</div>
 				</div>
+				<div class="row" id="ImagenConsentimiento" style="display:none">
+					<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+						<div class="form-group">
+							<img id="ImagenFirmaConsentimiento" width="100" height="100" />
+						</div>
+					</div>
+				</div>
+
 			</fieldset>
 			<h1>Receta Médica</h1>
 			<fieldset>
@@ -2897,9 +2910,6 @@
 	</script>
 }
 
-
-
-
 @section Scripts {
 	<environment names="Development,Staging,Production">
 		<script src="~/lib/steps/jquery.steps.min.js"></script>
@@ -2907,108 +2917,112 @@
 
 	</environment>
 
+
 	<script type="text/javascript">
+
 		$(document).ready(function () {
-
-			//$('#UltimaVisitaOdontologo').on('change', function () {
-			//	validarFechaAnamnesis();
-			//});
-
-			//$("#UltimaVisitaOdontologo").change(function () {
-			//	console.log("The text has been changed.");
-			//});
-
 			$("#wizard").steps();
 			$("#formAtenderCitaOdontologica").steps({
 				bodyTag: "fieldset",
 				onStepChanging: function (event, currentIndex, newIndex) {
 					var claseActual = "";
-					//console.log("cuI", currentIndex);
-					//console.log("neI", newIndex);
-					// Always allow going backward even if the current step contains invalid fields!
+					console.log('currentIndex', currentIndex);
+					if (currentIndex === 1 && $("#UltimaVisitaOdontologoS").text() !== "") {						
+						
+						return false;
+					}
+
+					if (currentIndex === 3 && $('#InputFirmaD')[0].value === "") {	
+						console.log('if', $('#InputFirmaD')[0].value);
+						var valido = $("#formAtenderCitaOdontologica").valid();
+						console.log('valido', valido);
+						$("#DocumentoMensaeD").text("Campo Requerido");
+						return false;
+					}
+
+					if (currentIndex === 3 && $('#InputFirmaD')[0].value !== "") {	
+						console.log('if', $('#InputFirmaD')[0].value);
+						$("#DocumentoMensaeD").text("");
+						//var val = $("#DocumentoMensaeD").text();
+						var valido = $("#formAtenderCitaOdontologica").valid();
+						console.log('valido if 2', valido);
+						if (valido) {
+							return true;
+						}
+						
+					}
+
+					if (currentIndex === 4 && $('#InputFirmaC')[0].value === "") {
+						console.log('if', $('#InputFirmaC')[0].value);
+						$("#DocumentoMensajeC").text("Campo Requerido");
+						return false;
+
+					}
+
+					if (currentIndex === 4 && $('#InputFirmaC')[0].value !== "") {
+						console.log('if', $('#InputFirmaC')[0].value);
+						$("#DocumentoMensajeC").text("");
+						return true;
+
+					}
+
+
+
+					//validaciones de tamaños
 					if (currentIndex > newIndex) {
 						if (newIndex === 1) {
-							//console.log("1");
-							//const error = $(".body:eq(" + 0 + ") label.error", $("#formAtenderCitaOdontologica")).length;
 							var error = $("#formAtenderCitaOdontologica").valid();
-							//console.log('error', error);
 							if (error) {
-								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[0];
+								claseActual = $("#formAtenderCitaOdontologica")[0].className;
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
 								$("#formAtenderCitaOdontologica").addClass("wizard-bigA wizard clearfix");
 							}
 						}
 
 						if (newIndex === 2) {
-							console.log("2")
-							//const error = $(".body:eq(" + 1 + ") label.error", $("#formAtenderCitaOdontologica")).length;
-							//console.log('error', error);
 							var error = $("#formAtenderCitaOdontologica").valid();
-							//console.log('error', error);
 							if (error) {
-								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[1];
+								claseActual = $("#formAtenderCitaOdontologica")[0].className;
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
 								$("#formAtenderCitaOdontologica").addClass("wizard-bigO wizard clearfix");
 							}
-
 						}
-
 						if (newIndex === 3) {
-							//console.log("3");
 							var error = $("#formAtenderCitaOdontologica").valid();
-							//console.log('error', error);
 							if (error) {
-								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[2];
+								claseActual = $("#formAtenderCitaOdontologica")[0].className;
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
 								$("#formAtenderCitaOdontologica").addClass("wizard-bigC wizard clearfix");
 							}
 						}
 						return true;
 					}
-
-					// Forbid suppressing "Warning" step if the user is to young
-					if (newIndex === 3 && Number($("#age").val()) < 18) {
-						return false;
-					}
-
 					var form = $(this);
-					// Clean up if user went backward before
 					if (currentIndex < newIndex) {
-						// To remove error styles
 						$(".body:eq(" + newIndex + ") label.error", form).remove();
 						$(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-
-
 						if (newIndex === 1) {
-							//console.log("1");
 							var error = $("#formAtenderCitaOdontologica").valid();
-							//console.log('error', error);
 							if (error) {
-								claseActual = $("#formAtenderCitaOdontologica")[0].className;//classList[0];
+								claseActual = $("#formAtenderCitaOdontologica")[0].className;
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
 								$("#formAtenderCitaOdontologica").addClass("wizard-bigA wizard clearfix");
 							}
 						}
 
 						if (newIndex === 2) {
-
-							//console.log("2");
 							var error = $("#formAtenderCitaOdontologica").valid();
-							//console.log('error', error);
 							if (error) {
-								claseActual = $("#formAtenderCitaOdontologica")[0].className;//classList[1];
+								claseActual = $("#formAtenderCitaOdontologica")[0].className;
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
 								$("#formAtenderCitaOdontologica").addClass("wizard-bigO wizard clearfix");
 							}
 
 						}
-
 						if (newIndex === 3) {
-							//console.log("3");
 							var error = $("#formAtenderCitaOdontologica").valid();
-							//console.log('error', error);
 							if (error) {
-								claseActual = $("#formAtenderCitaOdontologica")[0].className;//.classList[2];
+								claseActual = $("#formAtenderCitaOdontologica")[0].className;
 								$("#formAtenderCitaOdontologica").removeClass(claseActual);
 								$("#formAtenderCitaOdontologica").addClass("wizard-bigC wizard clearfix");
 							}
@@ -3016,23 +3030,19 @@
 						}
 
 					}
-
 					// Disable validation on fields that are disabled or hidden.
 					form.validate().settings.ignore = ":disabled,:hidden";
 
-					// Start validation; Prevent going forward if false
+
 					return form.valid();
 				},
 				onStepChanged: function (event, currentIndex, priorIndex) {
-					// Suppress (skip) "Warning" step if the user is old enough.
-					if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-						$(this).steps("next");
-					}
-
-					// Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-					//if (currentIndex === 2 && priorIndex === 3) {
-					//	$(this).steps("previous");
+					
+					//else {
+					//	console.log("else");
+					//	$(this).steps("next");
 					//}
+
 				},
 				onFinishing: function (event, currentIndex) {
 					var form = $(this);
@@ -3058,9 +3068,15 @@
 					element.before(error);
 				},
 				rules: {
-					confirm: {
-						equalTo: "#password"
-					}
+					//UltimaVisitaOdontologo:
+					//{
+					//	datetime: {
+					//	dateOnly: true,
+					//	latest: new Date(),
+					//	message: "La fecha NO debe ser mayor a la actual"
+					//	}
+					//}
+
 				}
 			});
 
@@ -3079,14 +3095,13 @@
 				}, 50);
 			});
 
-
-			$('#data_1 .input-group.date').datepicker({				
+			$('#data_1 .input-group.date').datepicker({
+				language: 'es',
 				todayBtn: "linked",
 				keyboardNavigation: false,
 				forceParse: false,
 				autoclose: true,
 				closeText: 'Cerrar',
-				maxDateNow: true,
 			});
 
 			$('.i-checks').iCheck({
@@ -3105,7 +3120,41 @@
 			});
 
 
+			$('#InputFirmaD').on('change', function () {
+				let fileNameD = $('#InputFirmaD')[0].value.split('\\').pop();
+				$('#LabelFirmaD').addClass("selected").html(fileNameD);
+				//$("#ImagenFirmaConcentimiento").attr("src", $('#InputFirmaD')[0]);
+				var archivo = $('#InputFirmaD')[0].files[0];
+				var reader = new FileReader();
+				if (fileNameD) {
+					$('#ImagenDiagnostico').show();
+					reader.readAsDataURL(archivo);
+					reader.onloadend = function () {
+						$("#ImagenFirmaDiagnostico").attr("src", reader.result);
+						document.getElementById("ImagenFirmaDiagnostico").src = reader.result;
 
+					}
+				}
+
+			});
+
+			$('#InputFirmaC').on('change', function () {
+				let fileNameC = $('#InputFirmaC')[0].value.split('\\').pop();
+				$('#LabelFirmaC').addClass("selected").html(fileNameC);
+				var archivo = $('#InputFirmaC')[0].files[0];
+				var reader = new FileReader();
+				if (fileNameC) {
+					$('#ImagenConsentimiento').show();
+					reader.readAsDataURL(archivo);
+					reader.onloadend = function () {
+						$("#ImagenFirmaConsentimiento").attr("src", reader.result);
+						document.getElementById("ImagenFirmaConsentimiento").src = reader.result;
+					}
+				}
+			})
+
+
+		
 			var div = document.getElementById('menu');
 			//la funcion que oculta y muestra
 			function showHide(e) {

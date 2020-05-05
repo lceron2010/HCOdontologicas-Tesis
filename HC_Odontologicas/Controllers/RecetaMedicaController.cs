@@ -3,6 +3,7 @@ using HC_Odontologicas.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -422,6 +423,73 @@ namespace HC_Odontologicas.Controllers
 				return null;
 			}
 		}
+
+
+		// GET: CitasOdontologicas/Edit/5
+		public async Task<IActionResult> ImprimirRecetaMedica2(string Codigo)
+		{
+
+			var i = (ClaimsIdentity)User.Identity;
+			if (i.IsAuthenticated)
+			{
+				var permisos = i.Claims.Where(c => c.Type == "CitasOdontologicas").Select(c => c.Value).SingleOrDefault().Split(";");
+				Codigo = Encriptacion.Decrypt(Codigo);
+				if (Convert.ToBoolean(permisos[2]))
+				{
+					if (Codigo == null)
+						return NotFound();
+
+					var citaOdontologica = await _context.CitaOdontologica.SingleOrDefaultAsync(f => f.Codigo == Codigo);
+
+					if (citaOdontologica == null)
+						return NotFound();
+
+
+					return View(citaOdontologica);
+				}
+				else
+					return Redirect("../CitasOdontologicas");
+			}
+			else
+			{
+				return Redirect("../Identity/Account/Login");
+			}
+
+		}
+
+		//Mostrarreceta Medica
+		[HttpGet]
+		public IActionResult ImprimirRecetaMedica(string Codigo)
+		{
+			Codigo = Encriptacion.Decrypt(Codigo);
+			return new ViewAsPdf("ImprimirRecetaMedica", GetOne(Codigo))
+			{
+				PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
+			};
+		}
+
+		public RecetaMedica GetOne(string Codigo)
+		{
+			try
+			{
+				
+				RecetaMedica rm = _context.RecetaMedica.Where(r => r.Codigo == Codigo)
+					.Include(r => r.CitaOdontologica).ThenInclude(c => c.Paciente)
+					.Include(r => r.CitaOdontologica).ThenInclude(c => c.Personal).SingleOrDefault();
+
+				rm.fechaString = rm.Fecha.ToString("dd/MM/yyy");
+
+				return rm;
+			}
+
+			catch (Exception e)
+			{
+				e.Message.ToString();
+				return null;
+			}
+
+		}
+
 	}
 }
 

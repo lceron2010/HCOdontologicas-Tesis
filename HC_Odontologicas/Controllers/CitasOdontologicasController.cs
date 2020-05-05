@@ -1,10 +1,13 @@
 ﻿using HC_Odontologicas.FuncionesGenerales;
 using HC_Odontologicas.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -17,6 +20,7 @@ namespace HC_Odontologicas.Controllers
 		SelectListItem vacio = new SelectListItem(value: "", text: "Seleccione...");
 		private readonly AuditoriaController _auditoria;
 
+		private String pathRootDocumentos = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Firmas") + "\\";
 		public CitasOdontologicasController(HCOdontologicasContext context)
 		{
 			_context = context;
@@ -117,7 +121,6 @@ namespace HC_Odontologicas.Controllers
 				try
 				{
 
-
 					if (ModelState.IsValid)
 					{
 						_context.Add(citaOdontologica);
@@ -175,6 +178,9 @@ namespace HC_Odontologicas.Controllers
 					ViewData["Direccion"] = paciente.Direccion;
 					ViewData["Correo"] = paciente.MailEpn;
 					ViewData["Telefono"] = paciente.Celular;
+
+					citaOdontologica.Identificacion = paciente.Identificacion;
+
 					if (paciente.Facultad == null)
 					{
 						ViewData["Facultad"] = "";
@@ -207,7 +213,7 @@ namespace HC_Odontologicas.Controllers
 					Cie10.Insert(0, vacio);
 					ViewData["CIE10"] = Cie10;
 
-					//concentimiento informado
+					//consentimiento informado
 					var PlantillaCI = _context.PlantillaConsentimientoInformado.Where(c => c.Nombre.Contains("Consentimiento Informado")).SingleOrDefault();
 					ViewData["Descripcion"] = PlantillaCI.Descripcion;
 
@@ -219,7 +225,7 @@ namespace HC_Odontologicas.Controllers
 					return View(citaOdontologica);
 				}
 				else
-					return Redirect("../Anamnesis");
+					return Redirect("../CitasOdontologicas");
 			}
 			else
 			{
@@ -237,13 +243,81 @@ namespace HC_Odontologicas.Controllers
 		{
 			var i = (ClaimsIdentity)User.Identity;
 			var transaction = _context.Database.BeginTransaction();
+
+			DateTime fecha1 = Convert.ToDateTime("29/04/2020");
+			var fechaC = Funciones.ObtenerFecha(fecha1, "SA Pacific Standard Time");
+
+			var fechaU = Funciones.ObtenerFecha(Convert.ToDateTime(citaOdontologica.UltimaVisitaOdontologo), "SA Pacific Standard Time");
+
 			if (i.IsAuthenticated)
 			{
 				try
 				{
 
+
+					if (citaOdontologica.UltimaVisitaOdontologo >= Funciones.ObtenerFechaActual("SA Pacific Standard Time").Date)
+					{
+						var mensajeR = "La fecha debe ser menor a la actual.";
+						if (!string.IsNullOrEmpty(mensajeR))
+							ModelState.AddModelError("UltimaVisitaOdontologo", mensajeR);
+					}
+
+					if (!String.IsNullOrEmpty(citaOdontologica.DescripcionReceta))
+					{
+						if (String.IsNullOrEmpty(citaOdontologica.Indicaciones))
+						{
+							var mensajeR = "Debe llenar las indicaciones para los medicamentos";
+							if (!string.IsNullOrEmpty(mensajeR))
+								ModelState.AddModelError("Indicaciones", mensajeR);
+						}
+					}
+
+					if (!String.IsNullOrEmpty(citaOdontologica.Indicaciones))
+					{
+						if (String.IsNullOrEmpty(citaOdontologica.DescripcionReceta))
+						{
+							var mensajeR = "Debe llenar los medicamentos";
+							if (!string.IsNullOrEmpty(mensajeR))
+								ModelState.AddModelError("DescripcionReceta", mensajeR);
+						}
+					}
+
+
 					if (ModelState.IsValid)
 					{
+						//guardar los imagenes de las firmas
+						String FirmaConsentimiento = string.Empty;
+						String FirmaDiagnostico = string.Empty;
+
+						if (citaOdontologica.FirmaC != null)
+						{
+							if (GetMimeTypes().SingleOrDefault(p => p.Value == citaOdontologica.FirmaC.ContentType && p.Key == "." + citaOdontologica.FirmaC.FileName.Split(".")[citaOdontologica.FirmaC.FileName.Split(".").Count() - 1]).Value != null)
+							{
+								FirmaConsentimiento= UploadFile(citaOdontologica.FirmaC, Encriptacion.Decrypt(citaOdontologica.Codigo), citaOdontologica.Identificacion, "CI");
+							}
+							else
+							{
+								citaOdontologica.FirmaC = null;
+								ViewData["ExtensionArchivo"] = "Extensión del documento incorrecto";
+							}
+
+						}
+
+						if (citaOdontologica.FirmaD != null)
+						{
+							if (GetMimeTypes().SingleOrDefault(p => p.Value == citaOdontologica.FirmaD.ContentType && p.Key == "." + citaOdontologica.FirmaC.FileName.Split(".")[citaOdontologica.FirmaC.FileName.Split(".").Count() - 1]).Value != null)
+							{
+								FirmaDiagnostico = UploadFile(citaOdontologica.FirmaD,Encriptacion.Decrypt(citaOdontologica.Codigo), citaOdontologica.Identificacion, "DG");
+							}
+							else
+							{
+								citaOdontologica.FirmaC = null;
+								ViewData["ExtensionArchivo"] = "Extensión del documento incorrecto";
+							}
+
+						}
+
+
 						DateTime fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
 						citaOdontologica.Codigo = Encriptacion.Decrypt(citaOdontologica.Codigo);
 
@@ -303,8 +377,8 @@ namespace HC_Odontologicas.Controllers
 						diagnostico.Fecha = fecha;
 						diagnostico.Pieza = citaOdontologica.Pieza;
 						diagnostico.Observacion = citaOdontologica.Observacion;
-						diagnostico.Firma = null;//citaOdontologica.Firma;
-						diagnostico.Acuerdo = citaOdontologica.Acuerdo;
+						diagnostico.Firma = FirmaDiagnostico;
+						diagnostico.Acuerdo = true;
 						diagnostico.Recomendacion = citaOdontologica.Recomendacion;
 						_context.Diagnostico.Add(diagnostico);
 
@@ -332,8 +406,8 @@ namespace HC_Odontologicas.Controllers
 						consentimientoInformado.Codigo = maxCodigoCi.ToString("D8");
 						consentimientoInformado.CodigoCitaOdontologica = citaOdontologica.Codigo;
 						consentimientoInformado.Descripcion = citaOdontologica.Descripcion;
-						consentimientoInformado.Firma = null;//citaOdontologica.FirmaConcentimiento;
-						consentimientoInformado.Acuerdo = citaOdontologica.AcuerdoConsentimiento;
+						consentimientoInformado.Firma = FirmaConsentimiento;//citaOdontologica.FirmaConcentimiento;
+						consentimientoInformado.Acuerdo = true;//citaOdontologica.AcuerdoConsentimiento;
 						consentimientoInformado.Fecha = fecha;
 						_context.Add(consentimientoInformado);
 						_context.SaveChanges();
@@ -364,6 +438,7 @@ namespace HC_Odontologicas.Controllers
 							_context.Add(recetaMedica);
 							_context.SaveChanges();
 						}
+
 
 						CitaOdontologica citaAntigua = _context.CitaOdontologica.SingleOrDefault(p => p.Codigo == citaOdontologica.Codigo);
 						citaAntigua.Codigo = citaOdontologica.Codigo;
@@ -437,7 +512,7 @@ namespace HC_Odontologicas.Controllers
 						Cie10.Insert(0, vacio);
 						ViewData["CIE10"] = Cie10;
 
-						//concentimiento informado
+						//consentimiento informado
 						var PlantillaCI = _context.PlantillaConsentimientoInformado.Where(c => c.Nombre.Contains("Consentimiento Informado")).SingleOrDefault();
 						ViewData["Descripcion"] = PlantillaCI.Descripcion;
 
@@ -445,6 +520,9 @@ namespace HC_Odontologicas.Controllers
 						List<SelectListItem> PlantillaRM = new SelectList(_context.PlantillaRecetaMedica.OrderBy(c => c.Nombre), "Codigo", "Nombre").ToList();
 						PlantillaRM.Insert(0, vacio);
 						ViewData["CodigoPlantillaReceta"] = PlantillaRM;
+
+						//imagen
+
 
 						ViewBag.Message = "Save";
 						return View(citaOdontologica);
@@ -494,7 +572,7 @@ namespace HC_Odontologicas.Controllers
 						Cie10.Insert(0, vacio);
 						ViewData["CIE10"] = Cie10;
 
-						//concentimiento informado
+						//consentimiento informado
 						var PlantillaCI = _context.PlantillaConsentimientoInformado.Where(c => c.Nombre.Contains("Consentimiento Informado")).SingleOrDefault();
 						ViewData["Descripcion"] = PlantillaCI.Descripcion;
 
@@ -503,11 +581,19 @@ namespace HC_Odontologicas.Controllers
 						PlantillaRM.Insert(0, vacio);
 						ViewData["CodigoPlantillaReceta"] = PlantillaRM;
 
-						ViewBag.Message = "Algo salio mal";
+						try
+						{
+							var odontograma = await _context.Odontograma.SingleOrDefaultAsync(f => f.CodigoCitaOdontologica == Encriptacion.Decrypt(citaOdontologica.Codigo));
+							_context.Odontograma.Remove(odontograma);
+							await _context.SaveChangesAsync();
+						}
+						catch (Exception e)
+						{
+							string mens = e.Message;
+							ViewBag.Message = mens;
+						}
 
-						var odontograma = await _context.Odontograma.SingleOrDefaultAsync(f => f.CodigoCitaOdontologica == citaOdontologica.Codigo);
-						_context.Odontograma.Remove(odontograma);
-						await _context.SaveChangesAsync();
+						ViewBag.Message = "Debe revisar los datos de Anamnesis o Receta Medica";
 
 						return View(citaOdontologica);
 					}
@@ -518,6 +604,7 @@ namespace HC_Odontologicas.Controllers
 					string mensaje = e.Message;
 					if (e.InnerException != null)
 						mensaje = MensajesError.UniqueKey(e.InnerException.Message);
+
 					ViewBag.Message = mensaje;
 
 					transaction.Rollback();
@@ -569,7 +656,7 @@ namespace HC_Odontologicas.Controllers
 					Cie10.Insert(0, vacio);
 					ViewData["CIE10"] = Cie10;
 
-					//concentimiento informado
+					//consentimiento informado
 					var PlantillaCI = _context.PlantillaConsentimientoInformado.Where(c => c.Nombre.Contains("Consentimiento Informado")).SingleOrDefault();
 					ViewData["Descripcion"] = PlantillaCI.Descripcion;
 
@@ -588,5 +675,120 @@ namespace HC_Odontologicas.Controllers
 
 
 		}
+
+
+		// GET: CitasOdontologicas/Edit/5
+		public async Task<IActionResult> ImprimirRecetaMedica2(string Codigo)
+		{
+
+			var i = (ClaimsIdentity)User.Identity;
+			if (i.IsAuthenticated)
+			{
+				var permisos = i.Claims.Where(c => c.Type == "CitasOdontologicas").Select(c => c.Value).SingleOrDefault().Split(";");
+				Codigo = Encriptacion.Decrypt(Codigo);
+				if (Convert.ToBoolean(permisos[2]))
+				{
+					if (Codigo == null)
+						return NotFound();
+
+					var citaOdontologica = await _context.CitaOdontologica.SingleOrDefaultAsync(f => f.Codigo == Codigo);
+
+					if (citaOdontologica == null)
+						return NotFound();
+
+
+					return View(citaOdontologica);
+				}
+				else
+					return Redirect("../CitasOdontologicas");
+			}
+			else
+			{
+				return Redirect("../Identity/Account/Login");
+			}
+
+		}
+
+		//MostrarCertificado
+		[HttpGet]
+		public IActionResult ImprimirRecetaMedica(string Codigo)
+		{
+			Codigo = Encriptacion.Decrypt(Codigo);
+			return new ViewAsPdf("ImprimirRecetaMedica", GetOne(Codigo))
+			{
+				PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
+			};
+		}
+
+		public RecetaMedica GetOne(string Codigo)
+		{
+			try
+			{
+				
+				RecetaMedica rm = _context.RecetaMedica.Where(r => r.CodigoCitaOdontologica == Codigo)
+					.Include(r => r.CitaOdontologica).ThenInclude(c => c.Paciente)
+					.Include(r => r.CitaOdontologica).ThenInclude(c => c.Personal).SingleOrDefault();
+
+				
+				return rm;
+			}
+
+			catch (Exception e)
+			{
+				e.Message.ToString();
+				return null;
+			}
+
+		}
+
+
+		//PARA SUBIR LA IMAGEN
+		public String UploadFile(IFormFile archivo, String NumCita, String identificacion, String tipoFirma)
+		{
+			try
+			{
+				var path = "";
+				var nombreArchivo = String.Empty;
+				if (ModelState.IsValid)
+				{
+					if (archivo != null && NumCita != null && identificacion != null)
+					{
+						nombreArchivo = identificacion.Trim() + "_" + NumCita + "_" + tipoFirma + "_"+ archivo.FileName;
+						path = @"" + pathRootDocumentos + nombreArchivo;
+						using (var stream = new FileStream(path, FileMode.Create))
+						{
+							archivo.CopyTo(stream);
+						}
+					}
+				}
+				return nombreArchivo;
+			}
+			catch (Exception e)
+			{
+				var mens = e.Message.ToString();
+				return mens;
+			}
+		}
+
+
+		private void DeleteFile(String path)
+		{
+			var patDocumento = @"" + pathRootDocumentos + path;
+			if (!String.IsNullOrEmpty(path))
+				System.IO.File.Delete(patDocumento);
+		}
+
+		private Dictionary<string, string> GetMimeTypes()
+		{
+			return new Dictionary<string, string>
+			{
+				{".png", "image/png"},
+				{".jpg", "image/jpeg"},
+				{".gif", "image/gif"},
+
+			};
+		}
+
+
 	}
 }

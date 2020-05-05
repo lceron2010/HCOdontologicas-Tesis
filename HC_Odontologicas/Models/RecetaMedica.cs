@@ -17,6 +17,9 @@ namespace HC_Odontologicas.Models
 		[NotMapped]
 		public string CodigoPersonal { get; set; }
 
+		[NotMapped]
+		public string fechaString { get; set; }
+
 		public virtual CitaOdontologica CitaOdontologica { get; set; }
 		public virtual PlantillaRecetaMedica PlantillaRecetaMedica { get; set; }
 	}

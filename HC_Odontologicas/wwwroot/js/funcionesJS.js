@@ -1041,8 +1041,7 @@ function verificarCedula(cedula) {
 	}
 	else if (cedula.length == 0) {
 		return true;
-	}
-	//$("#IdentificacionS").text("Cédula Incorrecta");
-	//console.log("cedula mal");
+	}	
 	return false;
+
 }

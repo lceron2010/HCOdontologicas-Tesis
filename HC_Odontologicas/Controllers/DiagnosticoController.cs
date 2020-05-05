@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -19,7 +20,8 @@ namespace HC_Odontologicas.Controllers
 		SelectListItem vacio = new SelectListItem(value: "0", text: "Seleccione...");
 
 		DateTime fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
-
+		private String pathRootDocumentos = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Firmas") + "\\";
+		
 		public DiagnosticoController(HCOdontologicasContext context)
 		{
 			_context = context;
@@ -361,6 +363,8 @@ namespace HC_Odontologicas.Controllers
 					//diagnostico.DiagnosticoCie10.OrderBy(p => p.Cie10.Nombre);
 
 					//diagnostico.CodigoDiagnosticoCie10.DiagnosticoCie10;
+
+					ViewData["ImagenDiagnostico"] = diagnostico.Firma;
 
 					List<SelectListItem> Cie10 = new SelectList(_context.Cie10.OrderBy(f => f.CodigoInterno), "Codigo", "CodigoNombre", diagnostico.DiagnosticoCie10[0].CodigoCie10).ToList();//.Where(f => f.Nombre.StartsWith("C")).ToList(); //QUITAR LUEGO					;
 					Cie10.Insert(0, vacio);

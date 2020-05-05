@@ -42,21 +42,24 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Paciente.NombreCompleto)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FechaInicio)
-                </td>
-                <td>
-                    @if ((bool)ViewData["Editar"])
-                    {
-                        <a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Registrar Cita Odontológica"><i class="fa fa-stethoscope"></i> Registrar</a>
-                    }
-
-                </td>
-            </tr>
+		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => item.Paciente.NombreCompleto)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.FechaInicio)
+			</td>
+			<td>
+				@if ((bool)ViewData["Editar"])
+				{
+					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Registrar Cita Odontológica"><i class="fa fa-stethoscope"></i> Registrar</a>
+				}
+				
+					<a asp-action="ImprimirRecetaMedica" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Imprimir Receta Médica"><i class="fa fa-stethoscope"></i> Imprimir Receta</a>
+				
+			</td>
+			
+		</tr>
         }
     </tbody>
 </table>

@@ -50,6 +50,8 @@
 						<a onclick="eliminar('@item.Codigo','../RecetaMedica/DeleteConfirmed','/../RecetaMedica')" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Eliminar"><i class="fa fa-trash"></i> Eliminar</a>
 					}
 
+					<a asp-action="ImprimirRecetaMedica" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Imprimir Receta Médica"><i class="fa fa-stethoscope"></i> Imprimir</a>
+
 				</td>
 			</tr>
 		}
