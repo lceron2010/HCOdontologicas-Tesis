@@ -33,19 +33,19 @@ namespace HC_Odontologicas
 				.AddEntityFrameworkStores<HCOdontologicasContext>();
 
 
-			//services.AddTransient<IEmailSender, EmailSender>(i =>
-			//  new EmailSender(
-			//	  Configuration["EmailSender:Host"],
-			//	  Configuration.GetValue<int>("EmailSender:Port"),
-			//	  Configuration.GetValue<bool>("EmailSender:EnableSSL"),
-			//	  Configuration["EmailSender:UserName"],
-			//	  Configuration["EmailSender:Password"]
-			//	 )
-			//  );
+			services.AddTransient<IEmailSender, EmailSender>(i =>
+			  new EmailSender(
+				  Configuration["EmailSender:Host"],
+				  Configuration.GetValue<int>("EmailSender:Port"),
+				  Configuration.GetValue<bool>("EmailSender:EnableSSL"),
+				  Configuration["EmailSender:UserName"],
+				  Configuration["EmailSender:Password"]
+				 )
+			  );
 
 
-			services.AddTransient<IEmailSender, EmailSender>();
-			services.Configure<AuthMessageSenderOptions>(Configuration);
+			//services.AddTransient<IEmailSender, EmailSender>();
+//			services.Configure<AuthMessageSenderOptions>(Configuration);
 
 
 			services.AddControllersWithViews();

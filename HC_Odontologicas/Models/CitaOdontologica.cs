@@ -27,6 +27,7 @@ namespace HC_Odontologicas.Models
 		public TimeSpan HoraInicio { get; set; }
 		public TimeSpan HoraFin { get; set; }
 		public string UsuarioCreacion { get; set; }
+		public bool RegistroRecetaMedica { set; get; }
 
 
 

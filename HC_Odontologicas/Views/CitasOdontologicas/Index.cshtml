@@ -50,14 +50,15 @@
 				@Html.DisplayFor(modelItem => item.FechaInicio)
 			</td>
 			<td>
-				@if ((bool)ViewData["Editar"])
+				@if ((bool)ViewData["Editar"] && (item.Estado == "C" || item.Estado =="M"))
 				{
 					<a asp-action="Edit" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Registrar Cita Odontológica"><i class="fa fa-stethoscope"></i> Registrar</a>
 				}
-				
+				@if (item.RegistroRecetaMedica)
+				{
 					<a asp-action="ImprimirRecetaMedica" asp-route-Codigo="@Encriptacion.Encrypt(item.Codigo)" class="btn btn-white colorBordeBotonAccion" data-toggle="tooltip" title="Imprimir Receta Médica"><i class="fa fa-stethoscope"></i> Imprimir Receta</a>
-				
-			</td>
+				}
+				</td>
 			
 		</tr>
         }

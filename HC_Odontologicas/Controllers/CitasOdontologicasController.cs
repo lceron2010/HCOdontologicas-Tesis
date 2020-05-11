@@ -52,13 +52,18 @@ namespace HC_Odontologicas.Controllers
 					ViewData["Filter"] = search;
 
 					var fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
-					var fechaInicioDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 00, 00, 00);
-					var fechaInicioFinDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 23, 59, 59);
+					//var fechaInicioDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 00, 00, 00);
+					//var fechaInicioFinDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 23, 59, 59);
+
+					var fechaInicioDia = new DateTime(fecha.Year, fecha.Month, 11, 00, 00, 00);
+					var fechaInicioFinDia = new DateTime(fecha.Year, fecha.Month, 11, 23, 59, 59);
 
 					var citaOdontologica = from c in _context.CitaOdontologica.Include(a => a.Personal).Include(a => a.Paciente)
-										   .Where(a => a.FechaInicio > fechaInicioDia && a.FechaInicio < fechaInicioFinDia && (a.Estado == "C" || a.Estado == "M"))
+										   .Where(a => a.FechaInicio > fechaInicioDia && a.FechaInicio < fechaInicioFinDia ) 
+										   //&& (a => a.FechaInicio > fechaInicioDia && a.FechaInicio < fechaInicioFinDia  && (a.RegistroRecetaMedica == true && a.Estado == "A")) )
 										   .OrderBy(p => p.FechaInicio)
 										   select c;
+					citaOdontologica = citaOdontologica.Where(o => o.RegistroRecetaMedica == true && o.Estado =="A" || (o.Estado == "C" || o.Estado == "M"));
 
 
 					if (!String.IsNullOrEmpty(search))
@@ -413,6 +418,7 @@ namespace HC_Odontologicas.Controllers
 						_context.SaveChanges();
 
 						var codigoReceta = "";
+						Boolean registroReceta = false;
 						if (!((string.IsNullOrEmpty(citaOdontologica.DescripcionReceta)) && (string.IsNullOrEmpty(citaOdontologica.Indicaciones))))
 						{
 							//receta medica
@@ -437,6 +443,7 @@ namespace HC_Odontologicas.Controllers
 							codigoReceta = recetaMedica.Codigo;
 							_context.Add(recetaMedica);
 							_context.SaveChanges();
+							registroReceta = true;
 						}
 
 
@@ -452,7 +459,7 @@ namespace HC_Odontologicas.Controllers
 						citaAntigua.HoraInicio = citaOdontologica.HoraInicio;
 						citaAntigua.HoraFin = citaOdontologica.HoraFin;
 						citaAntigua.UsuarioCreacion = i.Name;
-
+						citaAntigua.RegistroRecetaMedica = registroReceta;
 						_context.Update(citaAntigua);
 
 						_context.SaveChanges();

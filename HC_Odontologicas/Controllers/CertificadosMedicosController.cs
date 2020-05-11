@@ -62,14 +62,18 @@ namespace HC_Odontologicas.Controllers
 					if (String.IsNullOrEmpty(search))
 					{
 						var fecha = Funciones.ObtenerFechaActual("SA Pacific Standard Time");
-						fechaInicioDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 00, 00, 00);
-						fechaInicioFinDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 23, 59, 59);
+						//fechaInicioDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 00, 00, 00);
+						//fechaInicioFinDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 23, 59, 59);
+						fechaInicioDia = new DateTime(fecha.Year, fecha.Month, 11, 00, 00, 00);
+						fechaInicioFinDia = new DateTime(fecha.Year, fecha.Month, 11, 23, 59, 59);
 					}
 					else
 					{
 						var fecha = Convert.ToDateTime(search);
 						fechaInicioDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 00, 00, 00);
 						fechaInicioFinDia = new DateTime(fecha.Year, fecha.Month, fecha.Day, 23, 59, 59);
+
+						
 					}//poner liuego esto
 
 					var citaOdontologica = from c in _context.CitaOdontologica.Include(a => a.Personal).Include(a => a.Paciente)

@@ -64,7 +64,7 @@ namespace HC_Odontologicas.Controllers
 			newEvent.HoraFin = new TimeSpan(newEvent.FechaFin.Hour, newEvent.FechaFin.Minute, newEvent.FechaFin.Second);
 			newEvent.Estado = "C";
 			newEvent.UsuarioCreacion = i.Name;
-
+			newEvent.RegistroRecetaMedica = false;
 			_context.CitaOdontologica.Add(newEvent);
 			_context.SaveChanges();
 
@@ -111,7 +111,7 @@ namespace HC_Odontologicas.Controllers
 			dbEvent.HoraFin = new TimeSpan(updatedEvent.FechaFin.Hour, updatedEvent.FechaFin.Minute, updatedEvent.FechaFin.Second);
 			dbEvent.Estado = "M";
 			dbEvent.UsuarioCreacion = i.Name;
-
+			dbEvent.RegistroRecetaMedica = false;
 
 			_context.SaveChanges();
 

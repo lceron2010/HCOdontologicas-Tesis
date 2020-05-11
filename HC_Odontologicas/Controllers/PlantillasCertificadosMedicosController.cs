@@ -46,7 +46,7 @@ namespace HC_Odontologicas.Controllers
 					ViewData["Filter"] = search;
 					ViewData["CurrentSort"] = sortOrder;
 
-					var plantillaCertificado = from c in _context.PlantillaCertificadoMedico select c;
+					var plantillaCertificado = from c in _context.PlantillaCertificadoMedico.Where(pc => pc.Nombre.Contains("Certificado ")) select c;
 					if (!String.IsNullOrEmpty(search))
 						plantillaCertificado = plantillaCertificado.Where(s => s.Nombre.Contains(search));
 
